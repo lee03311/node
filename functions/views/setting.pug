@@ -1,0 +1,61 @@
+doctype html
+html
+    head
+        meta(charset = 'utf-8')
+
+        script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+        script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
+        script(src='https://code.jquery.com/ui/1.12.1/jquery-ui.js')
+        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css')
+        link(rel='stylesheet' href='//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css')
+        script.
+            var colorWell;
+            var defaultColor = "#0000ff";
+
+            window.addEventListener("load", startup, false);
+            function startup() {
+                colorWell = document.querySelector("#color");
+                colorWell.value = defaultColor;
+                colorWell.addEventListener("input", updateFirst, false);
+                //colorWell.addEventListener("change", updateAll, false);
+                colorWell.select();
+            }
+            function updateFirst(event) {
+                $("#colorText").text(event.target.value);
+            }
+
+            $(function(){
+                $('#color').val($("#colorText").text());
+            })
+
+body
+
+    div(style='width:80%;margin:20px auto 0;')
+        form(action='/setting/add' method='post')
+        
+            if data
+                input(type='hidden' id='id' name='id' value=data.id)
+
+                div(class='form-group row')
+                    label(for='category' class='col-2 col-form-label') Category
+                    div(class='col-10')
+                        input(class='form-control' type='text' id='category' name='category' value=data.category)
+                div(class='form-group row')
+                    label(for='color') Color
+                        input(type='color' id='color' value='#ffffff' name='color')
+                        sapn(id='colorText')= data.color
+                    script. 
+                        $('#color').val('#fff');
+            else
+                div(class='form-group row')
+                    label(for='category' class='col-2 col-form-label') Category
+                    div(class='col-10')
+                        input(class='form-control' type='text' id='category' name='category')
+                div(class='form-group row')
+                    label(for='color') Color
+                        input(type='color' id='color' value='#ffffff' name='color')
+                        sapn(id='colorText')
+                    script. 
+                        $('#color').val('#fff');
+                        
+            button(type='submit' class='btn btn-primary' style='float: right;') 등록

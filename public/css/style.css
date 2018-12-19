@@ -1,0 +1,169 @@
+.todolist{
+    width:19%;
+    min-height: 300px;
+    float:left;
+    border: 3px dotted rgb(255, 101, 58);
+    border-radius: 10px;
+    margin: 0 15px;
+}
+
+.daily{
+    width: 75%;
+    float:left;
+}
+
+.todolist > ul {
+    text-align: center;
+}
+
+ul{
+    overflow: auto;
+    margin:auto;
+    /* text-align: center; */
+    padding:0;
+}
+
+li{
+    list-style: none;
+    text-align: left;
+}
+
+li.list{
+    margin: 10px;
+    width: 250px;
+    height:200px;
+    border: 1px solid;
+    border-radius: 10px;
+    padding: 20px;
+    display: inline-block;
+    box-shadow: 2px 3px 2px #aaaaaa;
+    cursor: pointer;
+    vertical-align: top;
+    /*background-color:rgba(145, 175, 89);;*/
+}
+
+li.complete{
+    margin: 10px;
+    width: 250px;
+    border: 1px solid;
+    border-radius: 10px;
+    padding: 10px;
+    display: inline-block;
+    box-shadow: 2px 3px 2px #aaaaaa;
+    cursor: pointer;
+}
+
+li.list:hover, li.complete:hover{
+    background-color:antiquewhite;;
+}
+
+.complete .circle{
+    width: 50px;
+    height: 50px;
+    /* background-color: rgb(255, 101, 58); */
+    border-radius: 50%;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 12px 0 0;
+    text-align: center;
+    font-size: 15px;
+    color: white;
+    font-weight: bold;
+    padding-top: 15px;
+    box-shadow: 1px 1px 10px #aaa;
+}
+
+.circle{
+    width: 70px;
+    height: 70px;
+    background-color:rgb(255, 101, 58);
+    border-radius: 50%;
+    /*display: inline-block;*/
+    vertical-align: middle;
+    margin: 0 auto 10px;
+    text-align: center;
+    font-size: 20px;
+    color: white;
+    font-weight: bold;
+    padding-top:20px;
+    box-shadow: 1px 1px 10px #aaa;
+}
+
+.textBox{
+    word-break: break-all;
+    overflow-y: auto;
+    height: 40%;
+}
+
+.textTitle{
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.btnArea{
+    width: 85%;
+    text-align: right;
+    margin:20px auto;
+}
+
+.ui-datepicker{
+    z-index: 10000 !important;
+}
+
+.input-group{
+    margin-bottom: 15px;
+}
+
+/* 메뉴바 */
+.sideMenubar{
+    position: fixed;
+    float: left;
+    width: 50px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #303641;
+    color: #aaabae;
+    font-family: "Segoe UI";
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+#menu {
+    list-style: none;
+    margin: 200px 0 20px 0;
+    padding: 0;
+    border-top: 1px solid rgba(69, 74, 84, 0.7);
+}
+
+#menu li{
+    position: relative;
+    margin: 0;
+    font-size: 12px;
+    border-bottom: 1px solid rgba(69, 74, 84, 0.7);
+    padding: 0;
+}
+
+#menu li a {
+    font-style: normal;
+    font-weight: 400;
+    position: relative;
+    display: block;
+    padding: 10px 20px;
+    color: #aaabae;
+    white-space: nowrap;
+    z-index: 2;
+}
+
+.categoryArea{
+    border: 1px solid gray;
+    width: 13px;
+    height: 13px;
+}
+
+#menu .active{
+    background-color: white;
+}
+
+#menu .inactive{
+    background-color: #303641;
+}

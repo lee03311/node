@@ -1,0 +1,129 @@
+doctype html
+html
+    head
+        meta(charset = 'utf-8')
+        script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+        script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
+        script(src='https://code.jquery.com/ui/1.12.1/jquery-ui.js')
+        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css')
+        link(rel='stylesheet' href='//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css')
+        link(rel="stylesheet", href="css/style.css")
+        script(type='text/javascript' src='js/common.js') 
+        script.
+            $(function(){
+                getDays();
+                drawCateogry();
+                $('.updatebtn').hide();
+
+                $( "#datepicker" ).datepicker({
+                    showOtherMonths: true,
+                    selectOtherMonths: true, 
+                    dateFormat:'yy/mm/dd'
+                });
+                
+                //완료체크박스 숨기기
+                $('#todo_compelete').hide();
+
+                //라디오박스 변경시 이벤트
+                $('input[name="writeRadio"]').change(function(){
+                    if($(this).attr('id') == 'todolist'){
+                        if(!$('#todo_compelete').is(':visible')){
+                            $('#todo_compelete').show();
+                        }
+                        //$('#todo_compelete').hide();
+                        $('#cateogry').hide();
+                        $('#cateogry').val('');
+                    }else{
+                        if($('#todo_compelete').is(':visible')){
+                            $('#todo_compelete').hide();
+                        }
+                        $("#cateogry option:eq(0)").prop("selected", true);
+                        $('#cateogry').show();
+                    }
+                });
+            });
+
+            function reportAdd(){
+                $("#reportForm").submit();
+            }
+
+            function reportDelete(){
+                $("#reportForm").attr('action', '/delete')
+                $("#reportForm").submit();
+            }
+
+
+    body
+        div(class='sideMenubar')
+            div(class='menu')
+                ul(id='menu')
+                    li
+                        a(href='/setting')
+                            span(class='glyphicon glyphicon-option-horizontal')
+                    
+        //- h1 별이달이 일지
+        div(class='btnArea')
+            nav
+                ul(class='pager')
+                    li
+                        a(href='#' onclick="javascript:moveDays('pre');")
+                            span(class='glyphicon glyphicon-menu-left' aria-hidden='true')
+                    li
+                        span(id='thisMonth')
+                    li
+                        a(href='#' onclick="javascript:moveDays('next');")
+                            span(class='glyphicon glyphicon-menu-right' aria-hidden='true')
+                    
+            button(type="button" class="btn btn-default"  onclick='openDialogForAdd()' /*data-toggle="modal" data-target="#myModal"*/) 등록
+        div(class='todolist')
+            ul(id='dataArea')
+
+        div(class='daily')
+            ul(id='dataArea')
+
+        
+        div(class='modal fade' id='myModal' tabindex='-1' role="dialog" aria-labelledby="myModalLabel" aria-hidden="true")
+            div(class='modal-dialog')
+                div(class='modal-content')
+                    div(class='modal-header')
+                        button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+                            span(aria-hidden='true') &times;
+                        h4(class='modal-title', id='myModalLabel') 일정 등록하기
+                    div(class='modal-body')
+                        form(method="post" id='reportForm' action='/add')
+                            input(type='hidden' id='id' name='id')
+                            
+                            div(class='form-group')
+                                label(for='cateogry')
+                                select(class='form-control' id='cateogry' name='category')
+
+                            div(class='input-group')
+                                input(type='text' class='form-control' id='datepicker' name='date' placeholder='날짜선택' aria-describedby='basic-addon2' autocomplete="off")
+                                span(class='input-group-addon ' id='basic-addon2')
+                                    span(class='glyphicon glyphicon-calendar' aria-hidden='true')
+
+                            div(class='form-group')
+                                input(type='text' class='form-control' id='title' name='title' placeholder='제목' autocomplete="off")
+
+                            div(class='form-group')
+                                textarea(class='form-control'  name="contents", cols="30", rows="4" id='contents'  placeholder='내용')
+                                //- input(type='text' class='form-control' id='contents' name='contents' placeholder='내용' autocomplete="off")
+
+                            div(class='form-check')
+                                label(class='form-check-label')
+                                    input(class='form-check-input' type='radio' name='writeRadio' id='todolist' value='todolist')
+                                    |    todolist
+                                label(class='form-check-label')
+                                    input(class='form-check-input' type='radio' name='writeRadio' id='daily' value='daily')
+                                    |    daily
+
+                            div(class='form-check' id="todo_compelete")
+                                label(class='form-check-label')
+                                    input(type='checkbox' class='form-check-input' value='Y' name="todoComplete" id="todoComplete")  
+                                    |    완료
+
+                    div(class='modal-footer')
+                        button(ype="button" class="btn btn-default" data-dismiss="modal") 닫기
+                        button(type="button" class="btn btn-primary" onclick='javascript:reportAdd()' ) 저장
+                        button(type="button" class="btn btn-danger deletebtn" onclick='javascript:reportDelete()' ) 삭제
+
