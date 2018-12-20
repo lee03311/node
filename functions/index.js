@@ -29,12 +29,16 @@ app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js')); /
 app.use('/js', express.static(__dirname + '/node_modules/jquery/dist')); // redirect JS jQuery
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css')); // redirect CSS bootstrap
 
+app.use(bodyParser.urlencoded({extended:false}));
+
+var userInfo = null;
 app.get('/', function(req, res){
   res.render('login');
 });
 
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
+    userInfo = user.email;
     // User is signed in.
     var displayName = user.displayName;
     var email = user.email;
@@ -43,8 +47,6 @@ firebase.auth().onAuthStateChanged(function(user) {
     var isAnonymous = user.isAnonymous;
     var uid = user.uid;
     var providerData = user.providerData;
-    console.log('change Status----> ' + email);
-    // ...
   } else {
     // User is signed out.
     // ...
@@ -54,30 +56,18 @@ firebase.auth().onAuthStateChanged(function(user) {
 app.post('/confirmUser', function(req, res){
   var email = req.body.email;
   var password = req.body.password;
-  console.log('email : ' + email);
-  
+
+  // firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
   firebase.auth().signInWithEmailAndPassword(email, password)
-                .then(function(){
-                  console.log('login success')
-                }).catch(function(error){
-                  console.log('error');
-                });
-
-
-
-  // auth.createUser({
-  //   email: email,
-  //   password: password,
-  // })
-  //   .then(function(userRecord) {
-  //     console.log("Successfully created new user:", userRecord.uid);
-  //   })
-  //   .catch(function(error) {
-  //     console.log("Error creating new user:", error);
-  //   });
-});
+  .then(function(){
+    res.redirect('/list');
+  }).catch(function(error){
+    res.redirect('/');
+  });
+});  
 
 app.get('/list', function(req, res){
+  console.log('userInfo1 --> ' + userInfo);
   res.render('list');
 });
 
@@ -174,7 +164,3 @@ const api = functions.https.onRequest(app);
 module.exports = {
   api
 }
-
-
-
-
