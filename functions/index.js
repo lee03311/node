@@ -50,7 +50,10 @@ firebase.auth().onAuthStateChanged(function(user) {
   } else {
     // User is signed out.
     // ...
+    userInfo = 'error';
   }
+
+  console.log('onAuthStateChange#############'+userInfo)
 });
 
 app.post('/confirmUser', function(req, res){
@@ -123,14 +126,15 @@ app.post('/add', function(req, res){
       firebase.database().ref('data/'+data.id).set(data);
  }
 
- res.redirect('/');
+ console.log('###########'+userInfo);
+ res.redirect('/list');
 });
 
 app.post('/delete', function(req, res){
   var data = req.body;
 
   firebase.database().ref('data/' + data.id).remove();
-  res.redirect('/');
+  res.redirect('/list');
 });
 
 app.get(['/setting','/setting/:id'], function(req, res){
@@ -155,8 +159,15 @@ app.post('/setting/add', function(req, res){
   if(data.id){
        firebase.database().ref('setting/'+data.id).set(data);
   }
+  res.redirect('/list');
+});
 
-  res.redirect('/');
+app.post('/setting/delete', function(req, res){
+  var data = req.body;
+  console.log('$$$$$$$$$$$$$$$')
+  console.log(data);
+  firebase.database().ref('setting/' + data.id).remove();
+  res.redirect('/list');
 });
 
 const api = functions.https.onRequest(app);

@@ -28,34 +28,49 @@ html
                 $('#color').val($("#colorText").text());
             })
 
+            function update(status){
+                if(status == 'delete'){
+                    $('#updateForm').attr('action', '/setting/delete');
+                    $('#status').val('delete');
+                }else{
+                    $('#updateForm').attr('action', '/setting/add');
+                    $('#status').val('update');
+                }
+                $('#updateForm').submit();
+            }
+
 body
 
     div(style='width:80%;margin:20px auto 0;')
-        form(action='/setting/add' method='post')
-        
             if data
-                input(type='hidden' id='id' name='id' value=data.id)
+                form(method='post' id='updateForm')
+                    input(type='hidden' id='id' name='id' value=data.id)
+                    input(type='hidden' id='status' name='status' value=data.id)
 
-                div(class='form-group row')
-                    label(for='category' class='col-2 col-form-label') Category
-                    div(class='col-10')
-                        input(class='form-control' type='text' id='category' name='category' value=data.category)
-                div(class='form-group row')
-                    label(for='color') Color
-                        input(type='color' id='color' value='#ffffff' name='color')
-                        sapn(id='colorText')= data.color
-                    script. 
-                        $('#color').val('#fff');
+                    div(class='form-group row')
+                        label(for='category' class='col-2 col-form-label') Category
+                        div(class='col-10')
+                            input(class='form-control' type='text' id='category' name='category' value=data.category)
+                    div(class='form-group row')
+                        label(for='color') Color
+                            input(type='color' id='color' value='#ffffff' name='color')
+                            sapn(id='colorText')= data.color
+                        script. 
+                            $('#color').val('#fff');
+                    div(style='text-align:right;')
+                        button(type='button' onclick='javascript:update("update")' class='btn btn-primary' ) 수정
+                        button(type='button' onclick='javascript:update("delete")' class='btn btn-danger' ) 삭제
             else
-                div(class='form-group row')
-                    label(for='category' class='col-2 col-form-label') Category
-                    div(class='col-10')
-                        input(class='form-control' type='text' id='category' name='category')
-                div(class='form-group row')
-                    label(for='color') Color
-                        input(type='color' id='color' value='#ffffff' name='color')
-                        sapn(id='colorText')
-                    script. 
-                        $('#color').val('#fff');
-                        
-            button(type='submit' class='btn btn-primary' style='float: right;') 등록
+                form(action='/setting/add' method='post')
+                    div(class='form-group row')
+                        label(for='category' class='col-2 col-form-label') Category
+                        div(class='col-10')
+                            input(class='form-control' type='text' id='category' name='category')
+                    div(class='form-group row')
+                        label(for='color') Color
+                            input(type='color' id='color' value='#ffffff' name='color')
+                            sapn(id='colorText')
+                        script. 
+                            $('#color').val('#fff');
+                            
+                    button(type='submit' class='btn btn-primary' style='float: right;') 등록

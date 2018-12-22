@@ -75,10 +75,14 @@ function getList(year, month){
                 if(rows.length > 0){
                     for(var i=0;i<rows.length;i++){
                         if(rows[i].writeRadio && rows[i].writeRadio == 'daily'){
+                            var title = rows[i].title;
+                            if(title.length > 6){
+                                title = title.substring(0, 6) + "...";
+                            }
                            var list=  $("<li/>").attr('id', rows[i].id).attr('data-category', rows[i].category).addClass('list').attr('onclick','showInfo("'+rows[i].id+'")').append(
                                 $('<div/>').addClass('circle').text(rows[i].date).css('background',categoryMap(rows[i].category))
                             ).append(
-                                $('<span/>').text(rows[i].title).addClass('textTitle')
+                                $('<span/>').text(title).addClass('textTitle')
                             ).append(
                                 $('<div/>').addClass('textBox').append(
                                     $('<span/>').text(rows[i].contents)
@@ -89,9 +93,11 @@ function getList(year, month){
                                 $("<li/>").attr('id', rows[i].id).addClass('complete').attr('onclick','showInfo("'+rows[i].id+'")').append(
                                     $('<div/>').addClass('circle').text(rows[i].date).css('background',categoryMap(rows[i].category))
                                 ).append(
+                                    
                                     $('<span/>').text(rows[i].title).addClass('textTitle')
                                 ).appendTo(todolistUl);
                             }else{
+
                                 $("<li/>").attr('id', rows[i].id).addClass('list').attr('onclick','showInfo("'+rows[i].id+'")').append(
                                     $('<div/>').addClass('circle').text(rows[i].date)
                                 ).append(
