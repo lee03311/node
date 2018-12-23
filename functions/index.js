@@ -60,13 +60,12 @@ app.post('/confirmUser', function(req, res){
   var email = req.body.email;
   var password = req.body.password;
 
-  // firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
   firebase.auth().signInWithEmailAndPassword(email, password)
-  .then(function(){
+  /*.then(function(){
     res.redirect('/list');
   }).catch(function(error){
     res.redirect('/');
-  });
+  });*/
 });  
 
 app.get('/list', function(req, res){
