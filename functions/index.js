@@ -36,32 +36,33 @@ app.get('/', function(req, res){
   res.render('login');
 });
 
-firebase.auth().onAuthStateChanged(function(user) {
-  if (user) {
-    userInfo = user.email;
-    // User is signed in.
-    var displayName = user.displayName;
-    var email = user.email;
-    var emailVerified = user.emailVerified;
-    var photoURL = user.photoURL;
-    var isAnonymous = user.isAnonymous;
-    var uid = user.uid;
-    var providerData = user.providerData;
-  } else {
-    // User is signed out.
-    // ...
-    userInfo = 'error';
-  }
 
-  console.log('onAuthStateChange#############'+userInfo)
-});
 
-app.post('/confirmUser', function(req, res){
-  var email = req.body.email;
-  var password = req.body.password;
+app.get('/confirmUser', function(req, res){
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      console.log('test!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+      userInfo = user.email;
+      // User is signed in.
+      var displayName = user.displayName;
+      var email = user.email;
+      var emailVerified = user.emailVerified;
+      var photoURL = user.photoURL;
+      var isAnonymous = user.isAnonymous;
+      var uid = user.uid;
+      var providerData = user.providerData;
+      res.redirect('/list');
+    } else {
+      // User is signed out.
+      // ...
+      userInfo = 'error';
+      res.redirect('/');
+    }
+  
+    console.log('onAuthStateChange#############'+userInfo)
+  });
 
-  firebase.auth().signInWithEmailAndPassword(email, password)
-  /*.then(function(){
+  /*firebase.auth().signInWithEmailAndPassword(email, password).then(function(){
     res.redirect('/list');
   }).catch(function(error){
     res.redirect('/');
