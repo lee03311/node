@@ -2,42 +2,32 @@ doctype html
 html
     head
         meta(charset = 'utf-8')
-        script(src="https://www.gstatic.com/firebasejs/5.5.2/firebase.js")
-        script(src="https://cdn.firebase.com/libs/firebaseui/3.1.1/firebaseui.js")
-        link(rel="stylesheet", href="https://cdn.firebase.com/libs/firebaseui/3.5.1/firebaseui.css")
-
+        meta(name='google-signin-client_id' content='516803201821-k6ejfn3u11qkr89akbjtraivqenbue2m.apps.googleusercontent.com')
+        meta(name='google-signin-scope' content='profile email')
+        script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+        script(src="https://apis.google.com/js/platform.js" async defer)
         script.
-            var config = {
-            apiKey: "AIzaSyDG1mV_4yasiUJkUiyYM-nCOMra_Z3jhw4",
-            authDomain: "start-moon.firebaseapp.com",
-            databaseURL: "https://start-moon.firebaseio.com",
-            projectId: "start-moon",
-            storageBucket: "start-moon.appspot.com",
-            messagingSenderId: "516803201821"
-            };
-            firebase.initializeApp(config);
+            function onSignIn(googleUser) {
+                var profile = googleUser.getBasicProfile();
+                console.log(googleUser.getAuthResponse().id_token);
 
-            // FirebaseUI config.
-            var uiConfig = {
-                signInSuccessUrl: '/confirmUser',
-                signInOptions: [
-                    // Leave the lines as is for the providers you want to offer your users.
-                    firebase.auth.GoogleAuthProvider.PROVIDER_ID
-                ],
-                // tosUrl and privacyPolicyUrl accept either url string or a callback
-                // function.
-                // Terms of service url/callback.
-                //tosUrl: '<your-tos-url>',
-                // Privacy policy url/callback.
-                privacyPolicyUrl: function() {
-                //window.location.assign('<your-privacy-policy-url>');
+                var data = {
+                    token : googleUser.getAuthResponse().id_token,
+                    id : profile.getId(),
+                    email : profile.getEmail(),
+                    name : profile.getName()
                 }
-            };
-
-            // Initialize the FirebaseUI Widget using Firebase.
-            var ui = new firebaseui.auth.AuthUI(firebase.auth());
-            // The start method will wait until the DOM is loaded.
-            ui.start('#firebaseui-auth-container', uiConfig);
+                console.log(data)
+                 $.ajax({
+                    url: '/confirm',
+                    dataType: 'json',
+                    data: data,
+                    type: 'GET',
+                    success: function(data) {
+                        
+                    }
+                });
+            }
     body
-        h1 Welcome to My Awesome App
-        div(id='firebaseui-auth-container')
+        //- h1 Welcome to My Awesome App
+        div(class="g-signin2" data-onsuccess="onSignIn" data-theme="dark")

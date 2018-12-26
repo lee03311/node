@@ -32,15 +32,58 @@ app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 app.use(bodyParser.urlencoded({extended:false}));
 
 var userInfo = null;
+
+app.get('/test', function(req, res){
+  res.render('login_bak');
+});
+
 app.get('/', function(req, res){
   res.render('login');
 });
 
+app.get('/confirm', function(req, res){
+  var user = req.query;
+  var id_token = req.query.token;
+  console.log(req.query)
+  // Build Firebase credential with the Google ID token.
+  var credential = firebase.auth.GoogleAuthProvider.credential(id_token);
 
+  // Sign in with credential from the Google user.
+  firebase.auth().signInAndRetrieveDataWithCredential(credential).catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    // The email of the user's account used.
+    var email = error.email;
+    // The firebase.auth.AuthCredential type that was used.
+    var credential = error.credential;
+    // ...
+  });
+      
+
+});
 
 app.get('/confirmUser', function(req, res){
-  firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
+  console.log('@@@@');
+
+  // Build Firebase credential with the Google ID token.
+  var credential = firebase.auth.GoogleAuthProvider.credential(id_token);
+
+  // Sign in with credential from the Google user.
+  firebase.auth().signInAndRetrieveDataWithCredential(credential).catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    // The email of the user's account used.
+    var email = error.email;
+    // The firebase.auth.AuthCredential type that was used.
+    var credential = error.credential;
+    // ...
+  });
+
+  /*firebase.auth().onAuthStateChanged(function(user) {
+      console.log(user)
+      if (user) {
       console.log('test!!!!!!!!!!!!!!!!!!!!!!!!!!!')
       userInfo = user.email;
       // User is signed in.
@@ -52,15 +95,15 @@ app.get('/confirmUser', function(req, res){
       var uid = user.uid;
       var providerData = user.providerData;
       res.redirect('/list');
-    } else {
+      } else {
       // User is signed out.
       // ...
       userInfo = 'error';
       res.redirect('/');
-    }
-  
-    console.log('onAuthStateChange#############'+userInfo)
-  });
+      }
+
+      console.log('onAuthStateChange#############'+userInfo)
+    });*/
 
   /*firebase.auth().signInWithEmailAndPassword(email, password).then(function(){
     res.redirect('/list');
@@ -70,12 +113,10 @@ app.get('/confirmUser', function(req, res){
 });  
 
 app.get('/list', function(req, res){
-  console.log('userInfo1 --> ' + userInfo);
   res.render('list');
 });
 
 app.get('/getList', function(req,res){
-  console.log('list.json');
   firebase.database().ref('data').orderByChild('date').startAt(req.query.startDate).endAt(req.query.endDate).once('value', function(snapshot) {
       var rows = [];
       snapshot.forEach(function(childSnapshot) {
@@ -164,8 +205,6 @@ app.post('/setting/add', function(req, res){
 
 app.post('/setting/delete', function(req, res){
   var data = req.body;
-  console.log('$$$$$$$$$$$$$$$')
-  console.log(data);
   firebase.database().ref('setting/' + data.id).remove();
   res.redirect('/list');
 });

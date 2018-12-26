@@ -1,0 +1,67 @@
+doctype html
+html
+    head
+        meta(charset = 'utf-8')
+        script(src="https://www.gstatic.com/firebasejs/5.5.2/firebase.js")
+        script(src="https://cdn.firebase.com/libs/firebaseui/3.1.1/firebaseui.js")
+        link(rel="stylesheet", href="https://cdn.firebase.com/libs/firebaseui/3.5.1/firebaseui.css")
+
+        script.
+            var config = {
+            apiKey: "AIzaSyDG1mV_4yasiUJkUiyYM-nCOMra_Z3jhw4",
+            authDomain: "start-moon.firebaseapp.com",
+            databaseURL: "https://start-moon.firebaseio.com",
+            projectId: "start-moon",
+            storageBucket: "start-moon.appspot.com",
+            messagingSenderId: "516803201821"
+            };
+            firebase.initializeApp(config);
+
+            // FirebaseUI config.
+            var uiConfig = {
+                signInSuccessUrl: '/',
+                signInOptions: [
+                    // Leave the lines as is for the providers you want to offer your users.
+                    firebase.auth.GoogleAuthProvider.PROVIDER_ID
+                ],
+                // tosUrl and privacyPolicyUrl accept either url string or a callback
+                // function.
+                // Terms of service url/callback.
+                //tosUrl: '<your-tos-url>',
+                // Privacy policy url/callback.
+                privacyPolicyUrl: function() {
+                //window.location.assign('<your-privacy-policy-url>');
+                }
+            };
+
+            // Initialize the FirebaseUI Widget using Firebase.
+            var ui = new firebaseui.auth.AuthUI(firebase.auth());
+            // The start method will wait until the DOM is loaded.
+            ui.start('#firebaseui-auth-container', uiConfig);
+
+            firebase.auth().onAuthStateChanged(function(user) {
+                console.log(user)
+                if (user) {
+                console.log('test!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+                userInfo = user.email;
+                // User is signed in.
+                var displayName = user.displayName;
+                var email = user.email;
+                var emailVerified = user.emailVerified;
+                var photoURL = user.photoURL;
+                var isAnonymous = user.isAnonymous;
+                var uid = user.uid;
+                var providerData = user.providerData;
+                res.redirect('/list');
+                } else {
+                // User is signed out.
+                // ...
+                userInfo = 'error';
+                res.redirect('/');
+                }
+            
+                console.log('onAuthStateChange#############'+userInfo)
+            });
+    body
+        //- h1 Welcome to My Awesome App
+        div(id='firebaseui-auth-container')
