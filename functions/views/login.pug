@@ -9,15 +9,12 @@ html
         script.
             function onSignIn(googleUser) {
                 var profile = googleUser.getBasicProfile();
-                console.log(googleUser.getAuthResponse().id_token);
-
                 var data = {
                     token : googleUser.getAuthResponse().id_token,
                     id : profile.getId(),
                     email : profile.getEmail(),
                     name : profile.getName()
                 }
-                console.log(data)
                  $.ajax({
                     url: '/confirm',
                     dataType: 'json',
