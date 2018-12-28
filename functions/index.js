@@ -46,40 +46,78 @@ app.get('/', function (req, res) {
 app.get('/confirm', function (req, res) {
   var user = req.query;
   var id_token = req.query.token;
+  var id= req.query.id;
   // Build Firebase credential with the Google ID token.
   var credential = firebase.auth.GoogleAuthProvider.credential(id_token);
 
-  // Sign in with credential from the Google user.
-  firebase.auth().signInAndRetrieveDataWithCredential(credential).then(function () {}).catch(function (error) {
-    // Handle Errors here.
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    // The email of the user's account used.
-    var email = error.email;
-    // The firebase.auth.AuthCredential type that was used.
-    var credential = error.credential;
-    // ...
+  var result = '';
+ 
+  onSignIn(id, id_token)
+});
+
+function onSignIn(id, token) {
+  console.log('Google Auth Response', token);
+  // We need to register an Observer on Firebase Auth to make sure auth is initialized.
+  var unsubscribe = firebase.auth().onAuthStateChanged(function(firebaseUser) {
+    unsubscribe();
+    // Check if we are already signed-in Firebase with the correct user.
+    if (!isUserEqual(id, firebaseUser)) {
+      console.log('!isUserEqual(id, firebaseUser) : ' + !isUserEqual(id, firebaseUser))
+      // Build Firebase credential with the Google ID token.
+      var credential = firebase.auth.GoogleAuthProvider.credential(token);
+      // Sign in with credential from the Google user.
+      firebase.auth().signInAndRetrieveDataWithCredential(credential).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        // ...
+      });
+    } else {
+      console.log('User already signed-in Firebase.');
+    }
   });
+}
 
-
-});
-
-firebase.auth().onAuthStateChanged(function (user) {
-  if (user) {
-    userInfo = user.email;
-    // User is signed in.
-    var displayName = user.displayName;
-    var email = user.email;
-    var emailVerified = user.emailVerified;
-    var photoURL = user.photoURL;
-    var isAnonymous = user.isAnonymous;
-    var uid = user.uid;
-    var providerData = user.providerData;
-  } else {
-    // User is signed out.
-    // ...
+function isUserEqual(id, firebaseUser) {
+  if (firebaseUser) {
+    var providerData = firebaseUser.providerData;
+    for (var i = 0; i < providerData.length; i++) {
+      if (providerData[i].providerId === firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
+          providerData[i].uid === id) {
+        // We don't need to reauth the Firebase connection.
+        return true;
+      }
+    }
   }
-});
+  return false;
+}
+
+app.get('/logout', function(req, res){
+  var user = firebase.auth().currentUser;
+  console.log(user.email)
+  
+  // var auth2 = gapi.auth2.getAuthInstance();
+  // auth2.signOut().then(function () {
+  // console.log('User signed out.');
+  // });
+
+  console.log(user.email)
+  firebase.auth().signOut().then(function() {
+    console.log('logout2222222222222222222222222222222222222');
+    // Sign-out successful.
+    res.send({
+      result: 'success'
+    });
+  }).catch(function(error) {
+    // An error happened.
+  });
+})
+
+
 
 app.get('/confirmUser', function (req, res) {
   // Build Firebase credential with the Google ID token.

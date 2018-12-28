@@ -1,0 +1,42 @@
+[debug] [2018-12-27T07:50:20.676Z] ----------------------------------------------------------------------
+[debug] [2018-12-27T07:50:20.679Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\이슬\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js serve
+[debug] [2018-12-27T07:50:20.679Z] CLI Version:   6.2.2
+[debug] [2018-12-27T07:50:20.679Z] Platform:      win32
+[debug] [2018-12-27T07:50:20.679Z] Node Version:  v10.12.0
+[debug] [2018-12-27T07:50:20.682Z] Time:          Thu Dec 27 2018 16:50:20 GMT+0900 (GMT+09:00)
+[debug] [2018-12-27T07:50:20.682Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-12-27T07:50:20.694Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-12-27T07:50:20.695Z] > authorizing via signed-in user
+[debug] [2018-12-27T07:50:20.695Z] [iam] checking project start-moon for permissions ["firebase.projects.get"]
+[debug] [2018-12-27T07:50:20.697Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/start-moon:testIamPermissions  
+
+[debug] [2018-12-27T07:50:32.724Z] <<< HTTP RESPONSE 200
+[debug] [2018-12-27T07:50:32.726Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/start-moon  
+ 
+[debug] [2018-12-27T07:50:33.683Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from 'E:\deploy\project'...
+[info] 
+[info] i  functions: Preparing to emulate functions.
+[debug] [2018-12-27T07:50:34.589Z] Fetching environment
+[debug] [2018-12-27T07:50:34.593Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/516803201821:getServerAppConfig  
+ 
+[debug] [2018-12-27T07:50:34.594Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/516803201821/clients/_:getWebAppConfig  
+ 
+[debug] [2018-12-27T07:50:35.252Z] <<< HTTP RESPONSE 200
+[debug] [2018-12-27T07:50:35.252Z] Starting @google-cloud/functions-emulator
+[debug] [2018-12-27T07:50:35.315Z] <<< HTTP RESPONSE 200
+[info] i  hosting: Serving hosting files from: public
+[info] +  hosting: Local server: http://localhost:5000
+[debug] [2018-12-27T07:50:37.805Z] Parsing function triggers
+[info] +  functions: api: http://localhost:5001/start-moon/us-central1/api
+[info] [hosting] Rewriting / to local function api
+[info] [hosting] Rewriting / to local function api
+[info] [hosting] Rewriting /favicon.ico to local function api
+[info] [hosting] Rewriting / to local function api
+[info] [hosting] Rewriting /favicon.ico to local function api
+[info] [hosting] Rewriting / to local function api
+[info] [hosting] Rewriting /favicon.ico to local function api
+[info] [hosting] Rewriting / to local function api
+[info] [hosting] Rewriting /favicon.ico to local function api

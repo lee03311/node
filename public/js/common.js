@@ -11,3 +11,26 @@
 //         }
 //     }
 // });
+
+
+
+function init() {
+    gapi.load('auth2', function() { // Ready. 
+    });
+}
+
+function logout(){
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function (){
+        $.ajax({
+            url: '/logout',
+            dataType: 'json',
+            type: 'GET',
+            success: function(data) {
+                console.log(data.result)
+                //window.location ='/list';
+            }
+        });
+    });
+    auth2.disconnect();
+}
