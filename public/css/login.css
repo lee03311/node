@@ -4,14 +4,20 @@
         margin: 0;
         padding: 0;
         height: 100%;
-        background: #60a3bc !important;
+        /* background: #60a3bc !important; */
+        background-image : url('/images/loginbackground.jpeg') !important;
+        background-repeat: no-repeat, repeat;
+        background-position: center; /* Center the image */
+        background-repeat: no-repeat; /* Do not repeat the image */
+        background-size: cover; /* Resize the background image to cover the entire container */
     }
     .user_card {
         height: 400px;
         width: 350px;
         margin-top: auto;
         margin-bottom: auto;
-        background: #f39c12;
+        /* background: #f39c12; */
+        background: rgba(243,156,18,0.6);
         position: relative;
         display: flex;
         justify-content: center;
@@ -40,7 +46,7 @@
         border: 2px solid white;
     }
     .form_container {
-        margin-top: 100px;
+        /* margin-top: 100px; */
     }
     .login_btn {
         width: 85%;

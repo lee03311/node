@@ -92,7 +92,7 @@ function getList(year, month){
                                 $('<div/>').addClass('textBox').append(
                                     $('<span/>').text(rows[i].contents)
                                 )
-                            ).appendTo(dailyUl);
+                            ).prependTo(dailyUl);
                         }else if(rows[i].writeRadio && rows[i].writeRadio == 'todolist'){
                             todolistLength++;
 
@@ -113,7 +113,7 @@ function getList(year, month){
                                     $('<div/>').addClass('textBox').append(
                                         $('<span/>').text(rows[i].contents)
                                     )
-                                ).appendTo(todolistUl);
+                                ).prependTo(todolistUl);
                             }
                         }
                         

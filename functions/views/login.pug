@@ -2,32 +2,81 @@ doctype html
 html
     head
         meta(charset = 'utf-8')
-        meta(name='google-signin-client_id' content='516803201821-k6ejfn3u11qkr89akbjtraivqenbue2m.apps.googleusercontent.com')
-        meta(name='google-signin-scope' content='profile email')
         script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js')
-        script(src="https://apis.google.com/js/platform.js?onload=init" async defer)
-        script(type='text/javascript' src='js/common.js') 
+        script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
+        script(src='https://code.jquery.com/ui/1.12.1/jquery-ui.js')
+        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css')
+        link(rel='stylesheet' href='//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css')
+        link(rel='stylesheet', href='css/login.css')
         script.
-            function test(googleUser) {
-                var profile = googleUser.getBasicProfile();
-                var data = {
-                    token : googleUser.getAuthResponse().id_token,
-                    id : profile.getId(),
-                    email : profile.getEmail(),
-                    name : profile.getName()
-                }
-                $.ajax({
-                    url: '/confirm',
-                    dataType: 'json',
-                    data: data,
-                    type: 'GET',
-                    success: function(data) {
-                        alert('success')
-                        //window.location ='/list';
+            $(function(){
+                $('#loginSubmitBt').on('click', function(){
+                    if( $('#email').val() == '' ){
+                        alert('이메일을 입력하세요.')
+                        return false;
                     }
-                });
-            }
+
+                    if( $('#password').val() == ''){
+                        alert('비밀번호를 입력하세요.')
+                        return false;
+                    }
+
+                    $.ajax({
+                        url:'/confirm',
+                        type:'post',
+                        data:{
+                            email:$('#email').val(),
+                            password:$('#password').val()
+                        },
+                        success:function(data){
+                            if(data.result =='success'){
+                                window.location='/list'
+                            }else{
+                                alert('존재하지 않는 계정입니다.');
+                                $('#email').focus();
+                            }
+                        }
+                    })
+                    
+                    //$('#loginForm').submit();
+                })
+            });
     body
-        //- h1 Welcome to My Awesome App
-        div(class="g-signin2" data-onsuccess="test" data-theme="dark")
-        button(type='button' onclick='logout()') 로그아웃
+        div(class='container h-100')
+            div(class='d-flex justify-content-center h-100')
+                div(class='user_card')
+                    div(class='d-flex justify-content-center')
+                        //- div(class='brand_logo_container' )
+                            img(src='https://cdn.freebiesupply.com/logos/large/2x/pinterest-circle-logo-png-transparent.png' class='brand_logo' alt='Logo')
+                        
+                    
+                    div(class='d-flex justify-content-center form_container')
+                        form(action='/confirm' method='post' id='loginForm')
+                            div(class='input-group mb-3')
+                                div(class='input-group-append')
+                                    span(class='input-group-text')
+                                
+                                input(type='text' name='email' id='email' class='form-control input_user' placeholder='email')
+                            
+                            div(class='input-group mb-2')
+                                div(class='input-group-append')
+                                    span(class='input-group-text')
+                                
+                                input(type='password' name='password' id='password' class='form-control input_pass' placeholder='password')
+                                                                            
+                    div(class='d-flex justify-content-center mt-3 login_container')
+                        button(type='button' name='button' class='btn login_btn' id='loginSubmitBt') Login
+                    //- button(type='button' name='button' class='btn sign_btn') Sign Up
+                    
+                    div(class='mt-4')
+                        div(class='d-flex justify-content-center links')
+                            | Don't have an account? 
+                            a(href='#' class='ml-2') Sign Up
+                        
+                        //- div(class='d-flex justify-content-center links')
+                        //-     a(href='#') Forgot your password?
+                        
+                    
+                
+            
+        

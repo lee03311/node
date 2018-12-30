@@ -11,6 +11,7 @@
 .daily{
     width: 75%;
     float:left;
+    text-align: center;
 }
 
 .noItem{
@@ -178,6 +179,7 @@ li.list:hover, li.complete:hover{
 @media ( min-width: 768px ) and ( max-width: 1400px ){
     .daily{
         width: 100%;
+        text-align: left;
     }
     .list{
         width:200px !important;
@@ -207,6 +209,17 @@ li.list:hover, li.complete:hover{
     }
     .todolist .textTitle{
         display: none;
+    }
+
+    .complete{
+        width : auto !important;
+        padding: 20px !important;
+    }
+    .complete > .circle{
+        width: 70px;
+        height: 70px;
+        font-size: 20px;
+        padding-top:20px;
     }
 }
 

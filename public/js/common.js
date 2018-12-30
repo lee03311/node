@@ -15,22 +15,35 @@
 
 
 function init() {
+    
     gapi.load('auth2', function() { // Ready. 
     });
+
+    gapi.signin2.render('my-signin2', {
+        'scope': 'profile email',
+        'width': 240,
+        'height': 50,
+        'longtitle': true,
+        'theme': 'dark',
+        'onsuccess': signIn
+        //onfailure': onFailure
+      });
 }
 
 function logout(){
     var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function (){
-        $.ajax({
-            url: '/logout',
-            dataType: 'json',
-            type: 'GET',
-            success: function(data) {
-                console.log(data.result)
-                //window.location ='/list';
-            }
-        });
+
+    auth2.signOut();
+    //auth2.disconnect();
+    $.ajax({
+        url: '/logout',
+        dataType: 'json',
+        type: 'GET',
+        success: function(data) {
+            console.log(data.result)
+
+            window.location ='/';
+        }
     });
-    auth2.disconnect();
+
 }

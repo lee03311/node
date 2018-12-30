@@ -61,6 +61,8 @@ html
                     success: function(data) {
                         if(data.result == 'success'){
                             window.location ='/';
+                        }else{
+                            alert('로그아웃하는데 문제가 발생하였습니다.');
                         }
                     }
                 });
