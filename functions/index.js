@@ -15,11 +15,10 @@ var config = {
   storageBucket: "start-moon.appspot.com",
   messagingSenderId: "516803201821"
 };
-// firebase.initializeApp(config);
 admin.initializeApp(config);
 firebase.initializeApp(config);
 
-const auth = admin.auth();
+// const auth = admin.auth();
 
 app.locals.pretty = true;
 app.use(express.static('public'));
@@ -33,19 +32,48 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 
-var userInfo = null;
-
-
 app.get('/', function (req, res) {
   res.render('login');
 });
 
+app.get('/signUp', function(req, res){
+  res.render('signUp');
+});
+
+app.post('/join', function(req, res){
+  var email = req.body.email;
+  var password = req.body.password;
+
+  firebase.auth().createUserWithEmailAndPassword(email, password)
+  .then(function(){
+    res.send({
+      result: 'success'
+    });
+  })
+  .catch(function(error) {
+    if(error.code == 'auth/email-already-in-use'){
+      res.send({
+        result: 'fail',
+        msg: '이미 존재하는 계정입니다.'
+      });
+    }
+  });
+
+});
+
+
+// firebase.auth().onAuthStateChanged(function(firebaseUser) {
+//   console.log(firebaseUser.uid);
+// });
+var userUid = '';
 app.post('/confirm', function (req, res) {
   var email = req.body.email;
   var password = req.body.password;
   
   var result = '';
-  firebase.auth().signInWithEmailAndPassword(email, password).then(function(){
+  firebase.auth().signInWithEmailAndPassword(email, password).then(function(user){
+    console.log(user.uid);
+    userUid = user.uid;
     result = 'success';
     res.send({
       result: result
@@ -75,10 +103,29 @@ app.get('/logout', function(req, res){
 });
 
 app.get('/list', function (req, res) {
+  // var user = firebase.auth().currentUser;
   res.render('list');
 });
 
 app.get('/getList', function (req, res) {
+  var user = firebase.auth().currentUser;
+  firebase.database().ref('setting').orderByChild('writer').equalTo(user.uid).once('value', function (snapshot) {
+    var rows = [];
+    snapshot.forEach(function (childSnapshot) {
+      var data = childSnapshot.val();
+      var category = firebase.database().ref('data').orderByChild('category').equalTo(data.id);
+      
+      
+      category.orderByChild('date').startAt(req.query.startDate).endAt(req.query.endDate).once('value', function (snapshot) {
+        console.log(snapshot);
+        // rows.push(data)
+    });
+  });
+});
+
+
+
+
   firebase.database().ref('data').orderByChild('date').startAt(req.query.startDate).endAt(req.query.endDate).once('value', function (snapshot) {
     var rows = [];
     snapshot.forEach(function (childSnapshot) {
@@ -98,11 +145,13 @@ app.get('/getList', function (req, res) {
 });
 
 app.get('/list/category', function (req, res) {
-  firebase.database().ref('setting').once('value', function (snapshot) {
+  var user = firebase.auth().currentUser;
+  firebase.database().ref('setting').orderByChild('writer').equalTo(user.uid).once('value', function (snapshot) {
     var rows = [];
     snapshot.forEach(function (childSnapshot) {
       var data = childSnapshot.val();
-      rows.push(data)
+      rows.push(data);
+      console.log(data)
     });
     res.send({
       result: 'success',

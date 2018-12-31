@@ -1,3 +1,7 @@
+body{
+    background: #fcfcfc;
+}
+
 .todolist{
     min-width: 276px;
     width:19%;
@@ -8,10 +12,39 @@
     margin: 0 15px;
 }
 
+.todolist .list{
+    height:150px;
+}
+
 .daily{
     width: 75%;
     float:left;
     text-align: center;
+}
+
+.dailyAddArea{
+    border : 1.5px dashed black !important;
+    background: antiquewhite;
+}
+
+.dailyAddDiv{
+    text-align: center;
+    vertical-align: middle;
+    margin: 40px;
+}
+
+.dailyAddDiv > span{
+    font-size: 30px;
+    border-radius: 50%;
+    padding: 20px 19px 20px 20px;
+    background: rgb(255, 101, 58);
+    color: white;
+}
+
+.todolistAddArea{
+    text-align: center;
+    border: 1.5px dashed black !important;
+    background: antiquewhite;
 }
 
 .noItem{
@@ -42,7 +75,7 @@ li.list{
     height:200px;
     border: 1px solid;
     border-radius: 10px;
-    padding: 20px;
+    padding: 15px;
     display: inline-block;
     box-shadow: 2px 3px 2px #aaaaaa;
     cursor: pointer;
@@ -95,6 +128,10 @@ li.list:hover, li.complete:hover{
     font-weight: bold;
     padding-top:20px;
     box-shadow: 1px 1px 10px #aaa;
+}
+
+.todolist .textBox{
+    height: 90%;
 }
 
 .textBox{
@@ -190,6 +227,14 @@ li.list:hover, li.complete:hover{
         display: none;
     }
 
+    .dailyAddArea{
+        padding: 0 !important;
+    }    
+    
+    .dailyAddDiv{
+        margin: 35px;
+    }
+
     .todolist > ul {
         text-align: center;
         height: 100%;
@@ -255,6 +300,17 @@ li.list:hover, li.complete:hover{
         font-weight: bold;
         padding-top: 15px;
         box-shadow: 1px 1px 10px #aaa;
+    }
+
+    .dailyAddDiv{
+        margin: 0 12px 0 0;
+    }
+
+    .dailyAddDiv > span {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+        padding: 16px 15px 16px 16px;
     }
 
     .todolist{

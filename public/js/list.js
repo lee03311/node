@@ -47,7 +47,6 @@ function moveDays(status){
 
 function getList(year, month){
     var m = matchMedia("(max-width: 768px)");
-    console.log(m.matches);
 
     var lastDay = ( new Date( year, month, 0) ).getDate();
 
@@ -84,7 +83,7 @@ function getList(year, month){
                             if(title.length > 10){
                                 title = title.substring(0, 10) + "...";
                             }
-                            var list=  $("<li/>").attr('id', rows[i].id).attr('data-category', rows[i].category).addClass('list').attr('onclick','showInfo("'+rows[i].id+'")').append(
+                            $("<li/>").attr('id', rows[i].id).attr('data-category', rows[i].category).addClass('list').attr('onclick','showInfo("'+rows[i].id+'")').append(
                                 $('<div/>').addClass('circle').text(rows[i].date).css('background',categoryMap(rows[i].category))
                             ).append(
                                 $('<span/>').text(title).addClass('textTitle')
@@ -98,17 +97,16 @@ function getList(year, month){
 
                             if(rows[i].todoComplete){
                                 $("<li/>").attr('id', rows[i].id).addClass('complete').attr('onclick','showInfo("'+rows[i].id+'")').append(
-                                    $('<div/>').addClass('circle').text(rows[i].date).css('background',categoryMap(rows[i].category))
+                                    //$('<div/>').addClass('circle').text(rows[i].date).css('background',categoryMap(rows[i].category))
                                 ).append(
                                     
-                                    $('<span/>').text(rows[i].title).addClass('textTitle')
+                                    $('<span/>').text(rows[i].title +" (" + rows[i].date + ") ").addClass('textTitle')
                                 ).appendTo(todolistUl);
                             }else{
-
                                 $("<li/>").attr('id', rows[i].id).addClass('list').attr('onclick','showInfo("'+rows[i].id+'")').append(
-                                    $('<div/>').addClass('circle').text(rows[i].date)
+                                   // $('<div/>').addClass('circle').text(rows[i].date)
                                 ).append(
-                                    $('<span/>').text(rows[i].title).addClass('textTitle')
+                                    $('<span/>').text(rows[i].title +" (" + rows[i].date + ") ").addClass('textTitle')
                                 ).append(
                                     $('<div/>').addClass('textBox').append(
                                         $('<span/>').text(rows[i].contents)
@@ -116,22 +114,25 @@ function getList(year, month){
                                 ).prependTo(todolistUl);
                             }
                         }
-                        
                     }
-                    dailyUl.appendTo(dailyDiv);
-                    todolistUl.appendTo(todolistDiv);
-                }else{
-                //    $('<img/>').attr('src','noItem.jpg')
-                    dailyDiv.addClass('noItem');
-                    dailyDiv.append($('<img/>').attr('src','/images/noItem.jpg').attr('width','400px'))
+                    
                 }
+                //daily add
+                $("<li/>").addClass('dailyAddArea list').attr('onclick','openDialogForAdd("daily")').append(
+                        $('<div/>').addClass('dailyAddDiv').append(
+                            $('<span/>').addClass('glyphicon glyphicon-plus')
+                        )
+                ).prependTo(dailyUl);    
+
+
+                $("<li/>").addClass('todolistAddArea complete').attr('onclick','openDialogForAdd("todo")').append(
+                    $('<div/>').addClass('todolistAddDiv circle').append(
+                        $('<span/>').addClass('glyphicon glyphicon-plus')
+                    )
+                ).prependTo(todolistUl);
                 
-                
-                if(todolistLength == 0){
-                    $('.todolist').hide();
-                }else{
-                    $('.todolist').show();
-                }
+                dailyUl.appendTo(dailyDiv);
+                todolistUl.appendTo(todolistDiv);
             }
        },error:function(){
            alert('getList 오류!!!')
@@ -173,7 +174,7 @@ function drawCateogry(){ //첫 진입시 호출하여 메인의 사이드바에 
     select.empty();
      
    /*var category = getCategoryList(); 동기로 카테고리 받아옴.*/
-    var length =category.length;
+    var length = category.length;
     for(var i=0; i<length ;i++){
         var datas = category[i];
 
@@ -237,9 +238,14 @@ function showInfo(id){
                 $('#contents').val(data.data.contents);
                 $("#"+data.data.writeRadio).prop('checked', true);
 
-                $("#todoComplete").prop('checked', false);
                 if(data.data.writeRadio == 'todolist'){
+                    $('#cateogry').hide();
+                    $('#cateogry').val('');
+                    $("#todolist").prop('checked', true);
                     $("#todo_compelete").show();
+                }else{
+                    $('#cateogry').show();
+                    $('select[name="category"]').val(data.data.category);
                 }
                 if(data.data.todoComplete && data.data.todoComplete == 'Y'){
                     $("#todoComplete").prop('checked', 'checked');                        
@@ -254,12 +260,26 @@ function showInfo(id){
     });
 }
 
-function openDialogForAdd(){
+function openDialogForAdd(status){
     $('#id').val('');
     $('input[name=date]').val('');
     $('#title').val('');
     $('#contents').val('');
 
     $('.deletebtn').hide();
+
+    if(status == 'daily'){
+        $("#cateogry option:eq(0)").prop("selected", true);
+        $('#cateogry').show();
+        $("#daily").prop('checked', true);
+    }else{
+        $('#cateogry').hide();
+        $('#cateogry').val('');
+        $("#todo_compelete").hide();
+        $("#todolist").prop('checked', true);
+    }
+
+
+
     $('#myModal').modal('show');
 }

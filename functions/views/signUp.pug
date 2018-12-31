@@ -9,13 +9,16 @@ html
         link(rel='stylesheet' href='//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css')
         link(rel='stylesheet', href='css/login.css')
         style.
-            #loginSubmitBt{
-                width: 137px;
+            #signUptBt{
+                width: 132px;
                 margin-right: 10px;
+            }
+            #main{
+                width: 81px;
             }
         script.
             $(function(){
-                $('#loginSubmitBt').on('click', function(){
+                $('#signUptBt').on('click', function(){
                     if( $('#email').val() == '' ){
                         alert('이메일을 입력하세요.')
                         return false;
@@ -26,8 +29,13 @@ html
                         return false;
                     }
 
+                    if($('#password').val() != $('#pw_confirm').val()){
+                        alert('입력한 두 비밀번호가 다릅니다.')
+                        return false;
+                    }
+
                     $.ajax({
-                        url:'/confirm',
+                        url:'/join',
                         type:'post',
                         data:{
                             email:$('#email').val(),
@@ -35,9 +43,10 @@ html
                         },
                         success:function(data){
                             if(data.result =='success'){
-                                window.location='/list'
+                                alert('가입을 성공하셨습니다.')
+                                window.location='/'
                             }else{
-                                alert('존재하지 않는 계정입니다.');
+                                alert(data.msg);
                                 $('#email').focus();
                             }
                         }
@@ -47,8 +56,8 @@ html
                 })
             });
 
-            function goSignUp(){
-                window.location = '/signUp';
+            function goMain(){
+                window.location = '/';
             }
     body
         div(class='container h-100')
@@ -67,13 +76,29 @@ html
                                 
                                 input(type='text' name='email' id='email' class='form-control input_user' placeholder='email')
                             
-                            div(class='input-group mb-2')
+                            div(class='input-group mb-3')
                                 div(class='input-group-append')
                                     span(class='input-group-text')
                                 
                                 input(type='password' name='password' id='password' class='form-control input_pass' placeholder='password')
                                                                             
+                            div(class='input-group mb-3')
+                                div(class='input-group-append')
+                                    span(class='input-group-text')
+                                
+                                input(type='password' name='password' id='pw_confirm' class='form-control input_pass' placeholder='password confirm')
+
+
+
                     div(class='d-flex justify-content-center mt-3 login_container')
-                        button(type='button' name='button' class='btn login_btn' id='loginSubmitBt' ) Login
-                        button(type='button'  onclick='goSignUp()' class='btn btn-success' ) SignUp
+                        button(type='button' name='button' class='btn btn-success' id='signUptBt') Sign Up
+                        button(type='button' name='button' class='btn login_btn' id='main' onclick='goMain()') Cancel
                     //- button(type='button' name='button' class='btn sign_btn') Sign Up
+                        
+                        //- div(class='d-flex justify-content-center links')
+                        //-     a(href='#') Forgot your password?
+                        
+                    
+                
+            
+        

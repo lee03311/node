@@ -6,7 +6,6 @@
         height: 100%;
         /* background: #60a3bc !important; */
         background-image : url('/images/loginbackground.jpeg') !important;
-        background-repeat: no-repeat, repeat;
         background-position: center; /* Center the image */
         background-repeat: no-repeat; /* Do not repeat the image */
         background-size: cover; /* Resize the background image to cover the entire container */
