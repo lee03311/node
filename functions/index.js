@@ -72,7 +72,6 @@ app.post('/confirm', function (req, res) {
   
   var result = '';
   firebase.auth().signInWithEmailAndPassword(email, password).then(function(user){
-    console.log(user.uid);
     userUid = user.uid;
     result = 'success';
     res.send({
@@ -109,53 +108,67 @@ app.get('/list', function (req, res) {
 
 app.get('/getList', function (req, res) {
   var user = firebase.auth().currentUser;
-  firebase.database().ref('setting').orderByChild('writer').equalTo(user.uid).once('value', function (snapshot) {
-    var rows = [];
-    snapshot.forEach(function (childSnapshot) {
+  var categories = [];
+  firebase.database().ref('setting').orderByChild('writer').equalTo(user.uid).once('value', function (categorySnapshot) {
+    
+    categorySnapshot.forEach(function (childSnapshot) {
       var data = childSnapshot.val();
-      var category = firebase.database().ref('data').orderByChild('category').equalTo(data.id);
-      
-      
-      category.orderByChild('date').startAt(req.query.startDate).endAt(req.query.endDate).once('value', function (snapshot) {
-        console.log(snapshot);
-        // rows.push(data)
+      categories.push(data.id);
     });
   });
-});
 
-
-
-
+  var datas = [];
   firebase.database().ref('data').orderByChild('date').startAt(req.query.startDate).endAt(req.query.endDate).once('value', function (snapshot) {
-    var rows = [];
     snapshot.forEach(function (childSnapshot) {
       var data = childSnapshot.val();
 
-      if (data.date) {
-        var date = data.date;
-        data.date = dateFormat(date, 'mm/dd');
+      var exist = categories.indexOf(data.category);
+      if(exist != -1){
+        if (data.date) {
+          var date = data.date;
+          data.date = dateFormat(date, 'mm/dd');
+        }
+        datas.push(data);
       }
-      rows.push(data)
     });
+
     res.send({
       result: 'success',
-      rows: rows
+      rows: datas
     });
   });
 });
 
 app.get('/list/category', function (req, res) {
   var user = firebase.auth().currentUser;
-  firebase.database().ref('setting').orderByChild('writer').equalTo(user.uid).once('value', function (snapshot) {
+
+  // .orderByChild('writer').equalTo(user.uid)
+  firebase.database().ref('setting').once('value', function (snapshot) {
     var rows = [];
+    var requestCategory = [];
     snapshot.forEach(function (childSnapshot) {
       var data = childSnapshot.val();
-      rows.push(data);
-      console.log(data)
+
+      if(data.writer == user.uid){
+        rows.push(data);
+      }
+
+      if(data.member){
+        var memberArr = data.member['request'];
+
+        for(var i=0;i<memberArr.length;i++){
+          if(memberArr[i] == user.email){
+            requestCategory.push(data.category)
+          }
+        }
+      }
     });
+    console.log(requestCategory)
+
     res.send({
       result: 'success',
-      rows: rows
+      rows: rows,
+      requestCategory :requestCategory
     });
   });
 });
@@ -214,12 +227,17 @@ app.get(['/setting', '/setting/:id'], function (req, res) {
 app.post('/setting/add', function (req, res) {
   var data = req.body;
 
-  if (!data.id) {
-    data.id = firebase.database().ref().child('setting').push().key;
-  }
+  var user = firebase.auth().currentUser;
+  data.writer = user.uid;
 
-  if (data.id) {
-    firebase.database().ref('setting/' + data.id).set(data);
+  if(user){
+    if (!data.id) {
+      data.id = firebase.database().ref().child('setting').push().key;
+    }
+
+    if (data.id) {
+      firebase.database().ref('setting/' + data.id).set(data);
+    }
   }
   res.redirect('/list');
 });
@@ -229,6 +247,22 @@ app.post('/setting/delete', function (req, res) {
   firebase.database().ref('setting/' + data.id).remove();
   res.redirect('/list');
 });
+
+app.post('/setting/addMember', function(req, res){
+  var newMember = req.body.member;
+  var categoryId = req.body.id;
+
+  var data = {
+    member : {
+      request : [newMember]      
+    }
+  };
+
+  if (categoryId) {
+    firebase.database().ref('setting/' + categoryId).update(data);
+  }
+});
+
 
 const api = functions.https.onRequest(app);
 

@@ -1,5 +1,8 @@
 $(function(){
-    var category = getCategoryList();
+    var categories = getCategoryList()
+    var category = categories.category;
+    var requestCategory = categories.requestCategory;
+    console.log(categories.requestCategory);
 })
 
 function getDays(){
@@ -149,10 +152,14 @@ function getCategoryList(){
         success: function(data) {
             if(data.result == 'success'){
                 category = data.rows;
+                requestCategory = data.requestCategory;
             }
         }
     });
-    return category;
+    return {
+        category :category,
+        requestCategory : requestCategory
+    };
 }
 
 function categoryMap(categoryId){
@@ -173,7 +180,7 @@ function drawCateogry(){ //첫 진입시 호출하여 메인의 사이드바에 
     var select = $('#cateogry');
     select.empty();
      
-   /*var category = getCategoryList(); 동기로 카테고리 받아옴.*/
+   /*var catqegory = getCategoryList(); 동기로 카테고리 받아옴.*/
     var length = category.length;
     for(var i=0; i<length ;i++){
         var datas = category[i];
@@ -187,6 +194,15 @@ function drawCateogry(){ //첫 진입시 호출하여 메인의 사이드바에 
         select.append(
             $('<option/>').attr('value',datas.id).text(datas.category)
         )
+    }
+
+    //요청 requst 보기.
+    for(var i=0;i<requestCategory.length;i++){
+        var request = requestCategory[i];
+
+        $('<li/>').append(
+            $('<div/>').text(request)
+        ).prependTo(menu);
     }
 
     $( "div.categoryArea" ).contextmenu(function() {

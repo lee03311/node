@@ -39,38 +39,67 @@ html
                 $('#updateForm').submit();
             }
 
+            function addUser(){
+                var ul = $('#shareUserList');
+                var newMember = $('#shareUser').val();
+                $('<li/>').text(newMember).appendTo(ul);
+
+                $('#shareUser').val('');
+
+                $.ajax({
+                    url:'/setting/addMember',
+                    data:{
+                        member : newMember,
+                        id : $('#id').val()
+                    },
+                    type: 'post',
+                    success:function(){
+
+                    }
+                })
+            }
+
 body
 
     div(style='width:80%;margin:20px auto 0;')
-            if data
-                form(method='post' id='updateForm')
-                    input(type='hidden' id='id' name='id' value=data.id)
-                    input(type='hidden' id='status' name='status' value=data.id)
+        if data
+            form(method='post' id='updateForm')
+                input(type='hidden' id='id' name='id' value=data.id)
+                input(type='hidden' id='status' name='status' value=data.id)
 
-                    div(class='form-group row')
-                        label(for='category' class='col-2 col-form-label') Category
-                        div(class='col-10')
-                            input(class='form-control' type='text' id='category' name='category' value=data.category)
-                    div(class='form-group row')
-                        label(for='color') Color
-                            input(type='color' id='color' value='#ffffff' name='color')
-                            sapn(id='colorText')= data.color
-                        script. 
-                            $('#color').val('#fff');
-                    div(style='text-align:right;')
-                        button(type='button' onclick='javascript:update("update")' class='btn btn-primary' ) 수정
-                        button(type='button' onclick='javascript:update("delete")' class='btn btn-danger' ) 삭제
-            else
-                form(action='/setting/add' method='post')
-                    div(class='form-group row')
-                        label(for='category' class='col-2 col-form-label') Category
-                        div(class='col-10')
-                            input(class='form-control' type='text' id='category' name='category')
-                    div(class='form-group row')
-                        label(for='color') Color
-                            input(type='color' id='color' value='#ffffff' name='color')
-                            sapn(id='colorText')
-                        script. 
-                            $('#color').val('#fff');
-                            
-                    button(type='submit' class='btn btn-primary' style='float: right;') 등록
+                div(class='form-group')
+                    label(for='category' class='col-2 col-form-label') Category
+                    div(class='col-10')
+                        input(class='form-control' type='text' id='category' name='category' value=data.category)
+                div(class='form-group')
+                    label(for='color') Color
+                        input(type='color' id='color' value='#ffffff' name='color')
+                        sapn(id='colorText')= data.color
+                    script. 
+                        $('#color').val('#fff');
+                div(style='text-align:right;')
+                    button(type='button' onclick='javascript:update("update")' class='btn btn-primary' ) 수정
+                    button(type='button' onclick='javascript:update("delete")' class='btn btn-danger' ) 삭제
+            
+            
+            div(class='form-group')
+                label(for='shareUser') 공유하기
+                button(type='button' onclick='javascript:addUser()' class='btn btn-primary' ) 추가
+                ul(id='shareUserList')
+                div(class='col-10')
+                    input(class='form-control' type='text' id='shareUser' name='shareUser' placeholder='공유할 사용자의 이메일을 입력')
+                    
+        else
+            form(action='/setting/add' method='post')
+                div(class='form-group')
+                    label(for='category' class='col-2 col-form-label') Category
+                    div(class='col-10')
+                        input(class='form-control' type='text' id='category' name='category')
+                div(class='form-group')
+                    label(for='color') Color
+                        input(type='color' id='color' value='#ffffff' name='color')
+                        sapn(id='colorText')
+                    script. 
+                        $('#color').val('#fff');
+                        
+                button(type='submit' class='btn btn-primary' style='float: right;') 등록
