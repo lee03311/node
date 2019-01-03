@@ -46,17 +46,18 @@ app.post('/join', function(req, res){
 
   firebase.auth().createUserWithEmailAndPassword(email, password)
   .then(function(){
-    res.send({
-      result: 'success'
-    });
+    // res.send({
+    //   result: 'success'
+    // });
+    return 'success';
   })
   .catch(function(error) {
-    if(error.code == 'auth/email-already-in-use'){
-      res.send({
-        result: 'fail',
-        msg: '이미 존재하는 계정입니다.'
-      });
-    }
+    // if(error.code == 'auth/email-already-in-use'){
+    //   /*res.send({
+    //     result: 'fail',
+    //     msg: '이미 존재하는 계정입니다.'
+    //   });*/
+    // }
   });
 
 });
@@ -74,14 +75,15 @@ app.post('/confirm', function (req, res) {
   firebase.auth().signInWithEmailAndPassword(email, password).then(function(user){
     userUid = user.uid;
     result = 'success';
-    res.send({
+    /*res.send({
       result: result
-    });
+    });*/
+    return result;
   }).catch(function(error){
     result = 'fail';
-    res.send({
+    /*res.send({
       result: result
-    });
+    });*/
   });
 });
 
@@ -89,13 +91,14 @@ app.post('/confirm', function (req, res) {
 app.get('/logout', function(req, res){
   var user = firebase.auth().currentUser;
   firebase.auth().signOut().then(function(){
-    res.send({
+    /*res.send({
       result: 'success'
-    });
+    });*/
+    return 'success';
   }).catch(function(error){
-    res.send({
+    /*res.send({
       result: 'fail'
-    });
+    });*/
   });
 
  
@@ -123,7 +126,7 @@ app.get('/getList', function (req, res) {
       var data = childSnapshot.val();
 
       var exist = categories.indexOf(data.category);
-      if(exist != -1){
+      if(exist !== -1){
         if (data.date) {
           var date = data.date;
           data.date = dateFormat(date, 'mm/dd');
@@ -149,7 +152,7 @@ app.get('/list/category', function (req, res) {
     snapshot.forEach(function (childSnapshot) {
       var data = childSnapshot.val();
 
-      if(data.writer == user.uid){
+      if(data.writer === user.uid){
         rows.push(data);
       }
 
@@ -157,7 +160,7 @@ app.get('/list/category', function (req, res) {
         var memberArr = data.member['request'];
 
         for(var i=0;i<memberArr.length;i++){
-          if(memberArr[i] == user.email){
+          if(memberArr[i] === user.email){
             requestCategory.push(data.category)
           }
         }
