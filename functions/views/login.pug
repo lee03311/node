@@ -40,6 +40,8 @@ html
                                 alert('존재하지 않는 계정입니다.');
                                 $('#email').focus();
                             }
+                        },fail:function(error){
+                            alert(error)
                         }
                     })
                     

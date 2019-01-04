@@ -44,11 +44,8 @@ app.post('/join', function(req, res){
   var email = req.body.email;
   var password = req.body.password;
 
-  firebase.auth().createUserWithEmailAndPassword(email, password)
+  var msg = firebase.auth().createUserWithEmailAndPassword(email, password)
   .then(function(){
-    // res.send({
-    //   result: 'success'
-    // });
     return 'success';
   })
   .catch(function(error) {
@@ -59,7 +56,6 @@ app.post('/join', function(req, res){
     //   });*/
     // }
   });
-
 });
 
 
@@ -72,36 +68,35 @@ app.post('/confirm', function (req, res) {
   var password = req.body.password;
   
   var result = '';
-  firebase.auth().signInWithEmailAndPassword(email, password).then(function(user){
-    userUid = user.uid;
+  //console.log(login(email, password))
+  firebase.auth().signInWithEmailAndPassword(email, password)
+  .then(user => {
     result = 'success';
-    /*res.send({
-      result: result
-    });*/
-    return result;
-  }).catch(function(error){
-    result = 'fail';
-    /*res.send({
-      result: result
-    });*/
+    res.status(200).send({ result: result });
+    return true;
+  })
+  .catch(error => {
+    result = error.code;
+    res.status(500).send({ error: error.code });
   });
 });
 
+function login(email, password){
+  firebase.auth().signInWithEmailAndPassword(email, password).then(function(user){
+    return 'success';
+  }).catch(function(error){
+    return 'fail';
+  });
+}
 
 app.get('/logout', function(req, res){
   var user = firebase.auth().currentUser;
   firebase.auth().signOut().then(function(){
-    /*res.send({
-      result: 'success'
-    });*/
-    return 'success';
+    res.send({result: 'success'});
+    return true;
   }).catch(function(error){
-    /*res.send({
-      result: 'fail'
-    });*/
+    res.status(500).send({ error: error.code });
   });
-
- 
 });
 
 app.get('/list', function (req, res) {
@@ -112,8 +107,9 @@ app.get('/list', function (req, res) {
 app.get('/getList', function (req, res) {
   var user = firebase.auth().currentUser;
   var categories = [];
+
+  // user.uid = 'ZFvimDC4QHYYHtQ8C3V0Du5ivB62';
   firebase.database().ref('setting').orderByChild('writer').equalTo(user.uid).once('value', function (categorySnapshot) {
-    
     categorySnapshot.forEach(function (childSnapshot) {
       var data = childSnapshot.val();
       categories.push(data.id);
@@ -121,26 +117,52 @@ app.get('/getList', function (req, res) {
   });
 
   var datas = [];
-  firebase.database().ref('data').orderByChild('date').startAt(req.query.startDate).endAt(req.query.endDate).once('value', function (snapshot) {
+  firebase.database().ref('daily').orderByChild('date').startAt(req.query.startDate).endAt(req.query.endDate).once('value', function (snapshot) {
     snapshot.forEach(function (childSnapshot) {
       var data = childSnapshot.val();
 
-      var exist = categories.indexOf(data.category);
-      if(exist !== -1){
+        var exist = categories.indexOf(data.category);
+        if(exist !== -1){
+          if (data.date) {
+            var date = data.date;
+            data.date = dateFormat(date, 'mm/dd');
+          }
+          datas.push(data);
+        }
+    });
+
+    res.status(200).send({ 
+      result : 'success',
+      rows:datas
+    });
+
+  });
+});
+
+
+app.get('/getTodoList', function (req, res) {
+  var user = firebase.auth().currentUser;
+  var datas = [];
+  user.uid = 'ZFvimDC4QHYYHtQ8C3V0Du5ivB62';
+    firebase.database().ref('todolist/'+user.uid).once('value', function (snapshot) {
+      snapshot.forEach(function (childSnapshot) {
+        var data = childSnapshot.val();
+  
         if (data.date) {
           var date = data.date;
           data.date = dateFormat(date, 'mm/dd');
         }
         datas.push(data);
-      }
-    });
 
-    res.send({
-      result: 'success',
-      rows: datas
-    });
+      });
+      
+      res.status(200).send({ 
+        result : 'success',
+        rows:datas
+      });
   });
 });
+
 
 app.get('/list/category', function (req, res) {
   var user = firebase.auth().currentUser;
@@ -166,8 +188,6 @@ app.get('/list/category', function (req, res) {
         }
       }
     });
-    console.log(requestCategory)
-
     res.send({
       result: 'success',
       rows: rows,
@@ -177,9 +197,10 @@ app.get('/list/category', function (req, res) {
 });
 
 app.get('/view', function (req, res) {
+  console.log(req.query)
   var id = req.query.id;
 
-  firebase.database().ref('data/' + id).once('value', function (snapshot) {
+  firebase.database().ref('daily/' + id).once('value', function (snapshot) {
 
     var data = snapshot.val();
     //var date = data.date;
@@ -195,12 +216,35 @@ app.get('/view', function (req, res) {
 
 app.post('/add', function (req, res) {
   var data = req.body;
-  if (!data.id) {
-    data.id = firebase.database().ref().child('data').push().key;
-  }
 
-  if (data.id) {
-    firebase.database().ref('data/' + data.id).set(data);
+  var addData = {};
+  addData['date'] = data.date;
+  addData['title'] = data.title;
+  addData['contents'] = data.contents;
+  
+  if(data.writeRadio == 'daily'){
+    
+    addData['category'] = data.category;
+
+    if (!addData.id) {
+      addData.id = firebase.database().ref().child('daily').push().key;
+    }
+
+    if (addData.id) {
+      firebase.database().ref('daily/' + addData.id).set(addData);
+    }
+
+  }else if(data.writeRadio == 'todolist'){
+    var user = firebase.auth().currentUser;
+    
+    if (!addData.id) {
+      addData.id = firebase.database().ref().child('todolist/'+user.uid).push().key;
+    }
+
+    console.log(addData);
+    if (addData.id) {
+      firebase.database().ref('todolist/' +user.uid+"/"+addData.id).set(addData);
+    }
   }
 
   res.redirect('/list');
@@ -209,7 +253,7 @@ app.post('/add', function (req, res) {
 app.post('/delete', function (req, res) {
   var data = req.body;
 
-  firebase.database().ref('data/' + data.id).remove();
+  firebase.database().ref('daily/' + data.id).remove();
   res.redirect('/list');
 });
 

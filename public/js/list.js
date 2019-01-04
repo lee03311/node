@@ -2,7 +2,8 @@ $(function(){
     var categories = getCategoryList()
     var category = categories.category;
     var requestCategory = categories.requestCategory;
-    console.log(categories.requestCategory);
+
+    getTodoList();
 })
 
 function getDays(){
@@ -66,59 +67,33 @@ function getList(year, month){
         success: function(data) {
             if(data.result == 'success'){
                 var dailyUl = $("<ul/>");//$("#dataArea");
-                var todolistUl = $("<ul/>");
+                // var todolistUl = $("<ul/>");
 
                 var dailyDiv = $('.daily');
-                var todolistDiv= $('.todolist');
+                // var todolistDiv= $('.todolist');
 
                 dailyDiv.empty();
-                todolistDiv.empty();
-
+                // todolistDiv.empty();
                 var rows = data.rows;
                 /*var cateogries = getCategoryList();*/
-                var todolistLength = 0;
                 dailyDiv.removeClass('noItem');
 
                 if(rows.length > 0){
                     for(var i=0;i<rows.length;i++){
-                        if(rows[i].writeRadio && rows[i].writeRadio == 'daily'){
-                            var title = rows[i].title;
-                            if(title.length > 10){
-                                title = title.substring(0, 10) + "...";
-                            }
-                            $("<li/>").attr('id', rows[i].id).attr('data-category', rows[i].category).addClass('list').attr('onclick','showInfo("'+rows[i].id+'")').append(
-                                $('<div/>').addClass('circle').text(rows[i].date).css('background',categoryMap(rows[i].category))
-                            ).append(
-                                $('<span/>').text(title).addClass('textTitle')
-                            ).append(
-                                $('<div/>').addClass('textBox').append(
-                                    $('<span/>').text(rows[i].contents)
-                                )
-                            ).prependTo(dailyUl);
-                        }else if(rows[i].writeRadio && rows[i].writeRadio == 'todolist'){
-                            todolistLength++;
-
-                            if(rows[i].todoComplete){
-                                $("<li/>").attr('id', rows[i].id).addClass('complete').attr('onclick','showInfo("'+rows[i].id+'")').append(
-                                    //$('<div/>').addClass('circle').text(rows[i].date).css('background',categoryMap(rows[i].category))
-                                ).append(
-                                    
-                                    $('<span/>').text(rows[i].title +" (" + rows[i].date + ") ").addClass('textTitle')
-                                ).appendTo(todolistUl);
-                            }else{
-                                $("<li/>").attr('id', rows[i].id).addClass('list').attr('onclick','showInfo("'+rows[i].id+'")').append(
-                                   // $('<div/>').addClass('circle').text(rows[i].date)
-                                ).append(
-                                    $('<span/>').text(rows[i].title +" (" + rows[i].date + ") ").addClass('textTitle')
-                                ).append(
-                                    $('<div/>').addClass('textBox').append(
-                                        $('<span/>').text(rows[i].contents)
-                                    )
-                                ).prependTo(todolistUl);
-                            }
+                        var title = rows[i].title;
+                        if(title.length > 10){
+                            title = title.substring(0, 10) + "...";
                         }
+                        $("<li/>").attr('id', rows[i].id).attr('data-category', rows[i].category).addClass('list').attr('onclick','showInfo("daily", "'+rows[i].id+'")').append(
+                            $('<div/>').addClass('circle').text(rows[i].date).css('background',categoryMap(rows[i].category))
+                        ).append(
+                            $('<span/>').text(title).addClass('textTitle')
+                        ).append(
+                            $('<div/>').addClass('textBox').append(
+                                $('<span/>').text(rows[i].contents)
+                            )
+                        ).prependTo(dailyUl);
                     }
-                    
                 }
                 //daily add
                 $("<li/>").addClass('dailyAddArea list').attr('onclick','openDialogForAdd("daily")').append(
@@ -128,17 +103,78 @@ function getList(year, month){
                 ).prependTo(dailyUl);    
 
 
+                // $("<li/>").addClass('todolistAddArea complete').attr('onclick','openDialogForAdd("todo")').append(
+                //     $('<div/>').addClass('todolistAddDiv circle').append(
+                //         $('<span/>').addClass('glyphicon glyphicon-plus')
+                //     )
+                // ).prependTo(todolistUl);
+                
+                dailyUl.appendTo(dailyDiv);
+                // todolistUl.appendTo(todolistDiv);
+            }
+       },error:function(){
+        //    alert('getList 오류!!!');
+           window.location = '/';
+       }
+    });
+}
+
+function getTodoList(){
+    // var lastDay = ( new Date( year, month, 0) ).getDate();
+
+    // var date = {
+    //     startDate : year+'/'+month+'/01',
+    //     endDate : year+'/'+month+'/'+lastDay
+    // }
+    $.ajax({
+        url: 'getTodoList',
+        dataType: 'json',
+        type: 'GET',
+        // data: date,
+        success: function(data) {
+            if(data.result == 'success'){
+                var todolistUl = $("<ul/>");
+
+                var todolistDiv= $('.todolist');
+
+                todolistDiv.empty();
+                var rows = data.rows;
+                // dailyDiv.removeClass('noItem');
+
+                if(rows.length > 0){
+                    for(var i=0;i<rows.length;i++){
+                        if(rows[i].todoComplete){
+                            $("<li/>").attr('id', rows[i].id).addClass('complete').attr('onclick','showInfo("todolist","'+rows[i].id+'")').append(
+                                //$('<div/>').addClass('circle').text(rows[i].date).css('background',categoryMap(rows[i].category))
+                            ).append(
+                                
+                                $('<span/>').text(rows[i].title +" (" + rows[i].date + ") ").addClass('textTitle')
+                            ).appendTo(todolistUl);
+                        }else{
+                            $("<li/>").attr('id', rows[i].id).addClass('list').attr('onclick','showInfo("todolist","'+rows[i].id+'")').append(
+                                // $('<div/>').addClass('circle').text(rows[i].date)
+                            ).append(
+                                $('<span/>').text(rows[i].title +" (" + rows[i].date + ") ").addClass('textTitle')
+                            ).append(
+                                $('<div/>').addClass('textBox').append(
+                                    $('<span/>').text(rows[i].contents)
+                                )
+                            ).prependTo(todolistUl);
+                        }
+                    }
+                    
+                }
                 $("<li/>").addClass('todolistAddArea complete').attr('onclick','openDialogForAdd("todo")').append(
                     $('<div/>').addClass('todolistAddDiv circle').append(
                         $('<span/>').addClass('glyphicon glyphicon-plus')
                     )
                 ).prependTo(todolistUl);
                 
-                dailyUl.appendTo(dailyDiv);
                 todolistUl.appendTo(todolistDiv);
             }
        },error:function(){
-           alert('getList 오류!!!')
+        //    alert('getList 오류!!!');
+           window.location = '/';
        }
     });
 }
@@ -240,12 +276,13 @@ function clickCategory(categoryId){
     });
 }
 
-function showInfo(id){
+function showInfo(status, id){
+    alert(status)
     $.ajax({
         url: '/view',
         dataType: 'json',
         type: 'GET',
-        data: {id:id},
+        data: {status:status, id:id},
         success: function(data) {
             if(data.result == 'success'){
                 $('#id').val(data.data.id);
