@@ -149,7 +149,7 @@ function getTodoList(){
                             ).append(
                                 
                                 $('<span/>').text(rows[i].title +" (" + rows[i].date + ") ").addClass('textTitle')
-                            ).appendTo(todolistUl);
+                            ).prependTo(todolistUl);
                         }else{
                             $("<li/>").attr('id', rows[i].id).addClass('list').attr('onclick','showInfo("todolist","'+rows[i].id+'")').append(
                                 // $('<div/>').addClass('circle').text(rows[i].date)
@@ -164,7 +164,7 @@ function getTodoList(){
                     }
                     
                 }
-                $("<li/>").addClass('todolistAddArea complete').attr('onclick','openDialogForAdd("todo")').append(
+                $("<li/>").addClass('todolistAddArea list').attr('onclick','openDialogForAdd("todo")').append(
                     $('<div/>').addClass('todolistAddDiv circle').append(
                         $('<span/>').addClass('glyphicon glyphicon-plus')
                     )
@@ -237,7 +237,13 @@ function drawCateogry(){ //첫 진입시 호출하여 메인의 사이드바에 
         var request = requestCategory[i];
 
         $('<li/>').append(
-            $('<div/>').text(request)
+            $('<a/>').attr('data-toggle','popover').attr('onclick','openPopover()').attr('herf', '#')
+            .attr('title','test')
+            .attr('data-content', 'test')
+            .attr('data-placement','left')
+            .append(
+                $('<span/>').addClass('glyphicon glyphicon-exclamation-sign')
+            )
         ).prependTo(menu);
     }
 
@@ -250,6 +256,9 @@ function drawCateogry(){ //첫 진입시 호출하여 메인의 사이드바에 
     });
 }
 
+function openPopover(){
+    $('[data-toggle="popover"]').popover();   
+}
 function clickCategory(categoryId){
     var clickLi = 'cateogryList_'+categoryId;
 
@@ -277,7 +286,6 @@ function clickCategory(categoryId){
 }
 
 function showInfo(status, id){
-    alert(status)
     $.ajax({
         url: '/view',
         dataType: 'json',
@@ -289,26 +297,29 @@ function showInfo(status, id){
                 $('input[name=date]').val(data.data.date);
                 $('#title').val(data.data.title);
                 $('#contents').val(data.data.contents);
-                $("#"+data.data.writeRadio).prop('checked', true);
+                $("#"+status).prop('checked', true);
+                $("#todoComplete").prop('checked', false); 
 
-                if(data.data.writeRadio == 'todolist'){
+                if(status == 'todolist'){
                     $('#cateogry').hide();
                     $('#cateogry').val('');
                     $("#todolist").prop('checked', true);
                     $("#todo_compelete").show();
+                    
+                    if(data.data.todoComplete && data.data.todoComplete == 'Y'){
+                        $("#todoComplete").prop('checked', 'checked');                        
+                    }
                 }else{
                     $('#cateogry').show();
+                    $("#todo_compelete").hide();
                     $('select[name="category"]').val(data.data.category);
-                }
-                if(data.data.todoComplete && data.data.todoComplete == 'Y'){
-                    $("#todoComplete").prop('checked', 'checked');                        
-                }
+                }                
 
                 $('.deletebtn').show();
                 $('#myModal').modal('show');
             }
        },error:function(){
-           alert('getList 오류!!!')
+           alert('getList 오류!!!');
        }
     });
 }

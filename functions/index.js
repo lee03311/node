@@ -197,10 +197,18 @@ app.get('/list/category', function (req, res) {
 });
 
 app.get('/view', function (req, res) {
-  console.log(req.query)
   var id = req.query.id;
+  var status = req.query.status;
 
-  firebase.database().ref('daily/' + id).once('value', function (snapshot) {
+  var url = '';
+  if(status === 'daily'){
+    url = 'daily/' + id;
+  }else if(status === 'todolist'){
+    var user = firebase.auth().currentUser;
+
+    url = 'todolist/'+user.uid+'/'+id
+  }
+  firebase.database().ref(url).once('value', function (snapshot) {
 
     var data = snapshot.val();
     //var date = data.date;
@@ -216,13 +224,15 @@ app.get('/view', function (req, res) {
 
 app.post('/add', function (req, res) {
   var data = req.body;
+  console.log(data);
 
   var addData = {};
+  addData['id'] = data.id;
   addData['date'] = data.date;
   addData['title'] = data.title;
   addData['contents'] = data.contents;
   
-  if(data.writeRadio == 'daily'){
+  if(data.writeRadio === 'daily'){
     
     addData['category'] = data.category;
 
@@ -234,14 +244,16 @@ app.post('/add', function (req, res) {
       firebase.database().ref('daily/' + addData.id).set(addData);
     }
 
-  }else if(data.writeRadio == 'todolist'){
+  }else if(data.writeRadio === 'todolist'){
     var user = firebase.auth().currentUser;
+    if(data.todoComplete){
+      addData['todoComplete'] = data.todoComplete;
+    }
     
     if (!addData.id) {
       addData.id = firebase.database().ref().child('todolist/'+user.uid).push().key;
     }
 
-    console.log(addData);
     if (addData.id) {
       firebase.database().ref('todolist/' +user.uid+"/"+addData.id).set(addData);
     }
@@ -251,9 +263,17 @@ app.post('/add', function (req, res) {
 });
 
 app.post('/delete', function (req, res) {
-  var data = req.body;
+  var id = req.body.id;
+  var status = req.body.writeRadio;
 
-  firebase.database().ref('daily/' + data.id).remove();
+  var url = '';
+  if(status === 'daily'){
+    url = 'daily/'+id;
+  }else if(status === 'todolist'){
+    var user = firebase.auth().currentUser;
+    url = 'todolist/'+user.uid+'/'+id;
+  }
+  firebase.database().ref(url).remove();
   res.redirect('/list');
 });
 

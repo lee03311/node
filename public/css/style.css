@@ -232,7 +232,7 @@ li.list:hover, li.complete:hover{
     }    
     
     .dailyAddDiv{
-        margin: 35px;
+        margin: 30px;
     }
 
     .todolist > ul {
@@ -241,25 +241,38 @@ li.list:hover, li.complete:hover{
     }
 
     .todolist {
-        width: 87%;
+        width: 91%;
         height: 150px;    
         min-height: 0;
     }
 
     .todolist .circle {
-        margin : 0;
+        /* margin : 0; */
     }
     .todolist .list {
-        width:auto !important;
+        width: 120px !important;
+        height: 100px !important;
     }
     .todolist .textTitle{
-        display: none;
+        /* 여러 줄 자르기 추가 스타일 */ 
+        overflow: hidden;
+        white-space: normal; 
+        line-height: 1.2; 
+        height: 3.6em; 
+        text-align: left; 
+        word-wrap: break-word; 
+        display: -webkit-box; 
+        -webkit-line-clamp: 3; 
+        -webkit-box-orient: vertical;
     }
 
     .complete{
-        width : auto !important;
-        padding: 20px !important;
+        display: none !important;
+        /* width : 120px !important;
+        height: 100px !important;
+        padding: 10px !important; */
     }
+    
     .complete > .circle{
         width: 70px;
         height: 70px;
