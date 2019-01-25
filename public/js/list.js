@@ -237,14 +237,15 @@ function drawCateogry(){ //첫 진입시 호출하여 메인의 사이드바에 
         var request = requestCategory[i];
 
         $('<li/>').append(
-            $('<a/>').attr('data-toggle','popover').attr('onclick','openPopover()').attr('herf', '#')
-            .attr('title','test')
-            .attr('data-content', 'test')
-            .attr('data-placement','left')
+            $('<a/>').attr('onclick','requestShareCategories()').attr('herf', '#').addClass('blink')
             .append(
                 $('<span/>').addClass('glyphicon glyphicon-exclamation-sign')
             )
         ).prependTo(menu);
+
+        // setInterval(function(){
+        //     $(".glyphicon-exclamation-sign").toggle();
+        //   }, 250);
     }
 
     $( "div.categoryArea" ).contextmenu(function() {
@@ -255,9 +256,11 @@ function drawCateogry(){ //첫 진입시 호출하여 메인의 사이드바에 
         window.location='/setting/'+$(this).attr('data-category-id');
     });
 }
-
-function openPopover(){
-    $('[data-toggle="popover"]').popover();   
+/**
+ * 카테고리 공유
+ */
+function requestShareCategories(){
+    confirm("승락?")
 }
 function clickCategory(categoryId){
     var clickLi = 'cateogryList_'+categoryId;
