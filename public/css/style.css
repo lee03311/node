@@ -55,6 +55,12 @@ body{
 
 .todolist > ul {
     text-align: center;
+    padding:10px;
+}
+
+.todolist > ul > li{
+    margin: 0 0 10px 0;
+    width:100%;
 }
 
 ul{
