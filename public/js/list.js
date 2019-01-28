@@ -237,7 +237,7 @@ function drawCateogry(){ //첫 진입시 호출하여 메인의 사이드바에 
         var request = requestCategory[i];
 
         $('<li/>').append(
-            $('<a/>').attr('onclick','requestShareCategories()').attr('herf', '#').addClass('blink')
+            $('<a/>').attr('onclick','requestShareCategories("'+request+'")').attr('herf', '#').addClass('blink')
             .append(
                 $('<span/>').addClass('glyphicon glyphicon-exclamation-sign')
             )
@@ -259,9 +259,33 @@ function drawCateogry(){ //첫 진입시 호출하여 메인의 사이드바에 
 /**
  * 카테고리 공유
  */
-function requestShareCategories(){
-    confirm("승락?")
+function requestShareCategories(requestId){
+    var url = '/setting/acceptMember';
+    if(!confirm("카테고리 공유 신청이 왔습니다. 받으시겠습니까?")){
+        if(confirm("카테고리 공유 신청을 거절하시겠습니까?")){
+            alert('카테고리 공유 신청을 거절하셨습니다.');
+            url = '/setting/rejectMember';
+            // return false;
+        }else{
+            return false;
+        }    
+    }
+
+    $.ajax({
+        url: url,
+        dataType: 'json',
+        data:{
+            requestId : requestId
+        },
+        type: 'post',
+        success: function(data) {
+            if(data.result == 'success'){
+                location.reload();
+            }
+        }
+    });
 }
+
 function clickCategory(categoryId){
     var clickLi = 'cateogryList_'+categoryId;
 

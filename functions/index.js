@@ -143,23 +143,22 @@ app.get('/getList', function (req, res) {
 app.get('/getTodoList', function (req, res) {
   var user = firebase.auth().currentUser;
   var datas = [];
-  user.uid = 'ZFvimDC4QHYYHtQ8C3V0Du5ivB62';
-    firebase.database().ref('todolist/'+user.uid).once('value', function (snapshot) {
-      snapshot.forEach(function (childSnapshot) {
-        var data = childSnapshot.val();
-  
-        if (data.date) {
-          var date = data.date;
-          data.date = dateFormat(date, 'mm/dd');
-        }
-        datas.push(data);
+  firebase.database().ref('todolist/'+user.uid).once('value', function (snapshot) {
+    snapshot.forEach(function (childSnapshot) {
+      var data = childSnapshot.val();
 
-      });
-      
-      res.status(200).send({ 
-        result : 'success',
-        rows:datas
-      });
+      if (data.date) {
+        var date = data.date;
+        data.date = dateFormat(date, 'mm/dd');
+      }
+      datas.push(data);
+
+    });
+    
+    res.status(200).send({ 
+      result : 'success',
+      rows:datas
+    });
   });
 });
 
@@ -178,12 +177,16 @@ app.get('/list/category', function (req, res) {
         rows.push(data);
       }
 
+      // if(data.member.share)
+      // console.log(data)
+
       if(data.member){
         var memberArr = data.member['request'];
 
         for(var i=0;i<memberArr.length;i++){
           if(memberArr[i] === user.email){
-            requestCategory.push(data.category)
+            console.log(data);
+            requestCategory.push(data.id)
           }
         }
       }
@@ -224,7 +227,6 @@ app.get('/view', function (req, res) {
 
 app.post('/add', function (req, res) {
   var data = req.body;
-  console.log(data);
 
   var addData = {};
   addData['id'] = data.id;
@@ -326,9 +328,47 @@ app.post('/setting/addMember', function(req, res){
   };
 
   if (categoryId) {
-    firebase.database().ref('setting/' + categoryId).update(data);
+    firebase.database().ref('setting/' + categoryId+"/member/request").push(newMember);
   }
 });
+
+app.post('/setting/rejectMember', function(req, res){
+  console.log('reject');
+  console.log(req.query)
+});
+
+app.post('/setting/acceptMember', function(req, res){
+  var requestId = req.body.requestId;
+  var user = firebase.auth().currentUser;
+
+  if(!user){
+    res.redirect('/login');
+  }
+  var result = 'success';
+  if(requestId){
+    firebase.database().ref('setting/'+requestId+"/member/request").once('value', function (snapshot) {
+      snapshot.forEach(function (childSnapshot) {
+        if(childSnapshot.val() == user.email){
+          childSnapshot.ref.remove();
+          firebase.database().ref('setting/'+requestId+"/member/share").push(user.uid);
+        }
+      });
+    });
+  }else{
+    result = 'fail';
+  }
+  
+  res.send({
+    result: result
+  });
+
+});
+
+
+/*예산 */
+app.get('/budget', function(req, res){
+  res.render('budget');
+})
 
 
 const api = functions.https.onRequest(app);
