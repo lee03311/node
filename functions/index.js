@@ -364,11 +364,15 @@ app.post('/setting/acceptMember', function(req, res){
 
 });
 
+/*설정 */
+app.get('/setting2', function(req, res){
+  res.render('setting2');
+});
 
 /*예산 */
 app.get('/budget', function(req, res){
   res.render('budget');
-})
+});
 
 
 const api = functions.https.onRequest(app);
