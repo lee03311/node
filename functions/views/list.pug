@@ -45,6 +45,21 @@ html
             });
 
             function reportAdd(){
+                if(!$("#datepicker").val()){
+                    alert('날짜를 선택하세요');
+                    return false;
+                }
+
+                if(!$("#title").val()){
+                    alert('제목을 입력하세요.');
+                    return false;
+                }
+
+                if(!$("#contents").val()){
+                    alert('내용을 입력하세요.');
+                    return false;
+                }
+
                 $("#reportForm").submit();
             }
 

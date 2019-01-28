@@ -16,6 +16,10 @@ body{
     height:150px;
 }
 
+.todolist .list:first-child{
+    height:auto;
+}
+
 .daily{
     width: 75%;
     float:left;
@@ -270,6 +274,7 @@ li.list:hover, li.complete:hover{
     .todolist .list {
         width: 120px !important;
         height: 100px !important;
+        margin:0 10px;
     }
     .todolist .textTitle{
         /* 여러 줄 자르기 추가 스타일 */ 

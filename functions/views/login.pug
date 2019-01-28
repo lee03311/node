@@ -14,43 +14,45 @@ html
                 margin-right: 10px;
             }
         script.
-            $(function(){
-                $('#loginSubmitBt').on('click', function(){
-                    if( $('#email').val() == '' ){
+            function login(){
+                if( $('#email').val() == '' ){
                         alert('이메일을 입력하세요.')
                         return false;
                     }
 
-                    if( $('#password').val() == ''){
-                        alert('비밀번호를 입력하세요.')
-                        return false;
-                    }
+                if( $('#password').val() == ''){
+                    alert('비밀번호를 입력하세요.')
+                    return false;
+                }
 
-                    $.ajax({
-                        url:'/confirm',
-                        type:'post',
-                        data:{
-                            email:$('#email').val(),
-                            password:$('#password').val()
-                        },
-                        success:function(data){
-                            if(data.result =='success'){
-                                window.location='/list'
-                            }else{
-                                alert('존재하지 않는 계정입니다.');
-                                $('#email').focus();
-                            }
-                        },fail:function(error){
-                            alert(error)
+                $.ajax({
+                    url:'/confirm',
+                    type:'post',
+                    data:{
+                        email:$('#email').val(),
+                        password:$('#password').val()
+                    },
+                    success:function(data){
+                        if(data.result =='success'){
+                            window.location='/list'
+                        }else{
+                            alert('존재하지 않는 계정입니다.');
+                            $('#email').focus();
                         }
-                    })
-                    
-                    //$('#loginForm').submit();
+                    },fail:function(error){
+                        alert(error)
+                    }
                 })
-            });
+            }
 
             function goSignUp(){
                 window.location = '/signUp';
+            }
+
+            function keyDown(){
+                if (window.event.keyCode == 13) {
+                    login();
+                }
             }
     body
         div(class='container h-100')
@@ -73,9 +75,9 @@ html
                                 div(class='input-group-append')
                                     span(class='input-group-text')
                                 
-                                input(type='password' name='password' id='password' class='form-control input_pass' placeholder='password')
+                                input(type='password' name='password' id='password' class='form-control input_pass' placeholder='password' onKeyDown='keyDown()')
                                                                             
                     div(class='d-flex justify-content-center mt-3 login_container')
-                        button(type='button' name='button' class='btn login_btn' id='loginSubmitBt' ) Login
+                        button(type='button' name='button' class='btn login_btn' onclick='login()' ) Login
                         button(type='button'  onclick='goSignUp()' class='btn btn-success' ) SignUp
                     //- button(type='button' name='button' class='btn sign_btn') Sign Up
