@@ -9,33 +9,45 @@ html
         link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css')
         link(rel='stylesheet' href='//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css')
         script(type='text/javascript' src='js/setting.js') 
+        link(rel="stylesheet", href="css/setting.css")
     body
-        h4 
-            span(class='glyphicon glyphicon-link')
-            |공유
-            
-        form(class='form-inline' action='post')
-            div(class='form-group')
-                div(class='checkbox')
-                    label
-                        input(type='checkbox' name='check' value='budget') 
-                        |   예산
+        div(class='wrapper')
+            h4 
+                span(class='glyphicon glyphicon-link')
+                |     공유 항목
+        
+            form( action='post')
+                div(class='form-group')
+                    div(class='checkbox')
+                        label
+                            input(type='checkbox' name='check' value='budget') 
+                            |   예산
 
-            div(class='form-group')
-                div(class='checkbox')
-                    label
-                        input(type='checkbox' name='check' value='account') 
-                        |   가계부
-            
-            div(class='form-group')
-                div(class='checkbox')
-                    label
-                        input(type='checkbox' name='check' value='todolist') 
-                        |   할 일
+                div(class='form-group')
+                    div(class='checkbox')
+                        label
+                            input(type='checkbox' name='check' value='account') 
+                            |   가계부
+                
+                div(class='form-group')
+                    div(class='checkbox')
+                        label
+                            input(type='checkbox' name='check' value='todolist') 
+                            |   할 일
 
-            div(class='form-group')
-                div(class='checkbox')
-                    label
-                        input(type='checkbox' name='check' value='daily') 
-                        |   일기
-                div(id='categoryList')
+                div(class='form-group')
+                    div(class='checkbox')
+                        label
+                            input(type='checkbox' name='check' value='daily') 
+                            |   일기
+                    div(id='categoryList')
+
+            h4 
+                span(class='glyphicon glyphicon-link')
+                |     공유할 사람 선택
+
+            form(class="form-inline")
+                div(class='form-group')
+                    label(for='shareMember')
+                    input(type='email' class='form-control col-md-8' id='shareMember' placeholder='이메일 입력')
+                    button(type='button' onclick='' class="col-md-4 btn btn-primary") 추가

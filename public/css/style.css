@@ -2,6 +2,11 @@ body{
     background: #fcfcfc;
 }
 
+.container{
+    width:80%;
+    margin:20px auto 0;
+}
+
 .todolist{
     min-width: 276px;
     width:19%;
