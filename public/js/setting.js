@@ -35,5 +35,7 @@ function getCategoryList(){
 }
 
 function addMember(){
-    
+    if($('#shareMember').val()){
+        ;;
+    }
 }
