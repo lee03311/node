@@ -33,3 +33,7 @@ function getCategoryList(){
         }
     });
 }
+
+function addMember(){
+    
+}
