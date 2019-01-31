@@ -7,7 +7,6 @@ function getCategoryList(){
         url: '/list/category',
         dataType: 'json',
         type: 'GET',
-        async: false, /*동기*/
         success: function(data) {
             if(data.result == 'success'){
                 var category = data.rows;
@@ -36,6 +35,28 @@ function getCategoryList(){
 
 function addMember(){
     if($('#shareMember').val()){
-        ;;
+        $.ajax({
+            url: '/setting2/shareMember',
+            dataType: 'json',
+            type: 'GET',
+            data:{
+                userEmail : $('#shareMember').val()
+            },
+            success: function(data) {
+                console.log(data)
+                var shareMemberList = $('.shareMemberList');
+                if(data.result){
+                    alert('test')
+                    var shareUser = data.result;
+
+                    $('<div/>').addClass('shareMemberUser')
+                    .append(
+                        $('<span/>').text(shareUser.email)
+                    ).append(
+                        $('<span/>').addClass('glyphicon glyphicon-remove')
+                    ).appendTo(shareMemberList);
+                }
+            }
+        });
     }
 }

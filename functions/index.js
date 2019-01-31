@@ -369,6 +369,29 @@ app.get('/setting2', function(req, res){
   res.render('setting2');
 });
 
+app.get('/setting2/shareMember', function(req, res){
+  console.log(req.query)
+  req.query.userEmail
+
+  admin.auth().getUserByEmail(req.query.userEmail)
+  .then(function(userRecord) {
+    var verifyUser = {
+      email : userRecord.email,
+      uid : userRecord.uid
+    }
+
+    res.send({
+      result: verifyUser
+    });
+
+  })
+  .catch(function(error) {
+    console.log("Error fetching user data:", error);
+  });
+
+
+});
+
 /*예산 */
 app.get('/budget', function(req, res){
   res.render('budget');

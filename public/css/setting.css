@@ -20,6 +20,13 @@
   margin-top: 10px;
 }
 
+.shareMemberUser{
+  background: orange;
+  display: inline-block;
+  padding: 5px 30px;
+  border-radius: 5px;
+}
+
 #categoryList > div {
     margin: 10px;
 }
