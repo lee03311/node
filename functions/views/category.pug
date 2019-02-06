@@ -1,0 +1,189 @@
+doctype html
+html
+    head
+        meta(charset = 'utf-8')
+        script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+        script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
+        script(src='https://code.jquery.com/ui/1.12.1/jquery-ui.js')
+        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css')
+        link(rel='stylesheet' href='//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css')
+        link(rel='stylesheet' type='text/css' href='/css/setting.css')
+        script(type='text/javascript' src='/js/common.js') 
+
+        style.
+            .categoryShareMemberList > li{
+                font-weight: bold;
+                padding: 5px;
+                font-size: 15px;
+            }
+
+        script.
+            var colorWell;
+            var defaultColor = "#0000ff";
+
+            $(function(){
+                if('#{writeYn}'!='' && '#{writeYn}' != 'Y'){
+                    $('#category').attr('readonly','readonly');
+                    $('#color').attr('disabled','disabled');
+                    $('#shareUser').attr('readonly','readonly')
+                }
+            })
+
+            window.addEventListener("load", startup, false);
+            function startup() {
+                colorWell = document.querySelector("#color");
+                colorWell.value = defaultColor;
+                colorWell.addEventListener("input", updateFirst, false);
+                //colorWell.addEventListener("change", updateAll, false);
+                colorWell.select();
+            }
+            function updateFirst(event) {
+                $("#colorText").text(event.target.value);
+            }
+
+            $(function(){
+                $('#color').val($("#colorText").text());
+            })
+
+            function update(status){
+                if(status == 'delete'){
+                    $('#updateForm').attr('action', '/category/delete');
+                    $('#status').val('delete');
+                }else{
+                    $('#updateForm').attr('action', '/category/add');
+                    $('#status').val('update');
+                }
+                $('#updateForm').submit();
+            }
+
+            function addUser(){
+                if(!confirm('새로운 멤버를 등록하시겠습니까?')){
+                    return false;
+                }
+            
+                var newMember = $('#shareUser').val();
+                if(!verifyEmail(newMember)){
+                    alert('이메일 형식이 잘 못 되었습니다.');
+                    return false;
+                }
+
+                var ul = $('#shareUserList');
+                $('<li/>').text(newMember).appendTo(ul);
+
+                $('#shareUser').val('');
+
+                $.ajax({
+                    url:'/category/addMember',
+                    data:{
+                        member : newMember,
+                        id : $('#id').val()
+                    },
+                    type: 'post',
+                    success:function(data){
+                       if(data.result == 'success' && data.newKey != ''){
+                           var categoryList = $('#categoryList');
+
+                            $('<div/>').addClass('shareMemberUser').attr('id', 'member_'+data.newKey).append(
+                                $('<span/>').text(newMember)
+                            ).append(
+                                $('<span/>').addClass('glyphicon glyphicon-remove').attr('onclick', 'removeShareMember("'+data.newKey+'")')
+                            ).appendTo(categoryList)
+                       }
+                    },
+                    statusCode: {
+                        500: function() {
+                            alert("존재하는 이메일의 사용자가 없습니다.");
+                        }
+                    }
+                })
+            }
+
+            function removeShareMember(key){
+                var categoryId = $('#id').val();
+
+                if(!confirm('멤버를 삭제하시겠습니까?')){
+                    return false;
+                }
+
+                $.ajax({
+                    url:'/category/removeMember',
+                    data:{
+                       memberKey : key,
+                       categoryId: categoryId
+                    },
+                    type: 'post',
+                    success:function(data){
+                        console.log(data)
+                        if(data.result == 'success'){
+                            $('#member_'+key).remove();
+                        }else{
+                            alert('일치하는 사용자가 없습니다.')
+                        }                        
+                    }
+                    
+                })
+            }
+
+body
+
+    div(class='wrapper')
+        if data
+            form(method='post' id='updateForm')
+                input(type='hidden' id='id' name='id' value=data.id)
+                input(type='hidden' id='status' name='status' value=data.status)
+
+                div(class='form-group')
+                    label(for='category' class='col-2 col-form-label') Category
+                    div(class='col-10')
+                        input(class='form-control' type='text' id='category' name='category' value=data.category)
+
+                div(class='form-group')
+                    label(for='color') Color
+                        input(type='color' id='color' value='#ffffff' name='color')
+                        sapn(id='colorText')= data.color
+                    script. 
+                        $('#color').val('#fff');
+            
+            
+            div(class='form-group')
+                label(for='shareUser') 공유하기
+
+                - if(writeYn == 'Y')
+                    button(type='button' onclick='javascript:addUser()' class='btn btn-primary' ) 추가
+
+                div(class='col-10 form-group' style='margin-top:10px;' )
+                    label(for='shareUser')
+                    input(class='form-control' type='email' id='shareUser' placeholder='공유할 사용자의 이메일을 입력')
+
+                div(id='categoryList' class='shareMemberList')
+                    if data.member                    
+                        each val, key in data.member 
+                            div(class='shareMemberUser' id='member_'+key) 
+                                span #{val} 
+
+                                - if(writeYn == 'Y')
+                                    span(class='glyphicon glyphicon-remove' onclick='removeShareMember("'+key+'")')
+                
+
+            div(style='text-align:right; margin-top:10px;')
+                - if(writeYn == 'Y')
+                    button(type='button' onclick='javascript:update("update")' class='btn btn-primary' ) 수정
+                    button(type='button' onclick='javascript:update("delete")' class='btn btn-danger' ) 삭제
+                
+                button(type='button' onclick='location.href="/list"' class='btn btn-primary' ) 목록
+                   
+        else
+            form(action='/category/add' method='post')
+                div(class='form-group')
+                    label(for='category' class='col-2 col-form-label') Category
+                    div(class='col-10')
+                        input(class='form-control' type='text' id='category' name='category')
+                div(class='form-group')
+                    label(for='color') Color
+                        input(type='color' id='color' value='#ffffff' name='color')
+                        sapn(id='colorText')
+                    script. 
+                        $('#color').val('#fff');
+                        
+                div(style='text-align:right; margin-top:10px;')
+                    button(type='submit' class='btn btn-primary' ) 등록

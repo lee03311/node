@@ -21,10 +21,17 @@
 }
 
 .shareMemberUser{
-  background: orange;
   display: inline-block;
-  padding: 5px 30px;
-  border-radius: 5px;
+  padding: 5px 10px;
+  border-radius: 30px;
+  background: #ccc;
+}
+
+.glyphicon-remove{
+  margin: 7px 10px;
+  font-size: 10px;
+  color: red;
+  cursor: pointer;
 }
 
 #categoryList > div {

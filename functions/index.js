@@ -1,7 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const firebase = require("firebase");
-const express = require("express");
+const express = require("express")
 var dateFormat = require('dateformat');
 var bodyParser = require('body-parser');
 const app = express();
@@ -58,10 +58,6 @@ app.post('/join', function(req, res){
   });
 });
 
-
-// firebase.auth().onAuthStateChanged(function(firebaseUser) {
-//   console.log(firebaseUser.uid);
-// });
 var userUid = '';
 app.post('/confirm', function (req, res) {
   var email = req.body.email;
@@ -107,14 +103,13 @@ app.get('/list', function (req, res) {
 app.get('/getList', function (req, res) {
   var user = firebase.auth().currentUser;
   var categories = [];
-
-  // user.uid = 'ZFvimDC4QHYYHtQ8C3V0Du5ivB62';
-  firebase.database().ref('setting').orderByChild('writer').equalTo(user.uid).once('value', function (categorySnapshot) {
-    categorySnapshot.forEach(function (childSnapshot) {
-      var data = childSnapshot.val();
-      categories.push(data.id);
-    });
-  });
+  
+  if(req.query.category){
+    var title = req.query.category;
+    for(var i=0;i<title.length;i++){
+      categories.push(title[i].id);
+    }
+  }
 
   var datas = [];
   firebase.database().ref('daily').orderByChild('date').startAt(req.query.startDate).endAt(req.query.endDate).once('value', function (snapshot) {
@@ -167,9 +162,8 @@ app.get('/list/category', function (req, res) {
   var user = firebase.auth().currentUser;
 
   // .orderByChild('writer').equalTo(user.uid)
-  firebase.database().ref('setting').once('value', function (snapshot) {
+  firebase.database().ref('category').once('value', function (snapshot) {
     var rows = [];
-    var requestCategory = [];
     snapshot.forEach(function (childSnapshot) {
       var data = childSnapshot.val();
 
@@ -177,24 +171,18 @@ app.get('/list/category', function (req, res) {
         rows.push(data);
       }
 
-      // if(data.member.share)
-      // console.log(data)
-
       if(data.member){
-        var memberArr = data.member['request'];
-
-        for(var i=0;i<memberArr.length;i++){
-          if(memberArr[i] === user.email){
-            console.log(data);
-            requestCategory.push(data.id)
+        for(key in data.member) {
+          if(data.member[key] === user.email){
+            rows.push(data);
           }
-        }
+         }
       }
     });
+
     res.send({
       result: 'success',
-      rows: rows,
-      requestCategory :requestCategory
+      rows: rows
     });
   });
 });
@@ -279,21 +267,30 @@ app.post('/delete', function (req, res) {
   res.redirect('/list');
 });
 
-app.get(['/setting', '/setting/:id'], function (req, res) {
+app.get(['/category', '/category/:id'], function (req, res) {
   if (req.params.id) {
+    var user = firebase.auth().currentUser;
+    // if(user===null){
+    //   res.redirect('/');
+    // }
     var categoryId = req.params.id;
-    firebase.database().ref('setting/' + categoryId).once('value', function (snapshot) {
+    firebase.database().ref('category/' + categoryId).once('value', function (snapshot) {
       var data = snapshot.val();
-      res.render('setting', {
-        data: data
+      var writeYn = 'N';
+      if(user.uid === data.writer){
+        writeYn = 'Y';
+      }
+      res.render('category', {
+        data: data,
+        writeYn : writeYn
       });
     });
   } else {
-    res.render('setting');
+    res.render('category');
   }
 });
 
-app.post('/setting/add', function (req, res) {
+app.post('/category/add', function (req, res) {
   var data = req.body;
 
   var user = firebase.auth().currentUser;
@@ -301,80 +298,84 @@ app.post('/setting/add', function (req, res) {
 
   if(user){
     if (!data.id) {
-      data.id = firebase.database().ref().child('setting').push().key;
+      data.id = firebase.database().ref().child('category').push().key;
     }
 
     if (data.id) {
-      firebase.database().ref('setting/' + data.id).set(data);
+      firebase.database().ref('category/' + data.id).set(data);
     }
   }
   res.redirect('/list');
 });
 
-app.post('/setting/delete', function (req, res) {
+app.post('/category/delete', function (req, res) {
   var data = req.body;
-  firebase.database().ref('setting/' + data.id).remove();
+  firebase.database().ref('category/' + data.id).remove();
   res.redirect('/list');
 });
 
-app.post('/setting/addMember', function(req, res){
+app.post('/category/addMember', function(req, res){
   var newMember = req.body.member;
   var categoryId = req.body.id;
 
-  var data = {
-    member : {
-      request : [newMember]      
-    }
-  };
+  var result = 'fail';
+  var newKey = '';
 
   if (categoryId) {
-    firebase.database().ref('setting/' + categoryId+"/member/request").push(newMember);
-  }
-});
+    var member = {
+      email : newMember
+    }
 
-app.post('/setting/rejectMember', function(req, res){
-  console.log('reject');
-  console.log(req.query)
-});
 
-app.post('/setting/acceptMember', function(req, res){
-  var requestId = req.body.requestId;
-  var user = firebase.auth().currentUser;
+    admin.auth().getUserByEmail(newMember).then(function(userRecord) {
+      var verifyUser = {
+        email : userRecord.email,
+        uid : userRecord.uid
+      }
+      var newKeyObj = firebase.database().ref('category/' + categoryId+'/member').push(newMember);
+      result = 'success';
+      newKey = newKeyObj.key;
 
-  if(!user){
-    res.redirect('/login');
-  }
-  var result = 'success';
-  if(requestId){
-    firebase.database().ref('setting/'+requestId+"/member/request").once('value', function (snapshot) {
-      snapshot.forEach(function (childSnapshot) {
-        if(childSnapshot.val() == user.email){
-          childSnapshot.ref.remove();
-          firebase.database().ref('setting/'+requestId+"/member/share").push(user.uid);
-        }
+      res.send({
+        result: result,
+        newKey : newKey
+      });
+
+    })
+    .catch(function(error) {
+        res.status(500).send({
+        result: 'fail'
       });
     });
-  }else{
-    result = 'fail';
   }
-  
+});
+
+app.post('/category/removeMember', function(req, res){
+  var memberKey = req.body.memberKey;
+  var categoryId = req.body.categoryId;
+
+  var result = 'fail';
+  if(categoryId && memberKey){
+    firebase.database().ref('category/'+categoryId+'/member/'+memberKey).remove();
+    result = 'success';
+  } 
+
   res.send({
     result: result
   });
-
+  
 });
+
+
 
 /*설정 */
-app.get('/setting2', function(req, res){
-  res.render('setting2');
+app.get('/setting', function(req, res){
+  res.render('setting');
 });
 
-app.get('/setting2/shareMember', function(req, res){
-  console.log(req.query)
-  req.query.userEmail
+app.get('/setting/shareMember', function(req, res){
 
-  admin.auth().getUserByEmail(req.query.userEmail)
-  .then(function(userRecord) {
+  admin.auth().getUserByEmail(req.query.userEmail).then(function(userRecord) {
     var verifyUser = {
       email : userRecord.email,
       uid : userRecord.uid
@@ -384,6 +385,7 @@ app.get('/setting2/shareMember', function(req, res){
       result: verifyUser
     });
 
+    return verifyUser;
   })
   .catch(function(error) {
     console.log("Error fetching user data:", error);

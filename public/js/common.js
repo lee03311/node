@@ -16,18 +16,7 @@
 
 function init() {
     
-    gapi.load('auth2', function() { // Ready. 
-    });
-
-    gapi.signin2.render('my-signin2', {
-        'scope': 'profile email',
-        'width': 240,
-        'height': 50,
-        'longtitle': true,
-        'theme': 'dark',
-        'onsuccess': signIn
-        //onfailure': onFailure
-      });
+   
 }
 
 function logout(){
@@ -46,4 +35,16 @@ function logout(){
         }
     });
 
+}
+
+
+function verifyEmail(email){
+    var emailRule = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;//이메일 정규식
+ 
+    if(!emailRule.test(email)) {            
+        //경고
+        return false;
+    }
+
+    return true;
 }

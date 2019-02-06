@@ -1,8 +1,10 @@
+var category = null;
 $(function(){
     var categories = getCategoryList()
-    var category = categories.category;
-    var requestCategory = categories.requestCategory;
+    category = categories.category;
 
+    getDays();
+    drawCateogry();
     getTodoList();
 })
 
@@ -56,13 +58,14 @@ function getList(year, month){
 
     var date = {
         startDate : year+'/'+month+'/01',
-        endDate : year+'/'+month+'/'+lastDay
+        endDate : year+'/'+month+'/'+lastDay,
+        category : category
     }
 
     $.ajax({
         url: 'getList',
         dataType: 'json',
-        type: 'GET',
+        type: 'get',
         data: date,
         success: function(data) {
             if(data.result == 'success'){
@@ -113,7 +116,7 @@ function getList(year, month){
                 // todolistUl.appendTo(todolistDiv);
             }
        },error:function(){
-        //    alert('getList 오류!!!');
+           //alert('getList 오류!!!');
            window.location = '/';
        }
     });
@@ -130,7 +133,6 @@ function getTodoList(){
         url: 'getTodoList',
         dataType: 'json',
         type: 'GET',
-        // data: date,
         success: function(data) {
             if(data.result == 'success'){
                 var todolistUl = $("<ul/>");
@@ -180,6 +182,7 @@ function getTodoList(){
 }
 
 function getCategoryList(){
+    var category;
     $.ajax({
         url: '/list/category',
         dataType: 'json',
@@ -188,13 +191,11 @@ function getCategoryList(){
         success: function(data) {
             if(data.result == 'success'){
                 category = data.rows;
-                requestCategory = data.requestCategory;
             }
         }
     });
     return {
-        category :category,
-        requestCategory : requestCategory
+        category :category
     };
 }
 
@@ -232,59 +233,16 @@ function drawCateogry(){ //첫 진입시 호출하여 메인의 사이드바에 
         )
     }
 
-    //요청 requst 보기.
-    for(var i=0;i<requestCategory.length;i++){
-        var request = requestCategory[i];
-
-        $('<li/>').append(
-            $('<a/>').attr('onclick','requestShareCategories("'+request+'")').attr('herf', '#').addClass('blink')
-            .append(
-                $('<span/>').addClass('glyphicon glyphicon-exclamation-sign')
-            )
-        ).prependTo(menu);
-
-        // setInterval(function(){
-        //     $(".glyphicon-exclamation-sign").toggle();
-        //   }, 250);
-    }
 
     $( "div.categoryArea" ).contextmenu(function() {
         event.preventDefault();
         if(!confirm('수정하시겠습니까?')){
             return false;
         }
-        window.location='/setting/'+$(this).attr('data-category-id');
+        window.location='/category/'+$(this).attr('data-category-id');
     });
 }
-/**
- * 카테고리 공유
- */
-function requestShareCategories(requestId){
-    var url = '/setting/acceptMember';
-    if(!confirm("카테고리 공유 신청이 왔습니다. 받으시겠습니까?")){
-        if(confirm("카테고리 공유 신청을 거절하시겠습니까?")){
-            alert('카테고리 공유 신청을 거절하셨습니다.');
-            url = '/setting/rejectMember';
-            // return false;
-        }else{
-            return false;
-        }    
-    }
 
-    $.ajax({
-        url: url,
-        dataType: 'json',
-        data:{
-            requestId : requestId
-        },
-        type: 'post',
-        success: function(data) {
-            if(data.result == 'success'){
-                location.reload();
-            }
-        }
-    });
-}
 
 function clickCategory(categoryId){
     var clickLi = 'cateogryList_'+categoryId;

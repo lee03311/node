@@ -33,30 +33,39 @@ function getCategoryList(){
     });
 }
 
+var index = 0;
 function addMember(){
+    
     if($('#shareMember').val()){
         $.ajax({
-            url: '/setting2/shareMember',
+            url: '/setting/shareMember',
             dataType: 'json',
             type: 'GET',
             data:{
                 userEmail : $('#shareMember').val()
             },
             success: function(data) {
-                console.log(data)
                 var shareMemberList = $('.shareMemberList');
                 if(data.result){
-                    alert('test')
                     var shareUser = data.result;
 
-                    $('<div/>').addClass('shareMemberUser')
+                    $('<div/>').addClass('shareMemberUser').attr('id', 'shareMemberIndex_'+index)
                     .append(
                         $('<span/>').text(shareUser.email)
                     ).append(
-                        $('<span/>').addClass('glyphicon glyphicon-remove')
+                        $('<span/>').addClass('glyphicon glyphicon-remove').attr('onclick', 'removeMember("'+index+'")')
                     ).appendTo(shareMemberList);
+
+                    index++;
                 }
             }
         });
     }
+}
+
+function removeMember(index){
+    alert('remove' + index)
+
+
+    $('#shareMemberIndex_'+index).remove();
 }

@@ -8,98 +8,48 @@ html
         script(src='https://code.jquery.com/ui/1.12.1/jquery-ui.js')
         link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css')
         link(rel='stylesheet' href='//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css')
-        script.
-            var colorWell;
-            var defaultColor = "#0000ff";
-
-            window.addEventListener("load", startup, false);
-            function startup() {
-                colorWell = document.querySelector("#color");
-                colorWell.value = defaultColor;
-                colorWell.addEventListener("input", updateFirst, false);
-                //colorWell.addEventListener("change", updateAll, false);
-                colorWell.select();
-            }
-            function updateFirst(event) {
-                $("#colorText").text(event.target.value);
-            }
-
-            $(function(){
-                $('#color').val($("#colorText").text());
-            })
-
-            function update(status){
-                if(status == 'delete'){
-                    $('#updateForm').attr('action', '/setting/delete');
-                    $('#status').val('delete');
-                }else{
-                    $('#updateForm').attr('action', '/setting/add');
-                    $('#status').val('update');
-                }
-                $('#updateForm').submit();
-            }
-
-            function addUser(){
-                var ul = $('#shareUserList');
-                var newMember = $('#shareUser').val();
-                $('<li/>').text(newMember).appendTo(ul);
-
-                $('#shareUser').val('');
-
-                $.ajax({
-                    url:'/setting/addMember',
-                    data:{
-                        member : newMember,
-                        id : $('#id').val()
-                    },
-                    type: 'post',
-                    success:function(){
-
-                    }
-                })
-            }
-
-body
-
-    div(class='container')
-        if data
-            form(method='post' id='updateForm')
-                input(type='hidden' id='id' name='id' value=data.id)
-                input(type='hidden' id='status' name='status' value=data.id)
+        script(type='text/javascript' src='js/setting.js') 
+        link(rel="stylesheet", href="css/setting.css")
+    body
+        div(class='wrapper')
+            h4 
+                span(class='glyphicon glyphicon-link')
+                |     공유 항목
+        
+            form( action='post')
+                div(class='form-group')
+                    div(class='checkbox')
+                        label   
+                            input(type='checkbox' name='check' value='budget') 
+                            |   예산
 
                 div(class='form-group')
-                    label(for='category' class='col-2 col-form-label') Category
-                    div(class='col-10')
-                        input(class='form-control' type='text' id='category' name='category' value=data.category)
+                    div(class='checkbox')
+                        label
+                            input(type='checkbox' name='check' value='account') 
+                            |   가계부
+                
                 div(class='form-group')
-                    label(for='color') Color
-                        input(type='color' id='color' value='#ffffff' name='color')
-                        sapn(id='colorText')= data.color
-                    script. 
-                        $('#color').val('#fff');
-                div(style='text-align:right;')
-                    button(type='button' onclick='javascript:update("update")' class='btn btn-primary' ) 수정
-                    button(type='button' onclick='javascript:update("delete")' class='btn btn-danger' ) 삭제
-            
-            
-            div(class='form-group')
-                label(for='shareUser') 공유하기
-                button(type='button' onclick='javascript:addUser()' class='btn btn-primary' ) 추가
-                ul(id='shareUserList')
-                div(class='col-10')
-                    input(class='form-control' type='text' id='shareUser' name='shareUser' placeholder='공유할 사용자의 이메일을 입력')
-                    
-        else
-            form(action='/setting/add' method='post')
+                    div(class='checkbox')
+                        label
+                            input(type='checkbox' name='check' value='todolist') 
+                            |   할 일
+
                 div(class='form-group')
-                    label(for='category' class='col-2 col-form-label') Category
-                    div(class='col-10')
-                        input(class='form-control' type='text' id='category' name='category')
+                    div(class='checkbox')
+                        label
+                            input(type='checkbox' name='check' value='daily') 
+                            |   일기
+                    div(id='categoryList')
+
+            h4 
+                span(class='glyphicon glyphicon-link')
+                |     공유할 사람 선택
+
+            form(class="form-inline")
                 div(class='form-group')
-                    label(for='color') Color
-                        input(type='color' id='color' value='#ffffff' name='color')
-                        sapn(id='colorText')
-                    script. 
-                        $('#color').val('#fff');
-                        
-                button(type='submit' class='btn btn-primary' style='float: right;') 등록
+                    label(for='shareMember')
+                    input(type='email' class='form-control' id='shareMember' placeholder='이메일 입력')
+                button(type='button' onclick='javascript:addMember()' class="btn btn-primary") 추가
+                
+                div(id='categoryList' class='shareMemberList')
