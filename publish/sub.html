@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> <!-- font awesome -->
+        <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic" rel="stylesheet"> <!-- 나눔고딕 -->
+        <style>
+            body, html {
+                padding: 0px;
+                margin: 0px;
+                height: 100%;
+                font-family: 'Nanum Gothic', sans-serif;
+            }
+            .container {
+                width:1280px;
+                height:100%;
+                margin: 0 auto;
+                clear: both;
+                box-shadow: 3px 0px 2px #aaaaaa;
+            }
+            .container > div {
+                /*height:100%;*/
+            }
+            .left {
+                float:left;
+                width:250px;
+                height: 100%;
+            }
+            .center {
+                float:left;
+                width:980px;
+                min-height: 100%;
+            }
+            .right {
+                float:right;
+                width:49px;
+                height: 100%;
+                border-left:1px solid #e0e0e0;
+            }
+            .header {
+                height:70px;
+                width:100%;
+                border-bottom:1px solid #e0e0e0;
+            }
+            .header span.first {
+                font-size:20px;
+                font-weight: 600;
+                margin-left:25px;
+                line-height: 70px;
+            }
+            .header span.sub {
+                margin-left:5px;
+                font-size:20px;
+            }
+            .center > .header > .first {
+                margin-left:30px;
+                margin-right:10px;
+            }
+            .content {
+                padding:20px 30px;
+            }
+            .orange {
+                color:orange;
+            }
+            .white {
+                color:white;
+            }
+            .gray {
+                color:#e0e0e0;
+            }
+            .backOrange {
+                background:orange;
+            }
+            .backWhite {
+                background:white;
+            }
+            .backGray {
+                background:#e0e0e0;
+            }
+            .menuNavi {
+                margin-top:60px;
+                list-style: none;
+                padding:0px;
+                font-size: 15px;
+            }
+            .menuNavi li {
+                padding: 5px 25px;
+                border-left:3px solid #282c2f;
+                margin: 15px 0px;
+                cursor:pointer;
+            }
+            .menuNavi li {
+                padding: 5px 20px;
+                border-left:3px solid #282c2f;
+                margin: 20px 0px;
+                cursor:pointer;
+            }
+            .menuNavi li span {
+                color:white;
+            }
+            .menuNavi li i {
+                color:#5e6164;
+            }
+            .menuNavi li span {
+                margin-left: 15px;
+            }
+            .menuNavi li:hover {
+                border-left:3px solid orange;
+                color:orange;
+            }
+            .menuNavi li:hover i, .menuNavi li:hover span {
+                color:orange;
+            }
+
+            .btnDiv {
+                float:right;
+                margin-right:30px;
+            }
+            .searchDiv {
+                margin:20px 0px;
+                padding:0px 15px;
+                height:40px;
+                line-height: 40px;
+                border:1px solid #e0e0e0;
+            }
+            .searchDiv input {
+                width:80%;
+                font-size:15px;
+                margin-left:5px;
+                border:none;
+                border-right:0px;
+                border-top:0px;
+                border-left:0px; 
+                border-bottom:0px;
+            }
+            .cardDiv {
+                margin-top:20px;
+            }
+            .cardDiv > ul {
+                list-style:none;
+                margin: 0px -10px -20px 0px;
+                padding: 0px;
+            }
+            .cardDiv > ul > li {
+                display: inline-block;
+                margin: 0px 10px 20px 0px;
+                height: 280px;
+                width: 219px;
+                background: white;
+                text-align:center;
+                box-shadow: 3px 3px 2px #aaaaaa;
+            }
+            .cardDiv > ul > li .date {
+                margin:25px 0px;
+                display:inline-block;
+                padding:10px;
+                font-size:20px;
+                border-radius:20px;
+                background:#fdebdb;
+                font-weight:600;
+                color: orange;
+            }
+            .cardDiv > ul > li .title {
+                font-size:16px;
+                color:#282c2f;
+                font-weight:600;
+            }
+            .cardDiv > ul > li .writer {
+                font-size:14px;
+                font-weight:600;
+                color:#c6ced2;
+            }
+            .cardDiv > ul > li .writer:after {
+                content: "";
+                display: block;
+                width: 60px;
+                border-bottom: 1px solid #c6ced2;
+                margin: 15px auto;
+            }
+
+            .cardDiv > ul > li .starDiv {
+                margin-bottom:15px;
+            }
+            .cardDiv > ul > li .cardContent {
+                text-align:left;
+                margin:10px 25px;
+                font-size:15px;
+                color:#282c2f; 
+            }
+
+            .line70 {
+                line-height:70px;
+            }
+            .line40 {
+                line-height:40px;
+            }
+
+            .btn {
+                font-size:12px;
+                padding:7px 10px;
+                border:1px solid #e0e0e0;
+                border-radius:5px;
+                cursor:pointer;
+            }
+            .btnWhite {
+                background:white;
+                color:#e0e0e0;
+            }
+            .btnOrange {
+                background:#f58320;
+                color:white;
+            }
+            .btnGray {
+                background:#e0e0e0;
+                color:#282c2f;    
+            }
+
+
+
+            #menu {
+                list-style: none;
+                margin: 200px 0 20px 0;
+                padding: 0;
+                border-top: 1px solid rgba(69, 74, 84, 0.7);
+            }
+
+            #menu li{
+                position: relative;
+                margin: 0;
+                font-size: 12px;
+                border-bottom: 1px solid rgba(69, 74, 84, 0.7);
+                padding: 0;
+            }
+
+            #menu li a {
+                font-style: normal;
+                font-weight: 400;
+                position: relative;
+                display: block;
+                padding: 10px 20px;
+                color: #aaabae;
+                white-space: nowrap;
+                z-index: 2;
+            }
+
+            .categoryArea{
+                border: 1px solid gray;
+                width: 13px;
+                height: 13px;
+            }
+
+            #menu .active{
+                background-color: white;
+            }
+
+            #menu .inactive{
+                background-color: #303641;
+            }
+
+
+
+            .pager
+            {
+                padding-left:0;
+                text-align:center;
+                list-style:none;
+                margin:10px;
+            }
+            .pager li
+            {
+                display:inline
+            }
+            .pager li>a,.pager li>span
+            {
+                display:inline-block;
+                padding:5px 14px;
+                background-color:#fff;
+                border:1px solid #ddd;
+                border-radius:15px
+            }
+            .pager li>a:focus,.pager li>a:hover
+            {
+                text-decoration:none;
+                background-color:#eee
+            }
+            .pager .next>a,.pager .next>span
+            {
+                float:right
+            }
+            .pager .previous>a,.pager .previous>span
+            {
+                float:left
+            }
+            .pager .disabled>a,.pager .disabled>a:focus,.pager .disabled>a:hover,.pager .disabled>span
+            {
+                color:#777;
+                cursor:not-allowed;
+                background-color:#fff
+            }
+
+        </style>
+        <title>Page Title</title>
+    </head>
+<body>
+    <div class="container">
+        <div class="left" style="background:#282c2f;">
+            <div class="header">
+                <span class="first orange">REAL</span>
+                <span class="sub white">TEST</span>
+            </div>
+            <div>
+                <ul class="menuNavi">
+                    <li><i class="far fa-angry"></i><span>ORIGINAL</span></li>
+                    <li><i class="far fa-grin-squint-tears"></i><span>TEST MENU</span></li>
+                    <li><i class="far fa-smile"></i><span>SCHEDULE</span></li>
+                    <li><i class="far fa-grin-beam-sweat"></i><span>TEXT ALIGN</span></li>
+                    <li><i class="fas fa-biohazard"></i><span>OPTIONS</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="center" style="background:#fafafa;">
+            <div class="header backWhite">
+                <span class="first">Content</span>
+                <span class="btn btnOrange">+ Add</span>
+                <div class="btnDiv line70">
+                    <span class="btn btnWhite">+ btn1</span>
+                    <span class="btn btnWhite">+ btn2</span>
+                    <span class="btn btnWhite">+ btn3</span>
+                </div>
+            </div>
+            <div class="content">
+                <ul class="pager">
+                    <li><a href="#" onclick="javascript:moveDays('pre');"><i class="fas fa-chevron-left"></i></a></li>
+                    <li><span id="thisMonth">2019.02</span></li>
+                    <li><a href="#" onclick="javascript:moveDays('next');"><i class="fas fa-chevron-right"></i></a></li>
+                </ul>
+                <div class="searchDiv backWhite">
+                    <i class="fas fa-search gray"></i>
+                    <input type="text" placeholder="Search...">
+                    <div class="btnDiv line40" style="margin-right:0px;">
+                        <span class="btn btnOrange">All</span>
+                        <span class="btn btnGray">Todo</span>
+                        <span class="btn btnGray">Daily</span>
+                    </div>
+                </div>
+                <div class="cardDiv">
+                    <ul>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <ul id="menu"><li id="cateogryList_-LUSs5uKxdzfMnCCb7Bd" class="active"><a onclick="clickCategory(&quot;-LUSs5uKxdzfMnCCb7Bd&quot;)" href="javascript:void(0);"><div class="categoryArea" data-category-id="-LUSs5uKxdzfMnCCb7Bd" style="background: rgb(255, 0, 128);"></div></a></li><li id="cateogryList_-LUSrpDGNRfQK6ADiWv7" class="active"><a onclick="clickCategory(&quot;-LUSrpDGNRfQK6ADiWv7&quot;)" href="javascript:void(0);"><div class="categoryArea" data-category-id="-LUSrpDGNRfQK6ADiWv7" style="background: rgb(255, 115, 115);"></div></a></li><li id="cateogryList_-LTHzNygMkttvVoRlPGA" class="active"><a onclick="clickCategory(&quot;-LTHzNygMkttvVoRlPGA&quot;)" href="javascript:void(0);"><div class="categoryArea" data-category-id="-LTHzNygMkttvVoRlPGA" style="background: rgb(186, 117, 255);"></div></a></li>
+                <li><a href="/category"><i class="fas fa-ellipsis-h"></i></a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
