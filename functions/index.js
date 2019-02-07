@@ -18,6 +18,15 @@ var config = {
 admin.initializeApp(config);
 firebase.initializeApp(config);
 
+var users = null;
+firebase.auth().onAuthStateChanged(user => { 
+  if (user){ 
+    users = user;
+    console.log('login!!!!!!!!!!!!!!!!!');
+    console.log(user)
+  }
+});
+
 // const auth = admin.auth();
 
 app.locals.pretty = true;
@@ -30,7 +39,7 @@ app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 
 app.use(bodyParser.urlencoded({
   extended: false
-}));
+}));  
 
 app.get('/', function (req, res) {
   res.render('login');
@@ -58,7 +67,6 @@ app.post('/join', function(req, res){
   });
 });
 
-var userUid = '';
 app.post('/confirm', function (req, res) {
   var email = req.body.email;
   var password = req.body.password;
@@ -77,16 +85,8 @@ app.post('/confirm', function (req, res) {
   });
 });
 
-function login(email, password){
-  firebase.auth().signInWithEmailAndPassword(email, password).then(function(user){
-    return 'success';
-  }).catch(function(error){
-    return 'fail';
-  });
-}
-
 app.get('/logout', function(req, res){
-  var user = firebase.auth().currentUser;
+  var user = users;//firebase.auth().currentUser;
   firebase.auth().signOut().then(function(){
     res.send({result: 'success'});
     return true;
@@ -101,7 +101,7 @@ app.get('/list', function (req, res) {
 });
 
 app.get('/getList', function (req, res) {
-  var user = firebase.auth().currentUser;
+  var user = users;//firebase.auth().currentUser;
   var categories = [];
   
   if(req.query.category){
@@ -136,7 +136,7 @@ app.get('/getList', function (req, res) {
 
 
 app.get('/getTodoList', function (req, res) {
-  var user = firebase.auth().currentUser;
+  var user = users;//firebase.auth().currentUser;
   var datas = [];
   firebase.database().ref('todolist/'+user.uid).once('value', function (snapshot) {
     snapshot.forEach(function (childSnapshot) {
@@ -159,8 +159,9 @@ app.get('/getTodoList', function (req, res) {
 
 
 app.get('/list/category', function (req, res) {
-  var user = firebase.auth().currentUser;
+  var user = users;//firebase.auth().currentUser;
 
+  console.log("test-=-----> " + user)
   // .orderByChild('writer').equalTo(user.uid)
   firebase.database().ref('category').once('value', function (snapshot) {
     var rows = [];
@@ -195,7 +196,7 @@ app.get('/view', function (req, res) {
   if(status === 'daily'){
     url = 'daily/' + id;
   }else if(status === 'todolist'){
-    var user = firebase.auth().currentUser;
+    var user = users;//firebase.auth().currentUser;
 
     url = 'todolist/'+user.uid+'/'+id
   }
@@ -235,7 +236,7 @@ app.post('/add', function (req, res) {
     }
 
   }else if(data.writeRadio === 'todolist'){
-    var user = firebase.auth().currentUser;
+    var user = users;//firebase.auth().currentUser;
     if(data.todoComplete){
       addData['todoComplete'] = data.todoComplete;
     }
@@ -260,7 +261,7 @@ app.post('/delete', function (req, res) {
   if(status === 'daily'){
     url = 'daily/'+id;
   }else if(status === 'todolist'){
-    var user = firebase.auth().currentUser;
+    var user = users;//firebase.auth().currentUser;
     url = 'todolist/'+user.uid+'/'+id;
   }
   firebase.database().ref(url).remove();
@@ -269,7 +270,7 @@ app.post('/delete', function (req, res) {
 
 app.get(['/category', '/category/:id'], function (req, res) {
   if (req.params.id) {
-    var user = firebase.auth().currentUser;
+    var user = users;//firebase.auth().currentUser;
     // if(user===null){
     //   res.redirect('/');
     // }
@@ -293,7 +294,7 @@ app.get(['/category', '/category/:id'], function (req, res) {
 app.post('/category/add', function (req, res) {
   var data = req.body;
 
-  var user = firebase.auth().currentUser;
+  var user = users;//firebase.auth().currentUser;
   data.writer = user.uid;
 
   if(user){
