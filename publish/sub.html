@@ -11,7 +11,7 @@
                 font-family: 'Nanum Gothic', sans-serif;
             }
             .container {
-                width:1280px;
+                width:100%;
                 height:100%;
                 margin: 0 auto;
                 clear: both;
@@ -21,17 +21,22 @@
                 /*height:100%;*/
             }
             .left {
-                float:left;
+                float:right;
+                position:absolute;
                 width:250px;
                 height: 100%;
+                left:0px;
             }
             .center {
                 float:left;
-                width:980px;
+                width:calc( 100% - 300px );
                 min-height: 100%;
+                margin:0px 50px 0px 250px;
             }
             .right {
                 float:right;
+                position:absolute;
+                right:0px;
                 width:49px;
                 height: 100%;
                 border-left:1px solid #e0e0e0;
@@ -56,7 +61,13 @@
                 margin-right:10px;
             }
             .content {
+                max-width:1280px;
+                margin:0 auto;
+                clear:both;
                 padding:20px 30px;
+            }
+            .skyBlue {
+                color:#79e1e6;
             }
             .orange {
                 color:orange;
@@ -104,11 +115,11 @@
                 margin-left: 15px;
             }
             .menuNavi li:hover {
-                border-left:3px solid orange;
-                color:orange;
+                border-left:3px solid #79e1e6;
+                color:#79e1e6;
             }
             .menuNavi li:hover i, .menuNavi li:hover span {
-                color:orange;
+                color:#79e1e6;
             }
 
             .btnDiv {
@@ -123,7 +134,7 @@
                 border:1px solid #e0e0e0;
             }
             .searchDiv input {
-                width:80%;
+                width:calc(80% - 150px);
                 font-size:15px;
                 margin-left:5px;
                 border:none;
@@ -137,14 +148,15 @@
             }
             .cardDiv > ul {
                 list-style:none;
-                margin: 0px -10px -20px 0px;
+                margin: 0px -11px -20px 0px;
                 padding: 0px;
             }
             .cardDiv > ul > li {
                 display: inline-block;
-                margin: 0px 10px 20px 0px;
+                border-radius: 10px;
+                margin: 0px 11px 20px 0px;
                 height: 280px;
-                width: 219px;
+                width: 200px;
                 background: white;
                 text-align:center;
                 box-shadow: 3px 3px 2px #aaaaaa;
@@ -154,7 +166,7 @@
                 display:inline-block;
                 padding:10px;
                 font-size:20px;
-                border-radius:20px;
+                border-radius:25px;
                 /* background:#fdebdb; */
                 font-weight:600;
                 color: white;
@@ -308,7 +320,7 @@
     <div class="container">
         <div class="left" style="background:#282c2f;">
             <div class="header">
-                <span class="first orange">REAL</span>
+                <span class="first skyBlue">REAL</span>
                 <span class="sub white">TEST</span>
             </div>
             <div>
@@ -348,6 +360,201 @@
                 </div>
                 <div class="cardDiv">
                     <ul>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
+                        <li>
+                            <div class="date">20</div>
+                            <div class="title">오늘의 정보</div>
+                            <div class="writer">jksang@gmail.com</div>
+                            <div class="starDiv">
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="fas fa-star orange"></i>
+                                <i class="far fa-star gray"></i>
+                                <i class="far fa-star gray"></i>
+                            </div>
+                            <div class="cardContent">오늘은 좋은날...</div>
+                        </li>
                         <li>
                             <div class="date">20</div>
                             <div class="title">오늘의 정보</div>
