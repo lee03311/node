@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> <!-- font awesome -->
+        <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic" rel="stylesheet"> <!-- 나눔고딕 -->
+        <link href="https://fonts.googleapis.com/css?family=Nanum+Pen+Script" rel="stylesheet">
+        <style>
+            body, html {
+                padding: 0px;
+                margin: 0px;
+                height: 100%;
+                font-family: 'Nanum Gothic', sans-serif;
+                background-image:url("https://start-moon.firebaseapp.com/images/loginbackground.jpeg") !important;
+                background-position:center;
+                background-repeat:no-repeat;
+                background-size: cover;
+            }
+            .container {
+                justify-content: center;
+                display:flex;
+                height:100%;
+                background:url(http://www.variousways.com/assets/img/screen.png);
+            }
+            .loginDiv {
+               /* border:1px solid white; */
+                background:white;
+                width:295px;
+                height:440px;
+                margin-top:auto;
+                margin-bottom:auto;
+                position:relative;
+                display:flex;
+                flex-direction:column;
+                justify-content:center;
+                border-radius: 10px;
+                text-align:center;
+                background-color: rgba( 255, 255, 255, 0.60 );
+            }
+            .circle {
+                color: white;
+                background: #ff2a62;
+                width: 40px;
+                line-height: 20px;
+                font-size: 20px;
+                font-weight: 600;
+                display: inline-block;
+                border: 10px solid #ff2a62;
+                border-radius: 200px;
+                margin: 0 auto;
+            }
+            .title {
+                margin:20px 0px;
+                font-family: 'Nanum Pen Script', cursive;
+                font-size:33px;
+                font-weight:600;
+            }
+            .title i:first-child {
+                font-size:20px;
+                color:gold;
+            }
+            .title i:last-child {
+                font-size:17px;
+                color:orange;
+            }
+            .inputDiv {
+
+            }
+            .inputDiv div {
+                margin: 10px 45px;
+                padding-bottom:5px;
+                border-bottom:1px solid black;
+                text-align:left;
+            }
+            .inputDiv input {
+                width: 100%;
+                margin:3px 0px;
+                font-size:20px;
+                outline:none;
+                border:none;
+                border-right:0px;
+                border-top:0px;
+                border-left:0px; 
+                border-bottom:0px;
+                background: rgba(0, 0, 0, 0);
+            }
+            .btnDiv div {
+                margin: 10px 45px;
+                padding:7px 0px;
+                cursor:pointer;
+                font-weight:600;
+            }
+            .btnDiv div.login {
+                border:1px solid black;
+            }
+            .rose {
+                background:#ff2a62;
+                color:white;
+            }
+
+
+            
+        </style>
+        <title>Page Title</title>
+    </head>
+<body>
+    <div class="container">
+        <div class="loginDiv">
+            <div class="circle">05<br>23</div>
+            <div class="title">
+                <span>달 옆에 작은 별 <i class="fas fa-moon"></i><i class="fas fa-star"></i></span>
+            </div>
+            <div class="inputDiv">
+                <div><label>Email <input type="text"></label></div>
+                <div><label>PASSWORD <input type="password"></label></div>
+            </div>
+            <div class="btnDiv">
+                <div class="login">
+                    <span>Login</span>
+                </div>
+                <div class="rose">
+                    <span>Sign up</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
