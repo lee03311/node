@@ -26,7 +26,7 @@ html
                 }
 
                 $.ajax({
-                    url:'/profile',
+                    url:'/confirm',
                     type:'post',
                     data:{
                         email:$('#email').val(),
@@ -64,7 +64,7 @@ html
                         
                     
                     div(class='d-flex justify-content-center form_container')
-                        form(action='/profile' method='get' id='loginForm')
+                        form(action='/confirm' method='get' id='loginForm')
                             div(class='input-group mb-3')
                                 div(class='input-group-append')
                                     span(class='input-group-text')
