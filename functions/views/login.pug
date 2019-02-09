@@ -3,16 +3,10 @@ html
     head
         meta(charset = 'utf-8')
         script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js')
-        script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
-        script(src='https://code.jquery.com/ui/1.12.1/jquery-ui.js')
-        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css')
-        link(rel='stylesheet' href='//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css')
-        link(rel='stylesheet', href='css/login.css')
-        style.
-            #loginSubmitBt{
-                width: 137px;
-                margin-right: 10px;
-            }
+        link(rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous")
+        link(href="https://fonts.googleapis.com/css?family=Nanum+Gothic" rel="stylesheet")
+        link(href="https://fonts.googleapis.com/css?family=Nanum+Pen+Script" rel="stylesheet")
+        link(rel='stylesheet', href='/css/login.css')        
         script.
             function login(){
                 if( $('#email').val() == '' ){
@@ -26,7 +20,7 @@ html
                 }
 
                 $.ajax({
-                    url:'/confirm',
+                    url:'/profile',
                     type:'post',
                     data:{
                         email:$('#email').val(),
@@ -45,39 +39,38 @@ html
                 })
             }
 
-            function goSignUp(){
-                window.location = '/signUp';
-            }
-
             function keyDown(){
                 if (window.event.keyCode == 13) {
                     login();
                 }
             }
     body
-        div(class='container h-100')
-            div(class='d-flex justify-content-center h-100')
-                div(class='user_card')
-                    div(class='d-flex justify-content-center')
-                        //- div(class='brand_logo_container' )
-                            img(src='https://cdn.freebiesupply.com/logos/large/2x/pinterest-circle-logo-png-transparent.png' class='brand_logo' alt='Logo')
-                        
+        div(class="container")
+            div(class="loginDiv")
+                div(class="circle")     
+                                    | 05
+                                    br 
+                                    |23
+                div(class="title")
+                   span 달 옆에 작은 별 
+                        i(class="fas fa-moon")
+                        i(class="fas fa-star")
+                
+                div(class="inputDiv")
+                    div
+                        label Email 
+                            input(type="text" name='email' id='email')
+                    div
+                        label PASSWORD 
+                            input(type="password" name='password' id='password' onKeyDown='keyDown()')
+                
+                div(class="btnDiv")
+                    div(class="login" onclick='login()')
+                       span Login
                     
-                    div(class='d-flex justify-content-center form_container')
-                        form(action='/confirm' method='post' id='loginForm')
-                            div(class='input-group mb-3')
-                                div(class='input-group-append')
-                                    span(class='input-group-text')
-                                
-                                input(type='text' name='email' id='email' class='form-control input_user' placeholder='email')
-                            
-                            div(class='input-group mb-2')
-                                div(class='input-group-append')
-                                    span(class='input-group-text')
-                                
-                                input(type='password' name='password' id='password' class='form-control input_pass' placeholder='password' onKeyDown='keyDown()')
-                                                                            
-                    div(class='d-flex justify-content-center mt-3 login_container')
-                        button(type='button' name='button' class='btn login_btn' onclick='login()' ) Login
-                        button(type='button'  onclick='goSignUp()' class='btn btn-success' ) SignUp
-                    //- button(type='button' name='button' class='btn sign_btn') Sign Up
+                    div(class="rose")
+                       span Sign up
+                    
+                
+            
+        

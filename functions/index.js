@@ -4,6 +4,7 @@ const firebase = require("firebase");
 const express = require("express")
 var dateFormat = require('dateformat');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 const app = express();
 
 
@@ -19,11 +20,13 @@ admin.initializeApp(config);
 firebase.initializeApp(config);
 
 var users = null;
+
+//firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
 firebase.auth().onAuthStateChanged(user => { 
   if (user){ 
     users = user;
     console.log('login!!!!!!!!!!!!!!!!!');
-    console.log(user)
+    //console.log(user)
   }
 });
 
@@ -31,6 +34,7 @@ firebase.auth().onAuthStateChanged(user => {
 
 app.locals.pretty = true;
 app.use(express.static('public'));
+app.use(cookieParser());
 app.set('views', './views'); //폴더명
 app.set('view engine', 'pug'); //views 폴더에서 pug 확장자 파일을 찾아 결과를 뿌림
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js')); // redirect bootstrap JS
@@ -40,6 +44,78 @@ app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 app.use(bodyParser.urlencoded({
   extended: false
 }));  
+
+
+/** Get profile endpoint. */
+app.post('/profile', function (req, res) {
+
+    //var count = req.cookies.count;
+    // var count = 0;
+    // if(req.signedCookies.count){
+    //    count = parseInt(req.signedCookies.count);
+    // }else{
+    //    count = 0;
+    // }
+    // count = count +1 ;
+    // res.cookie('count', count, {singed:true});
+    // res.send('count : ' + count);
+
+
+    var email = req.body.email;
+    var password = req.body.password;
+    
+    var result = '';
+    //console.log(login(email, password))
+    firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(user => {
+      res.cookie('count', 1)
+      res.cookie('user', user);
+      console.log('>>>>>>>>>>>>>>>>.')
+      console.log(req.cookies.user)
+
+      console.log('count : ' + req.cookies.count);
+
+      result = 'success';
+      //res.status(200).send({ result: result });
+      //return true;
+    })
+    .catch(error => {
+      console.log(error)
+      result = error.code;
+      res.status(500).send({ error: error.code });
+    });
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.get('/', function (req, res) {
   res.render('login');
