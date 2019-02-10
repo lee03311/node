@@ -76,9 +76,10 @@ app.post('/confirm', function (req, res) {
 
         result = 'success';
         res.status(200).send({ result: result });
-        return true;
+        
       }
-    });    
+    }); 
+    return true;   
   })
   .catch(error => {
     console.log(error)
@@ -173,6 +174,7 @@ app.get('/getTodoList', function (req, res) {
 app.get('/list/category', function (req, res) {
   var uid = req.cookies.uid;
   var email = req.cookies.email;
+
   // .orderByChild('writer').equalTo(user.uid)
   firebase.database().ref('category').once('value', function (snapshot) {
     var rows = [];
@@ -185,6 +187,8 @@ app.get('/list/category', function (req, res) {
 
       if(data.member){
         for(key in data.member) {
+
+          console.log('email : '+email);
           if(data.member[key] === email){
             rows.push(data);
           }
@@ -340,8 +344,6 @@ app.post('/category/addMember', function(req, res){
     var member = {
       email : newMember
     }
-
-
     admin.auth().getUserByEmail(newMember).then(function(userRecord) {
       var verifyUser = {
         email : userRecord.email,
@@ -355,7 +357,7 @@ app.post('/category/addMember', function(req, res){
         result: result,
         newKey : newKey
       });
-
+      return true;
     })
     .catch(function(error) {
         res.status(500).send({
