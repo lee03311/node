@@ -63,19 +63,48 @@ app.post('/confirm', function (req, res) {
   var email = req.body.email;
   var password = req.body.password;
   
-  res.setHeader('Cache-Control', 'private');
+  // res.setHeader('Cache-Control', 'private');
   var result = '';
   //console.log(login(email, password))
   firebase.auth().signInWithEmailAndPassword(email, password)
-  .then(user => {
-
+  .then(user1 => {
+   
     firebase.auth().onAuthStateChanged(user => { 
       if (user){
-        res.cookie('uid', user.uid);
-        res.cookie('email', email);
+        // res.cookie('uid', user.uid);
+        // res.cookie('email', email);
+        user.getIdToken().then(idToken => {
+          console.log('idToken ---> ' + idToken);
+
+
+        const expiresIn = 60 * 60 * 24 * 5 * 1000;
+        // Create the session cookie. This will also verify the ID token in the process.
+        // The session cookie will have the same claims as the ID token.
+        // To only allow session cookie setting on recent sign-in, auth_time in ID token
+        // can be checked to ensure user was recently signed in before creating a session cookie.
+        admin.auth().createSessionCookie(idToken, {expiresIn}).then((sessionCookie) => {
+          // Set cookie policy for session cookie.
+          const options = {maxAge: expiresIn, httpOnly: true, secure: true};
+          res.cookie('session', sessionCookie);
+          console.log(sessionCookie)
+          console.log('=============session===========')
+          console.log(req.cookies);
+          // res.end(JSON.stringify({status: 'success'}));
+
 
         result = 'success';
         res.status(200).send({ result: result });
+          return true;
+        }).catch(error => {
+          // Session cookie is unavailable or invalid. Force user to login.
+         console.log(error)
+        });
+        return true;
+
+      }).catch(error => {
+        // Session cookie is unavailable or invalid. Force user to login.
+       console.log(error)
+      });
         
       }
     }); 
@@ -172,14 +201,33 @@ app.get('/getTodoList', function (req, res) {
 
 
 app.get('/list/category', function (req, res) {
+
+  res.setHeader('Cache-Control', 'private');
   var uid = req.cookies.uid;
   var email = req.cookies.email;
+
+  const sessionCookie = req.cookies.session || '';
+  console.log('sissiong--------> ' + sessionCookie);
+
+  admin.auth().verifySessionCookie(
+    sessionCookie, true /** checkRevoked */).then((decodedClaims) => {
+      console.log('=======decodedClaims========')
+   console.log(decodedClaims)
+   return true;
+  }).catch(error => {
+    // Session cookie is unavailable or invalid. Force user to login.
+   console.log(error)
+  });
+
+
+
 
   // .orderByChild('writer').equalTo(user.uid)
   firebase.database().ref('category').once('value', function (snapshot) {
     var rows = [];
     snapshot.forEach(function (childSnapshot) {
       var data = childSnapshot.val();
+      console.log(data);
 
       if(data.writer === uid){
         rows.push(data);
