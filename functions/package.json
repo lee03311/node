@@ -16,6 +16,7 @@
     "express": "^4.16.4",
     "firebase": "^5.7.0",
     "firebase-admin": "^6.4.0",
+    "firebase-cookie-session": "^3.0.0",
     "firebase-functions": "^2.1.0",
     "pug": "^2.0.3"
   },

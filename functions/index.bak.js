@@ -5,7 +5,6 @@ const express = require("express")
 var dateFormat = require('dateformat');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-// var cookieSession = require('cookie-session')
 // var serviceAccount = require('path/to/serviceAccountKey.json');
 const app = express();
 
@@ -51,11 +50,10 @@ app.use('/js', express.static(__dirname + '/node_modules/jquery/dist')); // redi
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css')); // redirect CSS bootstrap
 
 app.use(bodyParser.urlencoded({
-  extended: true
+  extended: false
 }));  
 
 app.use(cookieParser());
-app.use(attachCsrfToken('/confirm', 'csrfToken', (Math.random()* 100000000000000000).toString()));
 
 app.get('/', function (req, res) {
   res.render('login');
@@ -83,108 +81,58 @@ app.post('/join', function(req, res){
   });
 });
 
-function attachCsrfToken(url, cookie, value) {
-  return function(req, res, next) {
-    if (req.url === url) {
-      res.cookie(cookie, value);
-    }
-    next();
-  }
-}
-
-/** Get profile endpoint. */
-app.get('/profile', function (req, res) {
-  // Get session cookie.
-  // res.setHeader('Cache-Control', 'private');
-  res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
-  const sessionCookie = req.cookies.session || '';
-
-  admin.auth().verifySessionCookie(
-    sessionCookie, true /** checkRevoked */).then((decodedClaims) => {
-    serveContentForUser('/profile', req, res, decodedClaims);
-    return true;
-  }).catch(error => {
-    // Session cookie is unavailable or invalid. Force user to login.
-    console.log(error);
-    // res.redirect('/login');
-  });
-});
-
-function serveContentForUser(endpoint, req, res, decodedClaims) {
-  // Lookup the user information corresponding to cookie and return the profile data for the user.
-  return admin.auth().getUser(decodedClaims.sub).then(function(userRecord) {
-    var html = '<!DOCTYPE html>' +
-      '<html>' +
-      '<meta charset="UTF-8">' +
-      '<link href="style.css" rel="stylesheet" type="text/css" media="screen" />' +
-      '<meta name="viewport" content="width=device-width, initial-scale=1">' +
-      '<title>Sample Profile Page</title>' +
-      '<body>' +
-      '<div id="container">' +
-      '  <h3>Welcome to Session Management Example App, '+( userRecord.displayName || 'N/A') +'</h3>' +
-      '  <div id="loaded">' +
-      '    <div id="main">' +
-      '      <div id="user-signed-in">' +
-      // Show user profile information.
-      '        <div id="user-info">' +
-      '          <div id="photo-container">' +
-      (userRecord.photoURL ? '      <img id="photo" src=' +userRecord.photoURL+ '>' : '') +
-      '          </div>' +
-      '          <div id="name">' + userRecord.displayName + '</div>' +
-      '          <div id="email">'+
-      userRecord.email + ' (' + (userRecord.emailVerified ? 'verified' : 'unverified') + ')</div>' +
-      '          <div class="clearfix"></div>' +
-      '        </div>' +
-      '        <p>' +
-      // Append button for sign out.
-      '          <button id="sign-out" onClick="window.location.assign(\'/logout\')">Sign Out</button>' +
-      // Append button for deletion.
-      '          <button id="delete-account" onClick="window.location.assign(\'/delete\')">' +
-      'Delete account</button>' +
-      '        </p>' +
-      '      </div>' +
-      '    </div>' +
-      '  </div>' +
-      '</div>' +
-      '</body>' +
-      '</html>';
-    res.set('Content-Type', 'text/html');
-    res.end(html);
-    return true;
-  }).catch(function(error) {
-    console.log(error)
-    // res.status(401).send('UNAUTHORIZED REQUEST!');
-  });
-}
-
 app.post('/confirm', function (req, res) {
   var email = req.body.email;
   var password = req.body.password;
   
-  // res.setHeader('Cache-Control', 'private');
-  res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+  res.setHeader('Cache-Control', 'private');
+  var result = '';
+  //console.log(login(email, password))
   firebase.auth().signInWithEmailAndPassword(email, password)
   .then(user1 => {
 
-    firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
-      var expiresIn = 60 * 60 * 24 * 5 * 1000;
-      admin.auth().createSessionCookie(idToken, {expiresIn}).then((sessionCookie) => {
-        // Set cookie policy for session cookie.
-        const options = {maxAge: expiresIn, httpOnly: true, secure: true};
-        res.cookie('session', sessionCookie, options);
-        res.send({result: 'success'});
-        return true;
-      }).catch(function(error) {
-        console.log(error)
-        // res.status(401).send('UNAUTHORIZED REQUEST!');
-      });  
-      // throw new Error('FIREBAE CURRENT USER!');
-      return true;
-    }).catch(function(error) {
-      console.log(error)
-      // res.status(401).send('UNAUTHORIZED REQUEST!');
-    });    
-    return true;
+
+    firebase.auth().onAuthStateChanged(user => { 
+      if (user){
+        res.cookie('uid', user.uid);
+        res.cookie('email', email);
+      //   user.getIdToken().then(idToken => {
+      //     console.log('idToken ---> ' + idToken);
+      //     // const csrfToken = getCookie('csrfToken');
+
+      //     // console.log('csrfToken ---> ' + csrfToken)
+      //   const expiresIn = 60 * 60 * 24 * 5 * 1000;
+      //   // Create the session cookie. This will also verify the ID token in the process.
+      //   // The session cookie will have the same claims as the ID token.
+      //   // To only allow session cookie setting on recent sign-in, auth_time in ID token
+      //   // can be checked to ensure user was recently signed in before creating a session cookie.
+      //   // admin.auth().createSessionCookie(idToken, {expiresIn}).then((sessionCookie) => {
+      //   //   // Set cookie policy for session cookie.
+      //   //   const options = {maxAge: expiresIn, httpOnly: true, secure: true};
+      //   //   res.cookie('session', sessionCookie);
+      //   //   console.log(sessionCookie)
+      //   //   console.log('=============session===========')
+      //   //   console.log(req.cookies);
+      //   //   // res.end(JSON.stringify({status: 'success'}));
+
+
+        result = 'success';
+        res.status(200).send({ result: result });
+      //   //   return true;
+      //   // }).catch(error => {
+      //   //   // Session cookie is unavailable or invalid. Force user to login.
+      //   //  console.log(error)
+      //   // });
+      //   return true;
+
+      // }).catch(error => {
+      //   // Session cookie is unavailable or invalid. Force user to login.
+      //  console.log(error)
+      // });
+        
+      }
+    }); 
+    return true;   
   })
   .catch(error => {
     console.log(error)
@@ -193,13 +141,25 @@ app.post('/confirm', function (req, res) {
   });
 });
 
+
+
+
+
 app.get('/logout', function(req, res){
 
   res.setHeader('Cache-Control', 'private');
-  // res.clearCookie('email');
-  // res.clearCookie('uid');
-  res.clearCookie('session');
+  res.clearCookie('email');
+  res.clearCookie('uid');
   res.send({result: 'success'});
+  //   return true;
+
+  // var user = users;//firebase.auth().currentUser;
+  // firebase.auth().signOut().then(function(){
+  //   res.send({result: 'success'});
+  //   return true;
+  // }).catch(function(error){
+  //   res.status(500).send({ error: error.code });
+  // });
 });
 
 app.get('/list', function (req, res) {
@@ -266,19 +226,13 @@ app.get('/getTodoList', function (req, res) {
 
 app.get('/list/category', function (req, res) {
 
-  // res.setHeader('Cache-Control', 'private');
-  // var uid = req.cookies.uid;
-  // var email = req.cookies.email;
+  res.setHeader('Cache-Control', 'private');
+  var uid = req.cookies.uid;
+  var email = req.cookies.email;
 
-  res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
-  const sessionCookie = req.cookies.__session || '';
-  
-  console.log('====sessionCookie1====')
-  console.log(sessionCookie)
-  console.log(req.cookie);
-  console.log(req.signedCookies);
-
-
+  const sessionCookie = req.cookies.session || '';
+  console.log('sissiong--------> ' + sessionCookie);
+  console.log(req.cookies);
 
   // admin.auth().verifySessionCookie(
   //   sessionCookie, true /** checkRevoked */).then((decodedClaims) => {
