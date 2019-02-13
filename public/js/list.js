@@ -6,7 +6,8 @@ $(function(){
     getDays();
     drawCateogry();
     getTodoList();
-})
+});
+
 
 function getDays(){
     var today = new Date();
