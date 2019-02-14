@@ -202,16 +202,19 @@ app.get('/getList', function (req, res) {
   var sessionCookie = null;
 
   if(!host.includes('localhost')){
-    res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+    // res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+    res.set('Cache-Control', 'public, max-age=0');
     sessionCookie = req.cookies.__session;
   }else{
     res.setHeader('Cache-Control', 'private');
     sessionCookie = req.cookies.session;
   }
+  console.log('getList 1=======================');
 
   admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
     var uid = decodedClaims.sub;
     var email = decodedClaims.email;
+    console.log('getList 2=======================' + uid + " , " + email);
 
     var categories = [];
   
@@ -222,6 +225,7 @@ app.get('/getList', function (req, res) {
       }
     }
   
+    console.log('getList 3=======================' + categories);
     var datas = [];
     firebase.database().ref('daily').orderByChild('date').startAt(req.query.startDate).endAt(req.query.endDate).once('value', function (snapshot) {
       snapshot.forEach(function (childSnapshot) {
@@ -427,13 +431,16 @@ app.post('/add', function (req, res) {
       }
     }
 
+    res.send({
+      result: 'success'
+    });
+
     return true;
   }).catch(error => {
     console.log(error);
     res.redirect('/');
   });
 
-  res.redirect('/list');
 });
 
 app.post('/delete', function (req, res) {

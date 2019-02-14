@@ -58,7 +58,24 @@ html
                     return false;
                 }
 
-                $("#reportForm").submit();
+                //- $("#reportForm").submit();
+
+                $.ajax({
+                    url: '/add',
+                    dataType: 'json',
+                    type: 'post',
+                    data :  $("#reportForm").serialize(),
+                    success: function(data) {
+                        console.log(data.result);
+                        if(data.result == 'success'){
+
+                            //- window.location.reload= true;
+                            $('#myModal').modal('hide');
+                            getDays();
+                        }
+                    }
+                });
+
             }
 
             function reportDelete(){
