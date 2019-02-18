@@ -1,0 +1,70 @@
+doctype html
+html
+    head
+        meta(charset = 'utf-8')
+        script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+        //- script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
+        //- script(src='https://code.jquery.com/ui/1.12.1/jquery-ui.js')
+        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css')
+        link(rel='stylesheet' href='//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css')
+        link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nanum+Gothic') 
+        link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.1/css/all.css' integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous")
+        link(rel="stylesheet", href="css/list.css")
+        script(type='text/javascript' src='js/list.js') 
+        script(type='text/javascript' src='js/common.js') 
+        //- script.
+    body
+        div(class='container')
+            div(class="left" style="background-color:#282c2f;")
+                div(class="header")
+                    span(class="first skyBlue") REAL
+                    span(class="sub white") TEST
+                div
+                    ul(class="menuNavi")
+                        li
+                            i(class="far fa-angry")
+                            span ORIGINAL
+                        li
+                            i(class="far fa-grin-squint-tears")
+                            span TEST MENU
+                        li
+                            i(class="far fa-smile")
+                            span SCHEDULE
+                        li
+                            i(class="far fa-grin-beam-sweat")
+                            span TEXT ALIGN
+                        li
+                            i(class="fas fa-biohazard")
+                            span OPTIONS
+            div(class='center' style='background:#fafafa;')
+                header(class="header backWhite")
+                    span(class="first") Content
+                    span(class="btn btnOrange") + Add
+                    div(class="headerBtn")
+                        span(class="btn btnWhite") + btn1
+                        span(class="btn btnWhite") + btn2
+                        span(class="btn btnWhite") + btn3
+                div(class='content')
+                    ul(class='pager')
+                        li
+                            a(href="#" onclick="javascript:moveDays('pre');")
+                                span(class='glyphicon glyphicon-menu-left' aria-hidden='true')
+                        li 
+                            span(id='thisMonth')
+                        li
+                            a(href="#" onclick="javascript:moveDays('next');")
+                                span(class='glyphicon glyphicon-menu-right' aria-hidden='true')
+
+
+                    div(class="searchDiv backWhite")
+                        i(class="fas fa-search gray")
+                        input(type="text" placeholder="Search...")
+                        div(class="btnDiv line40" style="margin-right:0px;")
+                            span(class="btn btnOrange") All
+                            span(class="btn btnGray") Todo
+                            span(class="btn btnGray") Daily
+
+                    div(class='dailyCategoryArea')
+
+                    div(class='cardDiv')
+                        ul(id='cardList')

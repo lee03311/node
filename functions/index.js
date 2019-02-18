@@ -193,7 +193,7 @@ app.get('/logout', function(req, res){
 
 app.get('/list', function (req, res) {
   // var user = firebase.auth().currentUser;
-  res.render('list');
+  res.render('list2');
 });
 
 app.get('/getList', function (req, res) {
@@ -235,7 +235,7 @@ app.get('/getList', function (req, res) {
           if(exist !== -1){
             if (data.date) {
               var date = data.date;
-              data.date = dateFormat(date, 'mm/dd');
+              data.date = dateFormat(date, 'dd');
             }
             datas.push(data);
           }

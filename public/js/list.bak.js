@@ -69,63 +69,52 @@ function getList(year, month){
         type: 'get',
         data: date,
         success: function(data) {
-            console.log(data)
             if(data.result == 'success'){
-                var dailyUl = $("#cardList");
-                
-                dailyUl.empty();
+                var dailyUl = $("<ul/>");//$("#dataArea");
+                // var todolistUl = $("<ul/>");
+
+                var dailyDiv = $('.daily');
+                // var todolistDiv= $('.todolist');
+
+                dailyDiv.empty();
+                // todolistDiv.empty();
                 var rows = data.rows;
+                /*var cateogries = getCategoryList();*/
+                dailyDiv.removeClass('noItem');
+
                 if(rows.length > 0){
                     for(var i=0;i<rows.length;i++){
-                        
-                        $('<li/>').append(
-                            $('<div/>').addClass('front card').append(
-                                $('<div/>').addClass('date').css('background',categoryMap(rows[i].category)).text(rows[i].date)
-                            ).append(
-                                $('<div/>').addClass('title').text(rows[i].title)
-                            )
-                            
-                            .append(
-                                $('<div/>').addClass('writer')
-                            )
-                            // .append(
-                            //     $('<div/>').addClass('starDiv').append(
-                            //         $('<i/>').addClass('fas fa-star orange')
-                            //     ).append(
-                            //         $('<i/>').addClass('fas fa-star orange')
-                            //     ).append(
-                            //         $('<i/>').addClass('fas fa-star orange')
-                            //     ).append(
-                            //         $('<i/>').addClass('fas fa-star orange')
-                            //     ).append(
-                            //         $('<i/>').addClass('fas fa-star orange')
-                            //     )
-                            // )
-                            
-                            .append(
-                                $('<div/>').addClass('cardContent').text(rows[i].contents)
-                            )
+                        var title = rows[i].title;
+                        if(title.length > 10){
+                            title = title.substring(0, 10) + "...";
+                        }
+                        $("<li/>").attr('id', rows[i].id).attr('data-category', rows[i].category).addClass('list').attr('onclick','showInfo("daily", "'+rows[i].id+'")').append(
+                            $('<div/>').addClass('circle').text(rows[i].date).css('background',categoryMap(rows[i].category))
                         ).append(
-                            $('<div/>').addClass('back card').append(
-                                $('<div/>').addClass('subBtn').append(
-                                    $('<ul/>').append(
-                                        $('<li/>').append(
-                                            $('<i/>').addClass('far fa-edit')
-                                        )
-                                    ).append(
-                                        $('<li/>').append(
-                                            $('<i/>').addClass('far fa-trash-alt')
-                                        )
-                                    )
-                                )
-                            ).append(
-                                $('<h3/>').addClass('title').text(rows[i].title)
-                            ).append(
-                                $('<p/>').addClass('content').text(rows[i].contents)
+                            $('<span/>').text(title).addClass('textTitle')
+                        ).append(
+                            $('<div/>').addClass('textBox').append(
+                                $('<span/>').text(rows[i].contents)
                             )
-                        ).appendTo(dailyUl)
+                        ).prependTo(dailyUl);
                     }
                 }
+                //daily add
+                $("<li/>").addClass('dailyAddArea list').attr('onclick','openDialogForAdd("daily")').append(
+                        $('<div/>').addClass('dailyAddDiv').append(
+                            $('<span/>').addClass('glyphicon glyphicon-plus')
+                        )
+                ).prependTo(dailyUl);    
+
+
+                // $("<li/>").addClass('todolistAddArea complete').attr('onclick','openDialogForAdd("todo")').append(
+                //     $('<div/>').addClass('todolistAddDiv circle').append(
+                //         $('<span/>').addClass('glyphicon glyphicon-plus')
+                //     )
+                // ).prependTo(todolistUl);
+                
+                dailyUl.appendTo(dailyDiv);
+                // todolistUl.appendTo(todolistDiv);
             }
        },error:function(){
            //alert('getList 오류!!!');
@@ -224,7 +213,7 @@ function categoryMap(categoryId){
 }
 
 function drawCateogry(){ //첫 진입시 호출하여 메인의 사이드바에 카테고리 항목 그리는 거하고, 모달에 카테고리 그려주는거 2가지 일을 함.
-    var dailyCategoryArea = $(".dailyCategoryArea");
+    var menu = $("#menu");
 
     var select = $('#cateogry');
     select.empty();
@@ -234,12 +223,11 @@ function drawCateogry(){ //첫 진입시 호출하여 메인의 사이드바에 
     for(var i=0; i<length ;i++){
         var datas = category[i];
 
-        $('<div/>').addClass('dailyCategory').append(
-            $('<div/>').addClass('categoryColor').attr('data-category-id',datas.id).css('background', datas.color)
-        ).append(
-            $('<span/>').addClass('categoryText').text(datas.category)
-        ).appendTo(dailyCategoryArea);
-
+        $("<li/>").attr('id','cateogryList_'+datas.id).addClass('active').append(
+            $("<a/>").attr('onclick', 'clickCategory("'+datas.id+'")').attr('href','javascript:void(0);').append(
+                $("<div/>").addClass('categoryArea').attr('data-category-id',datas.id).css('background', datas.color)
+            )
+        ).prependTo(menu);
 
         select.append(
             $('<option/>').attr('value',datas.id).text(datas.category)
