@@ -10,7 +10,6 @@ html
         link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nanum+Gothic') 
         link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.1/css/all.css' integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous")
         link(rel="stylesheet", href="css/list.css")
-        script(type='text/javascript' src='js/list.js') 
         script(type='text/javascript' src='js/common.js') 
         script.
             $(function(){
@@ -39,13 +38,13 @@ html
                             i(class='fas fa-sign-out-alt')
                 div
                     ul(class="menuNavi")
-                        li(class='active')
-                            i(class="far fa-angry")
-                            span DAILY
                         li
-                            a(href='/todolist')
-                                i(class="far fa-grin-squint-tears")
-                                span TODOLIST
+                            a(href='/list')
+                                i(class="far fa-angry")
+                                span DAILY
+                        li(class='active')
+                            i(class="far fa-grin-squint-tears")
+                            span TODOLIST
                         li
                             a(href='#')
                                 i(class="far fa-smile")

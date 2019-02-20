@@ -74,7 +74,7 @@ function checkIfSignedIn(url) {
       var sessionCookie = null;
 
       if(!host.includes('localhost')){
-        res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+        res.set('Cache-Control', 'public, max-age=0');
         sessionCookie = req.cookies.__session;
       }else{
         res.setHeader('Cache-Control', 'private');
@@ -130,7 +130,7 @@ app.post('/confirm', function (req, res) {
   console.log('/confirm : ' + host)
   if(!host.includes('localhost')){
     console.log('cache : public')
-    res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+    res.set('Cache-Control', 'public, max-age=0');
   }else{
     console.log('cache : private')
     res.setHeader('Cache-Control', 'private');
@@ -159,8 +159,6 @@ app.post('/confirm', function (req, res) {
             cookiesKey = 'session';
           }
           var options = {maxAge: expiresIn, httpOnly: true, secure: secure /** to test in localhost */};
-          console.log('options -> ');
-          console.log(options)
           res.cookie(cookiesKey, sessionCookie, options)
           res.status(200).send({result: 'success'});
           return true;
@@ -182,19 +180,91 @@ app.post('/confirm', function (req, res) {
 });
 
 app.get('/logout', function(req, res){
+  var host = req.get('host') || '';
+  var sessionCookie = null;
 
   if(!host.includes('localhost')){
-    key = '__'+key;
+    // res.set('Cache-Control', 'public, max-age=0');
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = '__session';
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = 'session';
   }
-  res.clearCookie(key);
-  res.clearCookie('csfrToken');
-  res.send({result: 'success'});
+
+  res.clearCookie(sessionCookie);
+  res.clearCookie('csrfToken');
+
+  res.status(200).send({ 
+    result : 'success'
+  });
 });
 
 app.get('/list', function (req, res) {
   // var user = firebase.auth().currentUser;
-  res.render('list2');
+
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    // res.set('Cache-Control', 'public, max-age=0');
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+  // console.log('getList 1=======================');
+
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+   
+      res.render('list2',{email:email});
+      return true;
+    }).catch(error => {
+      console.log('list render ===>' + error);
+      res.redirect('/');
+  });
 });
+
+app.get('/todolist', function (req, res) {
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+
+    var datas = [];
+    firebase.database().ref('todolist/'+uid).once('value', function (snapshot) {
+      snapshot.forEach(function (childSnapshot) {
+        var data = childSnapshot.val();
+        if (data.date) {
+          var date = data.date;
+          data.date = dateFormat(date, 'mm/dd');
+        }
+        datas.push(data);
+  
+      });
+      
+      res.render('todolist',{rows:datas});
+    });
+    return true;
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
+});
+
 
 app.get('/getList', function (req, res) {
  
@@ -202,19 +272,19 @@ app.get('/getList', function (req, res) {
   var sessionCookie = null;
 
   if(!host.includes('localhost')){
-    // res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+    // res.set('Cache-Control', 'public, max-age=0');
     res.set('Cache-Control', 'public, max-age=0');
     sessionCookie = req.cookies.__session;
   }else{
     res.setHeader('Cache-Control', 'private');
     sessionCookie = req.cookies.session;
   }
-  console.log('getList 1=======================');
+  // console.log('getList 1=======================');
 
   admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
     var uid = decodedClaims.sub;
     var email = decodedClaims.email;
-    console.log('getList 2=======================' + uid + " , " + email);
+    // console.log('getList 2=======================' + uid + " , " + email);
 
     var categories = [];
   
@@ -225,7 +295,7 @@ app.get('/getList', function (req, res) {
       }
     }
   
-    console.log('getList 3=======================' + categories);
+    // console.log('getList 3=======================' + categories);
     var datas = [];
     firebase.database().ref('daily').orderByChild('date').startAt(req.query.startDate).endAt(req.query.endDate).once('value', function (snapshot) {
       snapshot.forEach(function (childSnapshot) {
@@ -258,7 +328,7 @@ app.get('/getTodoList', function (req, res) {
   var sessionCookie = null;
 
   if(!host.includes('localhost')){
-    res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+    res.set('Cache-Control', 'public, max-age=0');
     sessionCookie = req.cookies.__session;
   }else{
     res.setHeader('Cache-Control', 'private');
@@ -295,7 +365,7 @@ app.get('/list/category', function (req, res) {
   var sessionCookie = null;
 
   if(!host.includes('localhost')){
-    res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+    res.set('Cache-Control', 'public, max-age=0');
     sessionCookie = req.cookies.__session;
   }else{
     res.setHeader('Cache-Control', 'private');
@@ -345,7 +415,7 @@ app.get('/view', function (req, res) {
   var sessionCookie = null;
 
   if(!host.includes('localhost')){
-    res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+    res.set('Cache-Control', 'public, max-age=0');
     sessionCookie = req.cookies.__session;
   }else{
     res.setHeader('Cache-Control', 'private');
@@ -387,7 +457,7 @@ app.post('/add', function (req, res) {
   var sessionCookie = null;
 
   if(!host.includes('localhost')){
-    res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+    res.set('Cache-Control', 'public, max-age=0');
     sessionCookie = req.cookies.__session;
   }else{
     res.setHeader('Cache-Control', 'private');
@@ -449,7 +519,7 @@ app.post('/delete', function (req, res) {
   var sessionCookie = null;
 
   if(!host.includes('localhost')){
-    res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+    res.set('Cache-Control', 'public, max-age=0');
     sessionCookie = req.cookies.__session;
   }else{
     res.setHeader('Cache-Control', 'private');
@@ -487,7 +557,7 @@ app.get(['/category', '/category/:id'], function (req, res) {
     var sessionCookie = null;
   
     if(!host.includes('localhost')){
-      res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+      res.set('Cache-Control', 'public, max-age=0');
       sessionCookie = req.cookies.__session;
     }else{
       res.setHeader('Cache-Control', 'private');
@@ -530,7 +600,7 @@ app.post('/category/add', function (req, res) {
   var sessionCookie = null;
 
   if(!host.includes('localhost')){
-    res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+    res.set('Cache-Control', 'public, max-age=0');
     sessionCookie = req.cookies.__session;
   }else{
     res.setHeader('Cache-Control', 'private');
