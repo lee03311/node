@@ -27,8 +27,33 @@ html
                             }
                         }
                     });
-                })
+                });
+
+                $('.dailyAddDiv').hide();
+                $('#showList').hide();
             })
+
+            function goListAndWrite(status){
+                if(status == 'add'){
+                    $('.dailyAddDiv').show();
+                    $('.cardDiv').hide();
+
+                    $('#dailyAdd').hide();
+                    $('#showList').show();
+                    $('.dailyCategoryArea').hide();
+                    $('.searchDiv').hide();
+                    $('.pager').hide();
+                }else if(status == 'list'){
+                    $('.dailyAddDiv').hide();
+                    $('.cardDiv').show();
+
+                    $('#dailyAdd').show();
+                    $('#showList').hide();
+                    $('.dailyCategoryArea').show();
+                    $('.searchDiv').show();
+                    $('.pager').show();
+                }
+            }
     body
         div(class='container')
             div(class="left" style="background-color:#282c2f;")
@@ -60,7 +85,8 @@ html
             div(class='center' style='background:#fafafa;')
                 header(class="header backWhite")
                     span(class="first") Content
-                    span(class="btn btnOrange") + Add
+                    span(class="btn btnOrange" id='dailyAdd' onclick="goListAndWrite('add')") + Add
+                    span(class="btn btnOrange" id='showList' onclick="goListAndWrite('list')") list
                     div(class="headerBtn")
                         span(class="btn btnWhite") + btn1
                         span(class="btn btnWhite") + btn2
@@ -81,11 +107,33 @@ html
                         i(class="fas fa-search gray")
                         input(type="text" placeholder="Search...")
                         div(class="btnDiv line40" style="margin-right:0px;")
-                            span(class="btn btnOrange") All
-                            span(class="btn btnGray") Todo
-                            span(class="btn btnGray") Daily
+                            //- span(class="btn btnOrange") All
+                            //- span(class="btn btnGray") Todo
+                            //- span(class="btn btnGray") Daily
 
                     div(class='dailyCategoryArea')
 
                     div(class='cardDiv')
                         ul(id='cardList')
+
+                    div(class='dailyAddDiv')
+                        div
+                            label(for='cateogry')
+                            select(id='cateogry' name='category')
+
+                        div
+                            input(type='text' id='datepicker' name='date' placeholder='날짜선택' aria-describedby='basic-addon2' autocomplete="off")
+                            span(class='input-group-addon ' id='basic-addon2')
+                                span(class='glyphicon glyphicon-calendar' aria-hidden='true')
+
+                        div
+                            input(type='text' id='title' name='title' placeholder='제목' autocomplete="off")
+
+                        div
+                            textarea( name="contents", cols="30", rows="4" id='contents'  placeholder='내용')
+                            //- input(type='text' id='contents' name='contents' placeholder='내용' autocomplete="off")
+
+                        div
+                            button(ype="button" class="btn btn-default" data-dismiss="modal") 닫기
+                            button(type="button" class="btn btn-primary" onclick='javascript:reportAdd()' ) 저장
+                            button(type="button" class="btn btn-danger deletebtn" onclick='javascript:reportDelete()' ) 삭제

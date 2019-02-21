@@ -10,6 +10,7 @@ html
         link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nanum+Gothic') 
         link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.1/css/all.css' integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous")
         link(rel="stylesheet", href="css/list.css")
+        script(type='text/javascript' src='js/todolist.js') 
         script(type='text/javascript' src='js/common.js') 
         script.
             $(function(){
@@ -27,6 +28,19 @@ html
                         }
                     });
                 })
+
+                $('#todolistTitle').keydown(function(event) {
+                    if (event.keyCode == '13') { 
+                        if(!$(this).val()){
+                            alert('글 없음')
+                            return false;
+                        }
+                        alert($(this).val())
+                        
+                    }
+                })
+
+
             })
     body
         div(class='container')
@@ -77,14 +91,12 @@ html
 
 
                     div(class="searchDiv backWhite")
-                        i(class="fas fa-search gray")
-                        input(type="text" placeholder="Search...")
+                        input(type="text" placeholder="Add..." id='todolistTitle')
                         div(class="btnDiv line40" style="margin-right:0px;")
-                            span(class="btn btnOrange") All
-                            span(class="btn btnGray") Todo
-                            span(class="btn btnGray") Daily
+                            i(class="fas fa-plus-circle")
+                            //- span(class="btn btnOrange") +
+                            //- span(class="btn btnGray") Todo
+                            //- span(class="btn btnGray") Daily
 
-                    div(class='dailyCategoryArea')
-
-                    div(class='cardDiv')
-                        ul(id='cardList')
+                    div(class='listDiv')
+                        ul(id='todolist')

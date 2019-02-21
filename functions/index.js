@@ -256,7 +256,7 @@ app.get('/todolist', function (req, res) {
   
       });
       
-      res.render('todolist',{rows:datas});
+      res.render('todolist',{email:email, rows:datas});
     });
     return true;
   }).catch(error => {

@@ -5,7 +5,6 @@ $(function(){
 
     getDays();
     drawCateogry();
-    getTodoList();
 });
 
 
@@ -134,64 +133,7 @@ function getList(year, month){
     });
 }
 
-function getTodoList(){
-    // var lastDay = ( new Date( year, month, 0) ).getDate();
 
-    // var date = {
-    //     startDate : year+'/'+month+'/01',
-    //     endDate : year+'/'+month+'/'+lastDay
-    // }
-    $.ajax({
-        url: 'getTodoList',
-        dataType: 'json',
-        type: 'GET',
-        success: function(data) {
-            if(data.result == 'success'){
-                var todolistUl = $("<ul/>");
-
-                var todolistDiv= $('.todolist');
-
-                todolistDiv.empty();
-                var rows = data.rows;
-                // dailyDiv.removeClass('noItem');
-
-                if(rows.length > 0){
-                    for(var i=0;i<rows.length;i++){
-                        if(rows[i].todoComplete){
-                            $("<li/>").attr('id', rows[i].id).addClass('complete').attr('onclick','showInfo("todolist","'+rows[i].id+'")').append(
-                                //$('<div/>').addClass('circle').text(rows[i].date).css('background',categoryMap(rows[i].category))
-                            ).append(
-                                
-                                $('<span/>').text(rows[i].title +" (" + rows[i].date + ") ").addClass('textTitle')
-                            ).prependTo(todolistUl);
-                        }else{
-                            $("<li/>").attr('id', rows[i].id).addClass('list').attr('onclick','showInfo("todolist","'+rows[i].id+'")').append(
-                                // $('<div/>').addClass('circle').text(rows[i].date)
-                            ).append(
-                                $('<span/>').text(rows[i].title +" (" + rows[i].date + ") ").addClass('textTitle')
-                            ).append(
-                                $('<div/>').addClass('textBox').append(
-                                    $('<span/>').text(rows[i].contents)
-                                )
-                            ).prependTo(todolistUl);
-                        }
-                    }
-                    
-                }
-                $("<li/>").addClass('todolistAddArea list').attr('onclick','openDialogForAdd("todo")').append(
-                    $('<div/>').addClass('todolistAddDiv circle').append(
-                        $('<span/>').addClass('glyphicon glyphicon-plus')
-                    )
-                ).prependTo(todolistUl);
-                
-                todolistUl.appendTo(todolistDiv);
-            }
-       },error:function(){
-        //    alert('getList 오류!!!');
-           window.location = '/';
-       }
-    });
-}
 
 function getCategoryList(){
     var category;
