@@ -122,18 +122,17 @@ html
                             select(id='cateogry' name='category')
 
                         div
-                            input(type='text' id='datepicker' name='date' placeholder='날짜선택' aria-describedby='basic-addon2' autocomplete="off")
-                            span(class='input-group-addon ' id='basic-addon2')
+                            input(type='text' id='datepicker' name='date' placeholder='날짜선택' class='dates' aria-describedby='basic-addon2' autocomplete="off")
+                            span(class='input-group-addon calendar' id='basic-addon2')
                                 span(class='glyphicon glyphicon-calendar' aria-hidden='true')
 
                         div
-                            input(type='text' id='title' name='title' placeholder='제목' autocomplete="off")
+                            input(type='text' id='title' name='title'  placeholder='제목' autocomplete="off")
 
                         div
                             textarea( name="contents", cols="30", rows="4" id='contents'  placeholder='내용')
                             //- input(type='text' id='contents' name='contents' placeholder='내용' autocomplete="off")
 
                         div
-                            button(ype="button" class="btn btn-default" data-dismiss="modal") 닫기
                             button(type="button" class="btn btn-primary" onclick='javascript:reportAdd()' ) 저장
                             button(type="button" class="btn btn-danger deletebtn" onclick='javascript:reportDelete()' ) 삭제
