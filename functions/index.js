@@ -474,7 +474,7 @@ app.post('/add', function (req, res) {
     addData['date'] = data.date;
     addData['title'] = data.title;
     addData['contents'] = data.contents;
-    
+  
     if(data.writeRadio === 'daily'){
       
       addData['category'] = data.category;

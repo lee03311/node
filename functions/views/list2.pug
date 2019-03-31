@@ -46,7 +46,7 @@ html
             })
 
             function goListAndWrite(status){
-                if(status == 'add'){
+                if(status == 'add' || status == 'update'){
                     $('.dailyAddDiv').show();
                     $('.cardDiv').hide();
 
@@ -55,6 +55,21 @@ html
                     $('.dailyCategoryArea').hide();
                     $('.searchDiv').hide();
                     $('.pager').hide();
+
+                    if(status == 'update'){
+                        $('.reportAddBtn').hide();
+                        $('.reportUpdateBtn').show();
+                    }else{
+                        $('.reportAddBtn').show();
+                        $('.reportUpdateBtn').hide();
+
+                        /*데이터 초기화*/
+                        $('#id').val('');
+                        $("#cateogry option:eq(0)").prop("selected", true);
+                        $('#datepicker').val('');
+                        $('#title').val('');
+                        $('#contents').val('');
+                    }
                 }else if(status == 'list'){
                     $('.dailyAddDiv').hide();
                     $('.cardDiv').show();
@@ -89,14 +104,19 @@ html
                     type: 'post',
                     data :  $("#reportForm").serialize(),
                     success: function(data) {
+                        console.log(data);
                         if(data.result == 'success'){
-
-                            //- window.location.reload= true;
-                            //- $('#myModal').modal('hide');
-                            //- getDays();
+                            getDays();
+                            goListAndWrite('list');
                         }
                     }
                 });
+            }
+
+            
+            function reportDelete(){
+                $("#reportForm").attr('action', '/delete')
+                $("#reportForm").submit();
             }
     body
         div(class='container')
@@ -129,8 +149,12 @@ html
             div(class='center' style='background:#fafafa;')
                 header(class="header backWhite")
                     span(class="first") Content
-                    span(class="btn btnOrange" id='dailyAdd' onclick="goListAndWrite('add')") + Add
-                    span(class="btn btnOrange" id='showList' onclick="goListAndWrite('list')") list
+                    span(class="btn btnOrange" id='dailyAdd' onclick="goListAndWrite('add')")
+                        i(class='fas fa-plus-circle')        ADD
+                    
+                    span(class="btn btnOrange" id='showList' onclick="goListAndWrite('list')") 
+                        i(class='fas fa-arrow-circle-left')        LIST
+                    
                     div(class="headerBtn")
                         span(class="btn btnWhite") + btn1
                         span(class="btn btnWhite") + btn2
@@ -162,7 +186,8 @@ html
 
                     div(class='dailyAddDiv')
                         form(method="post" id='reportForm' action='/add')
-                            input(type='hidden' name='writeRadio' id='daily' value='daily')
+                            input(type='hidden' id='id' name='id')
+                            input(type='hidden' id='writeRadio' name='writeRadio' value='daily')
                             div
                                 label(for='cateogry')
                                 select(id='cateogry' name='category')
@@ -183,5 +208,6 @@ html
                                 //- input(type='text' id='contents' name='contents' placeholder='내용' autocomplete="off")
 
                             div
-                                button(type="button" class="btn btn-primary" onclick='javascript:reportAdd()' ) 저장
-                                button(type="button" class="btn btn-danger deletebtn" onclick='javascript:reportDelete()' ) 삭제
+                                button(type="button" class="btn btn-primary reportAddBtn" onclick='javascript:reportAdd()' ) 저장
+                                button(type="button" class="btn btn-primary reportUpdateBtn" onclick='javascript:reportAdd()' ) 수정
+                                button(type="button" class="btn btn-danger deletebtn reportUpdateBtn" onclick='javascript:reportDelete()' ) 삭제

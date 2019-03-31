@@ -177,6 +177,12 @@
     cursor:pointer;
 }
 
+.dailyCategory.active{
+    background: #79e1e6; 
+    color:white;
+    cursor:pointer;
+}
+
 .categoryText{
     vertical-align: middle;
     font-size: 11px;

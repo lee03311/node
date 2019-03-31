@@ -77,7 +77,7 @@ function getList(year, month){
                 if(rows.length > 0){
                     for(var i=0;i<rows.length;i++){
                         
-                        $('<li/>').append(
+                        $('<li/>').attr('data-category', rows[i].category).append(
                             $('<div/>').addClass('front card').append(
                                 $('<div/>').addClass('date').css('background',categoryMap(rows[i].category)).text(rows[i].date)
                             ).append(
@@ -109,11 +109,11 @@ function getList(year, month){
                                 $('<div/>').addClass('subBtn').append(
                                     $('<ul/>').append(
                                         $('<li/>').append(
-                                            $('<i/>').addClass('far fa-edit')
+                                            $('<a/>').attr('onclick', 'javascript:editContent("'+year+'","'+month+'", '+JSON.stringify(rows[i])+')').append($('<i/>').addClass('far fa-edit'))
                                         )
                                     ).append(
                                         $('<li/>').append(
-                                            $('<i/>').addClass('far fa-trash-alt')
+                                            $('<a/>').attr('onclick', 'javascript:deleteContent("'+rows[i].id+'")').append($('<i/>').addClass('far fa-trash-alt'))
                                         )
                                     )
                                 )
@@ -133,7 +133,21 @@ function getList(year, month){
     });
 }
 
+function editContent(year, month, data){ /*수정일때*/
+    // $('#category').val(obj.category);
+    $('#id').val(data.id);
+    $('select[name="category"]').val(data.category);
+    $('#datepicker').val(year + '/' +month +'/' +data.date);
+    $('#title').val(data.title);
+    $('#contents').val(data.contents);
 
+    goListAndWrite('update');
+}
+
+function deleteContent(id){
+    $('#id').val(id);
+    reportDelete();
+}
 
 function getCategoryList(){
     var category;
@@ -176,7 +190,10 @@ function drawCateogry(){ //첫 진입시 호출하여 메인의 사이드바에 
     for(var i=0; i<length ;i++){
         var datas = category[i];
 
-        $('<div/>').addClass('dailyCategory').append(
+        console.log(datas)
+        $('<div/>').addClass('dailyCategory active')
+        .attr('id', 'cateogryList_'+datas.id)
+        .attr('onclick', 'javascript:toggleCategoryActive("'+datas.id+'",this)').append(
             $('<div/>').addClass('categoryColor').attr('data-category-id',datas.id).css('background', datas.color)
         ).append(
             $('<span/>').addClass('categoryText').text(datas.category)
@@ -198,22 +215,15 @@ function drawCateogry(){ //첫 진입시 호출하여 메인의 사이드바에 
     });
 }
 
-
-function clickCategory(categoryId){
-    var clickLi = 'cateogryList_'+categoryId;
-
-    if($('#'+clickLi).hasClass('active')){
-        $('#'+clickLi).removeClass('active');
-        $('#'+clickLi).addClass('inactive');
-    }else if($('#'+clickLi).hasClass('inactive')){
-        $('#'+clickLi).removeClass('inactive');
-        $('#'+clickLi).addClass('active');
+function toggleCategoryActive(categoryId, obj){
+    if($(obj).hasClass('active')){
+        $(obj).removeClass('active');
     }else{
-        $('#'+clickLi).addClass('active');
+        $(obj).addClass('active');
     }
 
-    //첫 로딩시 무조건 active를 붙임.
-    $('.daily>ul>li').each(function(index){
+    var clickLi = 'cateogryList_'+categoryId;
+    $('#cardList>li').each(function(index){
         var li = $(this);
         if(li.attr('data-category') == categoryId){
             if($('#'+clickLi).hasClass('active')){
@@ -223,67 +233,4 @@ function clickCategory(categoryId){
             }
         }
     });
-}
-
-function showInfo(status, id){
-    $.ajax({
-        url: '/view',
-        dataType: 'json',
-        type: 'GET',
-        data: {status:status, id:id},
-        success: function(data) {
-            if(data.result == 'success'){
-                $('#id').val(data.data.id);
-                $('input[name=date]').val(data.data.date);
-                $('#title').val(data.data.title);
-                $('#contents').val(data.data.contents);
-                $("#"+status).prop('checked', true);
-                $("#todoComplete").prop('checked', false); 
-
-                if(status == 'todolist'){
-                    $('#cateogry').hide();
-                    $('#cateogry').val('');
-                    $("#todolist").prop('checked', true);
-                    $("#todo_compelete").show();
-                    
-                    if(data.data.todoComplete && data.data.todoComplete == 'Y'){
-                        $("#todoComplete").prop('checked', 'checked');                        
-                    }
-                }else{
-                    $('#cateogry').show();
-                    $("#todo_compelete").hide();
-                    $('select[name="category"]').val(data.data.category);
-                }                
-
-                $('.deletebtn').show();
-                $('#myModal').modal('show');
-            }
-       },error:function(){
-           alert('getList 오류!!!');
-       }
-    });
-}
-
-function openDialogForAdd(status){
-    $('#id').val('');
-    $('input[name=date]').val('');
-    $('#title').val('');
-    $('#contents').val('');
-
-    $('.deletebtn').hide();
-
-    if(status == 'daily'){
-        $("#cateogry option:eq(0)").prop("selected", true);
-        $('#cateogry').show();
-        $("#daily").prop('checked', true);
-    }else{
-        $('#cateogry').hide();
-        $('#cateogry').val('');
-        $("#todo_compelete").hide();
-        $("#todolist").prop('checked', true);
-    }
-
-
-
-    $('#myModal').modal('show');
 }
