@@ -22,24 +22,8 @@ var config = {
 
 // var serviceAccount = require("path/to/serviceAccountKey.json");
 
-admin.initializeApp({
-  credential: admin.credential.cert({
-      "type": "service_account",
-      "project_id": "start-moon",
-      "private_key_id": "9fbdef91720617aee9e6226205ea2d1dbd949d8c",
-      "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCsSGE6vraOO0id\nUBFPYCOuZmrChEjSm5ZnwHUQIrJWK0dt2blrWAn26qN8G34658EGDHETPYWMWLOW\nJ9I9RKaWGFxCakJ/cYzg3kpdnDlsJDRp8YvHclKXr/qfmdeMFr0dq6ypLVurD5xB\nsC7J8fVSBKa9b3SDZ6vGPpnN8ogmQK4E7walBXUjkX01wmygJlwehuH4EVaJenYW\nnPRzXezlIL6NADzV3iAsvoRKE1GtXVBD5rAcVqiE/puJHdfdogKEy1HbNQxYnBdl\n/0YwBUdiY0Cgc6jIfQsuIK4Zr9nc38oJPh4o+w6KKwGPPMjzIkx6GX+Pmlfw+L4z\n18qkvlKnAgMBAAECggEACBlrAMEAghVFZ6fg+HNTmhpUgIqJheUsn/oLRtPqwGRO\nelqW/fXomgQT5XzBZXGJwIgLNNValuuAndmHZ7v3fOzuQW0PbUBgWB37LwVuKahW\nEnj5kknMmjb6uFAaMwrKnz934YgxXAxi0y++M149ozp2wEciGh9gkvRUdLsnLW0f\nQUn0+6VtU4N3uFB5pKaFoM+oZ8IGv87c1k6sdQVgOqKxTbneZYoFccK+jzSAH0As\nk8SDvRMeSJICTVuiUngC0OJPDoW/v+r5c5dtUAkIxfWVMn8oVD02OibWzsV2WgOV\nHnsUtcqKo2lBfId8D9zkBiACZqyJwQP7yrsPZUcWGQKBgQDWDxV68Uv6LFg0lYGR\nhsoSe+qkUnxxOaa6c13kfXTJXR4MMOmjv5+P3+wWAHJHo4eJLuql+2mhheaLIG9u\nIp3BnnL1sNvyOiBgJNl2AuIq8cmBg5JV/t/ETyBzZL3D2uf91S76NCnEvdQ8dVLp\nw3hdOb22icFwTNe4HUNRH7BObQKBgQDOCdtZ4Y5b5SCWKr99B+Xcgq4WT4w2Vpbw\nzRTKBjXPXDqJxu11UwgO3TdxCKXUzGgyRdVxnBO3q+WOV7x7VkiyKPkPkg92Ndq9\ncG+a4JUgWHmT5kK4H9EWES6DhqRi/hF2HfDL+Yhh+zXf9QYoBvQkrUlg7//r6nHi\n4b9BZ+7o4wKBgQCcIQpgzsjE4z0+tWF4/KA81ScyzXs4tn0Wd3kfZCYfjQyShcaU\nCfte3Et9TLwN5ofAFnlNsU+9YUXjajf8U8FO7Lwa2fHC/oSIu7flLHs8KXj5Pzco\nBCvAKpqXr/39cZhOewS1uABTIMZBhq2AFXOgQ7JNBrMRruqUvrtP21YkDQKBgQDE\nLR5tthWV6dPdJ1ar9ZknHEYleBhIpKmTHbFtqfwSM/6IsJ/n1ecWQAtJ1LIQq4+K\nTnOseK9Ncp5fqaoMxVryR5DdAnU2WJCtTyD0lmFnKtaXu+ZK6gBqwnFHSiu7Fa4K\niPd9P1pb8JSbaPEzq2tKgLQdWGaUeeV14Pv5irwvgQKBgH9Lt01Wb5fjWxV8L5gy\na9wh1o6HhuREYRNKzto9iotP3i+ywR6TOH+73Ge51JClRVF99o8/WZLOQ77M5Wkw\nhKjxZ7OxFvDALfuCIf7arx0+uUpmSOPV4bC5LsG8m+WAFq6c0Dt8QE0VFq06vW8P\nB//jpkCiX3yfjI4pzimG7LAV\n-----END PRIVATE KEY-----\n",
-      "client_email": "firebase-adminsdk-3al80@start-moon.iam.gserviceaccount.com",
-      "client_id": "114174226695599818119",
-      "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-      "token_uri": "https://oauth2.googleapis.com/token",
-      "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-      "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-3al80%40start-moon.iam.gserviceaccount.com"
-        
-  }),
-  databaseURL: "https://start-moon.firebaseio.com"
-});
 
-// admin.initializeApp(config);
+admin.initializeApp(config);
 firebase.initializeApp(config);
 
 app.locals.pretty = true;
