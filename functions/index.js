@@ -591,15 +591,15 @@ app.post('/category/add', function (req, res) {
     sessionCookie = req.cookies.session;
   }
 
+  console.log(data);
   admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
     var uid = decodedClaims.sub;
     var email = decodedClaims.email;
 
-    data.writer = uid;
-
     if(uid){
       if (!data.id) {
         data.id = firebase.database().ref().child('category').push().key;
+        data.writer = uid;
       }
 
       if (data.id) {

@@ -222,6 +222,7 @@ function toggleCategoryActive(categoryId, obj){
         $(obj).addClass('active');
     }
 
+    var status = 'show';
     var clickLi = 'cateogryList_'+categoryId;
     $('#cardList>li').each(function(index){
         var li = $(this);
@@ -230,7 +231,24 @@ function toggleCategoryActive(categoryId, obj){
                 li.show();
             }else{
                 li.hide();
+                status = 'hidden';
             }
+
+
+            $.ajax({
+                url: '/category/add',
+                dataType: 'json',
+                type: 'post',
+                data:{
+                    id:categoryId,
+                    status:status
+                },
+                success: function(data) {
+                    if(data.result == 'success'){
+                        category = data.rows;
+                    }
+                }
+            });
         }
     });
 }

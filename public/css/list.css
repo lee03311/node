@@ -112,17 +112,24 @@
     margin:0px;
     padding:0px 20px;
     font-size:13px;
-    height: 160px;
     overflow: auto;
+    /* visibility: hidden; */
+    height:160px;
 }
 .cardDiv > ul > li:hover > .front {
     z-index: 1;
     transform: rotateY(180deg);
+
 }
 .cardDiv > ul > li:hover > .back {
     z-index: 2;
     transform: rotateY(0deg);
 }
+
+/* .cardDiv > ul > li:hover > .back .content{
+    height:160px;
+    visibility: visible;
+} */
 
 .searchDiv {
     margin:20px 0px;
