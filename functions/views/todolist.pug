@@ -4,7 +4,7 @@ html
         meta(charset = 'utf-8')
         script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js')
         //- script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
-        //- script(src='https://code.jquery.com/ui/1.12.1/jquery-ui.js')
+        script(src='https://code.jquery.com/ui/1.12.1/jquery-ui.js')
         link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css')
         link(rel='stylesheet' href='//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css')
         link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nanum+Gothic') 
@@ -15,6 +15,20 @@ html
         script(type='text/javascript' src='js/common.js') 
         script.
             $(function(){
+
+                $( "#datepicker" ).datepicker({
+                    showOtherMonths: true,
+                    selectOtherMonths: true, 
+                    dateFormat:'yy/mm/dd',
+                    beforeShow: function(input) {
+                        var i_offset= $(input).offset(); //클릭된 input의 위치값 체크
+                        setTimeout(function(){
+                            $('#ui-datepicker-div').css({'top':i_offset.top + 40});      //datepicker의 div의 포지션을 강제로 input 위치에 그리고 좌측은 모바일이여서 작기때문에 무조건 10px에 놓았다.
+                        })
+
+                    }
+                });
+
                 $('.logout').click(function(){
                     $.ajax({
                         url: '/logout',
@@ -39,10 +53,55 @@ html
                         alert($(this).val())
                         
                     }
+                });
+
+                $('.todoContentsCkeck').click(function(event){
+                    var obj = event.target;
+
+                    if($(obj).is(":checked")){
+                        $(obj).parent().css('text-decoration','line-through');
+                        $(obj).parent().css('color','#ccc');
+                    }else{
+                        $(obj).parent().css('text-decoration','inherit');
+                        $(obj).parent().css('color','#333');
+                    }
                 })
 
-
             })
+            function todoAddBtn(){
+                var ul = $('#todolist');
+
+                var title = $('#title').val();
+                var date = $('#datepicker').val();
+                var contents = $('#contents').val();
+
+                var li = $('<li/>').text(title);
+
+                li.appendTo(ul);
+
+                //todoSectionToggle()
+            }
+
+            function todoSectionToggle(){
+                if($(".todoAddSection").is(":visible")){
+                    $(".todoAddSection").slideUp();
+                    $('.headerBtnAdd').show();
+                }else{
+                    $(".todoAddSection").slideDown();
+                    $('.headerBtnAdd').hide();
+                }
+            }
+
+            function openTodoContents(obj){
+                var liId = $(obj).parent().attr('id');
+                var contents = $(obj).parent().find('#'+liId+'Content');
+
+                if(contents.is(":visible")){
+                    contents.slideUp();
+                }else{
+                    contents.slideDown();
+                }
+            }
     body
         div(class='container')
             div(class="left" style="background-color:#282c2f;")
@@ -74,7 +133,8 @@ html
             div(class='center' style='background:#fafafa;')
                 header(class="header backWhite")
                     span(class="first") Content
-                    span(class="btn btnOrange") + Add
+                    span(class="btn btnOrange" onclick='todoSectionToggle()')
+                        i(class='fas fa-plus-circle')        ADD
                     div(class="headerBtn")
                         span(class="btn btnWhite") + btn1
                         span(class="btn btnWhite") + btn2
@@ -90,18 +150,47 @@ html
                             a(href="#" onclick="javascript:moveDays('next');")
                                 span(class='glyphicon glyphicon-menu-right' aria-hidden='true')
 
-                    div(class="searchDiv backWhite")
-                        input(type="text" placeholder="Add..." id='todolistTitle')
-                        div(class="btnDiv line40" style="margin-right:0px;")
-                            i(class="fas fa-plus-circle")
-                            //- span(class="btn btnOrange") +
-                            //- span(class="btn btnGray") Todo
-                            //- span(class="btn btnGray") Daily
+                    div(class='todoAddSection' style='display:none;')
+                        form
+                            input(type='hidden' id='id' name='id')
+                            div(class="todolistAddDiv")
+                                input(type='text' id='datepicker' name='date' placeholder='날짜선택' class='dates' aria-describedby='basic-addon2' autocomplete="off")
+                                span(class='input-group-addon calendar' id='basic-addon2')
+                                    span(class='glyphicon glyphicon-calendar' aria-hidden='true')
+                                    
+                            div(class="searchDiv backWhite")
+                                input(type="text" placeholder="Add..." id='title')
+                                div(class="btnDiv line40" style="margin-right:0px;")
+                                    i(class="fas fa-plus-circle")
+                                    //- span(class="btn btnOrange") +
+                                    //- span(class="btn btnGray") Todo
+                                    //- span(class="btn btnGray") Daily
 
-                    div(class="todolistAddDiv")
-                        input(type='text' id='datepicker' name='date' placeholder='날짜선택' class='dates' aria-describedby='basic-addon2' autocomplete="off")
-                        span(class='input-group-addon calendar' id='basic-addon2')
-                            span(class='glyphicon glyphicon-calendar' aria-hidden='true')
-
+                            div(class="searchDiv todoContents backWhite")
+                                textarea(name="contents" id='contents')
+                    
+                        div(class='todoAddBtn')
+                            span(class="btn btnOrange" onclick='todoAddBtn()')
+                                i(class='fas fa-plus-circle')        ADD
+                            span(class="btn btnWhite" onclick='todoSectionToggle()')
+                                i(class='fas fa-eraser')        CANCEL
+                                
                     div(class='listDiv')
                         ul(id='todolist')
+                            li(class='using' id='test1') 
+                                span(class='title open' onclick='openTodoContents(this)') test2
+                                span(class='badge') 04/01
+                                div(class='contents' id='test1Content' )
+                                    ul
+                                        li
+                                            label
+                                                input(type='checkbox' class='todoContentsCkeck' value='Y' name='todoClear' id='todoClear1')
+                                                |testsetsetest1
+                                        li
+                                            label 
+                                                input(type='checkbox' class='todoContentsCkeck' value='Y' name='todoClear' id='todoClear2')
+                                                |testsetsetest2
+
+                            li(class='using') 
+                                span(class='title') test2
+                                span(class='badge') 04/01

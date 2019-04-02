@@ -4,8 +4,8 @@
     height: 40px;
     line-height: 40px;
     border: 1px solid #e0e0e0;
-    /* display: inline-block; */
-    /* width: calc(100% - 250px); */
+    display: inline-block;
+    width: calc(100% - 235px); 
     /* margin: 20px 0 20px 10px; */
 }
 .searchDiv input {
@@ -21,7 +21,7 @@
     line-height: normal;
 }
 .todolistAddDiv{
-    /* display: inline-block; */
+    display: inline-block;
 }
 
 .todolistAddDiv input{    
@@ -43,6 +43,89 @@
     display: inline-block;
     width: 50px;
     padding: 10px;
-    margin-top: -2px;
+    margin-top: -3px;
     height: 40px;
+}
+
+.todoContents{
+    width: 100%;
+    height: 150px;
+    margin-top: 0;
+}
+
+.todoContents > textarea{
+    width: 100%;
+    font-size: 15px;
+    margin: 10px 5px;
+    outline: none;
+    border: none;
+    border-right: 0px;
+    border-top: 0px;
+    border-left: 0px;
+    border-bottom: 0px;
+    line-height: normal;
+    height: calc(100% - 20px);
+    resize: none;
+}
+
+.todoAddBtn{
+    text-align: right;
+}
+
+.todoAddBtn > .btnOrange{
+    margin-right: 10px;
+}
+
+.listDiv ul{
+    margin: 0 !important;
+    padding:0 !important;
+}
+
+#todolist li.using{
+    list-style: none;
+    border-left: 3px solid #79e1e6;
+    background: #f5f6f8;
+    padding: 15px 0 15px 35px !important;
+    margin-bottom: 2px;
+    border-bottom: none !important;
+}
+
+
+#todolist li.using .title{
+    margin-right: 10px;
+    color : #333;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#todolist li.using .contents{
+    margin:15px 0 0 15px;
+    display: none;
+}
+
+#todolist li.using .contents .todoContentsCkeck{
+    margin-right: 5px;
+}
+
+.badge{
+    display: inline-block;
+    min-width: 10px;
+    padding: 3px 7px;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 10px;
+    background: #79e1e6;
+}
+
+.contents > ul li{
+    list-style: none;
+}
+
+.contents > ul li > label{
+    cursor: pointer;
 }
