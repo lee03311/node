@@ -591,7 +591,6 @@ app.post('/category/add', function (req, res) {
     sessionCookie = req.cookies.session;
   }
 
-  console.log(data);
   admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
     var uid = decodedClaims.sub;
     var email = decodedClaims.email;
@@ -600,13 +599,55 @@ app.post('/category/add', function (req, res) {
       if (!data.id) {
         data.id = firebase.database().ref().child('category').push().key;
         data.writer = uid;
+        data.status = 'show';
       }
-
-      if (data.id) {
+      
+      if(data.id){
         firebase.database().ref('category/' + data.id).set(data);
       }
     }
-    res.redirect('/list');
+    res.send({
+      result: 'success'
+    });
+    return true;
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
+});
+
+app.post('/category/status', function (req, res) {
+  var data = req.body;
+
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+
+    console.log('=====1')
+    if(uid){
+      console.log('=====2')
+      if (data.id) {
+        console.log('=====3');
+        console.log(data)
+        var categoryData = {};
+        categoryData['/category/'+data.id+'/status'] = data.status; /*해당 카테고리의 show, hidden 값만 변경 */
+        firebase.database().ref().update(categoryData);
+      }
+    }
+    res.send({
+      result: 'success'
+    });
     return true;
   }).catch(error => {
     console.log(error);

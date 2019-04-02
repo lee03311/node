@@ -68,7 +68,6 @@ function getList(year, month){
         type: 'get',
         data: date,
         success: function(data) {
-            console.log(data)
             if(data.result == 'success'){
                 var dailyUl = $("#cardList");
                 
@@ -77,7 +76,10 @@ function getList(year, month){
                 if(rows.length > 0){
                     for(var i=0;i<rows.length;i++){
                         
-                        $('<li/>').attr('data-category', rows[i].category).append(
+                        var li = $('<li/>');
+                        // alert($('#cateogryList_'+rows[i].category).attr('data-show-status'))
+                        
+                        li.attr('data-category', rows[i].category).append(
                             $('<div/>').addClass('front card').append(
                                 $('<div/>').addClass('date').css('background',categoryMap(rows[i].category)).text(rows[i].date)
                             ).append(
@@ -122,7 +124,14 @@ function getList(year, month){
                             ).append(
                                 $('<p/>').addClass('content').text(rows[i].contents)
                             )
-                        ).appendTo(dailyUl)
+                        ).appendTo(dailyUl);
+
+                        /*카테고리 상태값에 따른 카드 노출 */
+                        if($('#cateogryList_'+rows[i].category).attr('data-show-status') == 'hidden'){
+                            li.hide();
+                        }else{
+                            li.show();
+                        }
                     }
                 }
             }
@@ -190,9 +199,13 @@ function drawCateogry(){ //첫 진입시 호출하여 메인의 사이드바에 
     for(var i=0; i<length ;i++){
         var datas = category[i];
 
-        console.log(datas)
-        $('<div/>').addClass('dailyCategory active')
-        .attr('id', 'cateogryList_'+datas.id)
+
+        var div = $('<div/>').addClass('dailyCategory').attr('data-show-status', datas.status);
+        if(datas.status == 'show'){
+            div.addClass('active');
+        }
+        
+        div.attr('id', 'cateogryList_'+datas.id)
         .attr('onclick', 'javascript:toggleCategoryActive("'+datas.id+'",this)').append(
             $('<div/>').addClass('categoryColor').attr('data-category-id',datas.id).css('background', datas.color)
         ).append(
@@ -216,13 +229,15 @@ function drawCateogry(){ //첫 진입시 호출하여 메인의 사이드바에 
 }
 
 function toggleCategoryActive(categoryId, obj){
+    var status = 'show';
     if($(obj).hasClass('active')){
         $(obj).removeClass('active');
+        status = 'hidden';
     }else{
         $(obj).addClass('active');
     }
 
-    var status = 'show';
+    $(obj).attr('data-show-status', status);
     var clickLi = 'cateogryList_'+categoryId;
     $('#cardList>li').each(function(index){
         var li = $(this);
@@ -231,24 +246,24 @@ function toggleCategoryActive(categoryId, obj){
                 li.show();
             }else{
                 li.hide();
-                status = 'hidden';
             }
+        }
+    });
 
-
-            $.ajax({
-                url: '/category/add',
-                dataType: 'json',
-                type: 'post',
-                data:{
-                    id:categoryId,
-                    status:status
-                },
-                success: function(data) {
-                    if(data.result == 'success'){
-                        category = data.rows;
-                    }
-                }
-            });
+    $.ajax({
+        url: '/category/status',
+        dataType: 'json',
+        type: 'post',
+        data:{
+            id:categoryId,
+            status:status
+        },
+        success: function(data) {
+            if(data.result == 'success'){
+                
+            }
+        },error: function(){
+            alert('카테고리 상태변경 오류')
         }
     });
 }
