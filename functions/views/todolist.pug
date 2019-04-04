@@ -55,18 +55,6 @@ html
                     }
                 });
 
-                $('.todoContentsCkeck').click(function(event){
-                    var obj = event.target;
-
-                    if($(obj).is(":checked")){
-                        $(obj).parent().css('text-decoration','line-through');
-                        $(obj).parent().css('color','#ccc');
-                    }else{
-                        $(obj).parent().css('text-decoration','inherit');
-                        $(obj).parent().css('color','#333');
-                    }
-                })
-
             })
             function todoAddBtn(){
                 var ul = $('#todolist');
@@ -100,6 +88,17 @@ html
                     contents.slideUp();
                 }else{
                     contents.slideDown();
+                }
+            }
+
+            function todoContentsCheck(obj){
+
+                if($(obj).is(":checked")){
+                    $(obj).next().css('text-decoration','line-through');
+                    $(obj).next().css('color','#ccc');
+                }else{
+                    $(obj).next().css('text-decoration','inherit');
+                    $(obj).next().css('color','#333');
                 }
             }
     body
@@ -177,20 +176,4 @@ html
                                 
                     div(class='listDiv')
                         ul(id='todolist')
-                            li(class='using' id='test1') 
-                                span(class='title open' onclick='openTodoContents(this)') test2
-                                span(class='badge') 04/01
-                                div(class='contents' id='test1Content' )
-                                    ul
-                                        li
-                                            label
-                                                input(type='checkbox' class='todoContentsCkeck' value='Y' name='todoClear' id='todoClear1')
-                                                |testsetsetest1
-                                        li
-                                            label 
-                                                input(type='checkbox' class='todoContentsCkeck' value='Y' name='todoClear' id='todoClear2')
-                                                |testsetsetest2
-
-                            li(class='using') 
-                                span(class='title') test2
-                                span(class='badge') 04/01
+                        ul(id='todoComplete')

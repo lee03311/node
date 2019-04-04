@@ -1,7 +1,7 @@
 var category = null;
 $(function(){
-    getDays();
-    // getTodoList();
+    // getDays();
+    getTodoList();
 });
 
 function getDays(){
@@ -58,44 +58,80 @@ function getTodoList(){
         type: 'GET',
         success: function(data) {
             if(data.result == 'success'){
-                var todolistUl = $("<ul/>");
+                var todolistUl = $("#todolist");
+                var todoComplete = $("#todoComplete");
 
-                var todolistDiv= $('.todolist');
-
-                todolistDiv.empty();
                 var rows = data.rows;
-                // dailyDiv.removeClass('noItem');
-
+                todolistUl.empty();
+                todoComplete.empty();
+                
                 if(rows.length > 0){
                     for(var i=0;i<rows.length;i++){
-                        if(rows[i].todoComplete){
-                            $("<li/>").attr('id', rows[i].id).addClass('complete').attr('onclick','showInfo("todolist","'+rows[i].id+'")').append(
-                                //$('<div/>').addClass('circle').text(rows[i].date).css('background',categoryMap(rows[i].category))
-                            ).append(
-                                
-                                $('<span/>').text(rows[i].title +" (" + rows[i].date + ") ").addClass('textTitle')
-                            ).prependTo(todolistUl);
-                        }else{
-                            $("<li/>").attr('id', rows[i].id).addClass('list').attr('onclick','showInfo("todolist","'+rows[i].id+'")').append(
-                                // $('<div/>').addClass('circle').text(rows[i].date)
-                            ).append(
-                                $('<span/>').text(rows[i].title +" (" + rows[i].date + ") ").addClass('textTitle')
-                            ).append(
-                                $('<div/>').addClass('textBox').append(
-                                    $('<span/>').text(rows[i].contents)
+                        var li = $('<li/>').addClass('using').attr('id', rows[i].id)
+                        .append(
+                            $('<input/>').attr('type','checkbox').attr('onclick','todoContentsCheck(this)').addClass('todoContentsCheck')
+                            .attr('value','Y').attr('name','todoClear').attr('id','todoClear'+i)
+                        ).append(
+                            $('<span/>').addClass('title open').attr('onclick', 'openTodoContents(this)').text(rows[i].title)
+                        ).append(
+                            $('<span/>').addClass('badge').text(rows[i].date)
+                        ).append(
+                            $('<div/>').addClass('contents').attr('id',rows[i].id + 'Content').append(
+                                $('<ul>').append(
+                                    $('<li>').text(rows[i].contents)
                                 )
-                            ).prependTo(todolistUl);
+                            )
+                        );
+                        
+                        if(rows[i].todoComplete){
+                            if(rows[i].todoComplete == 'Y'){
+                                li.appendTo(todoComplete);
+                                $('#todoClear'+i).prop('checked', true);
+                            }else{
+                                li.appendTo(todolistUl);
+                                $('#todoClear'+i).prop('checked', false);
+                            }
+                        }else{
+                            li.appendTo(todolistUl);
+                            $('#todoClear'+i).prop('checked', false);
                         }
+                        
+                        
                     }
-                    
                 }
-                $("<li/>").addClass('todolistAddArea list').attr('onclick','openDialogForAdd("todo")').append(
-                    $('<div/>').addClass('todolistAddDiv circle').append(
-                        $('<span/>').addClass('glyphicon glyphicon-plus')
-                    )
-                ).prependTo(todolistUl);
+
+                // dailyDiv.removeClass('noItem');
+
+                // if(rows.length > 0){
+                //     for(var i=0;i<rows.length;i++){
+                //         if(rows[i].todoComplete){
+                //             $("<li/>").attr('id', rows[i].id).addClass('complete').attr('onclick','showInfo("todolist","'+rows[i].id+'")').append(
+                //                 //$('<div/>').addClass('circle').text(rows[i].date).css('background',categoryMap(rows[i].category))
+                //             ).append(
+                                
+                //                 $('<span/>').text(rows[i].title +" (" + rows[i].date + ") ").addClass('textTitle')
+                //             ).prependTo(todolistUl);
+                //         }else{
+                //             $("<li/>").attr('id', rows[i].id).addClass('list').attr('onclick','showInfo("todolist","'+rows[i].id+'")').append(
+                //                 // $('<div/>').addClass('circle').text(rows[i].date)
+                //             ).append(
+                //                 $('<span/>').text(rows[i].title +" (" + rows[i].date + ") ").addClass('textTitle')
+                //             ).append(
+                //                 $('<div/>').addClass('textBox').append(
+                //                     $('<span/>').text(rows[i].contents)
+                //                 )
+                //             ).prependTo(todolistUl);
+                //         }
+                //     }
+                    
+                // }
+                // $("<li/>").addClass('todolistAddArea list').attr('onclick','openDialogForAdd("todo")').append(
+                //     $('<div/>').addClass('todolistAddDiv circle').append(
+                //         $('<span/>').addClass('glyphicon glyphicon-plus')
+                //     )
+                // ).prependTo(todolistUl);
                 
-                todolistUl.appendTo(todolistDiv);
+                // todolistUl.appendTo(todolistDiv);
             }
        },error:function(){
         //    alert('getList 오류!!!');

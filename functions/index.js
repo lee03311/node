@@ -634,12 +634,8 @@ app.post('/category/status', function (req, res) {
     var uid = decodedClaims.sub;
     var email = decodedClaims.email;
 
-    console.log('=====1')
     if(uid){
-      console.log('=====2')
       if (data.id) {
-        console.log('=====3');
-        console.log(data)
         var categoryData = {};
         categoryData['/category/'+data.id+'/status'] = data.status; /*해당 카테고리의 show, hidden 값만 변경 */
         firebase.database().ref().update(categoryData);
