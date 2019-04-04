@@ -263,12 +263,10 @@ app.get('/getList', function (req, res) {
     res.setHeader('Cache-Control', 'private');
     sessionCookie = req.cookies.session;
   }
-  // console.log('getList 1=======================');
 
   admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
     var uid = decodedClaims.sub;
     var email = decodedClaims.email;
-    // console.log('getList 2=======================' + uid + " , " + email);
 
     var categories = [];
   
@@ -279,7 +277,6 @@ app.get('/getList', function (req, res) {
       }
     }
   
-    // console.log('getList 3=======================' + categories);
     var datas = [];
     firebase.database().ref('daily').orderByChild('date').startAt(req.query.startDate).endAt(req.query.endDate).once('value', function (snapshot) {
       snapshot.forEach(function (childSnapshot) {
@@ -324,17 +321,101 @@ app.get('/getTodoList', function (req, res) {
     var email = decodedClaims.email;
 
     var datas = [];
-    firebase.database().ref('todolist/'+uid).once('value', function (snapshot) {
+    firebase.database().ref('todolist/'+uid).orderByChild('date').once('value', function (snapshot) {
       snapshot.forEach(function (childSnapshot) {
         var data = childSnapshot.val();
         if (data.date) {
           var date = data.date;
-          data.date = dateFormat(date, 'mm/dd');
+          // data.date = dateFormat(date, 'mm/dd');
         }
         datas.push(data);
   
       });
       res.status(200).send({result : 'success',rows:datas});
+    });
+    return true;
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
+});
+
+app.post('/todolist/add', function (req, res) {
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+  var data = req.body;
+  console.log(data)
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+
+    var addData = {};
+    addData['id'] = data.id;
+    addData['date'] = data.date;
+    addData['title'] = data.title;
+    addData['contents'] = data.contents;
+
+    if(data.todoComplete){
+      addData['todoComplete'] = data.todoComplete;
+    }
+    
+    if (!addData.id) {
+      addData['todoComplete'] = 'N';
+      addData.id = firebase.database().ref().child('todolist/'+uid).push().key;
+    }
+
+    if (addData.id) {
+      firebase.database().ref('todolist/' +uid+"/"+addData.id).set(addData);
+    }
+
+    res.send({
+      result: 'success'
+    });
+
+    return true;
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
+
+});
+
+app.post('/todolist/status', function (req, res) {
+  var data = req.body;
+
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+
+    if(uid){
+      if (data.id) {
+        var todolistData = {};
+        todolistData['/todolist/'+uid+'/'+data.id+'/todoComplete'] = data.status; /*해당 카테고리의 show, hidden 값만 변경 */
+        firebase.database().ref().update(todolistData);
+      }
+    }
+    res.send({
+      result: 'success'
     });
     return true;
   }).catch(error => {

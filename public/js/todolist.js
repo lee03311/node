@@ -1,49 +1,7 @@
-var category = null;
 $(function(){
-    // getDays();
     getTodoList();
 });
 
-function getDays(){
-    var today = new Date();
-    var mm = today.getMonth()+1; //January is 0!
-    var yyyy = today.getFullYear();
-
-    mm = mm < 10 ? '0'+mm : mm;
-    today = yyyy+"."+mm;
-
-
-    $('#thisMonth').text(today);
-}
-
-/* 
- * @param {*} status 
- * 월 이동 관련 스크립트
- */
-function moveDays(status){
-    var days = $('#thisMonth').text();
-    days = days.replace(".", "/") + "/01";
-    var info = new Date(days);
-    var month = info.getMonth() + 1;
-    var year = info.getFullYear(); 
-
-    if(status == 'pre'){
-        month--;
-        if(month == 0){
-            month = 12;
-            year--;
-        }
-    }else{
-        month++;
-        if(month == 13){
-            month = 1;
-            year++;
-        }
-    }
-    month = month < 10 ? '0'+ month : month;
-    var newDays = year+"."+ month;
-    $('#thisMonth').text(newDays);
-}
 
 function getTodoList(){
     // var lastDay = ( new Date( year, month, 0) ).getDate();
@@ -67,14 +25,38 @@ function getTodoList(){
                 
                 if(rows.length > 0){
                     for(var i=0;i<rows.length;i++){
+                        var date = new Date(rows[i].date);
+                        var month = (date.getMonth()+1);
+                        var day = date.getDate();
+
+                        if(month <= 9){
+                            month = '0'+month;
+                        }
+
+                        if(day <= 9){
+                            day = '0'+day;
+                        }
+
                         var li = $('<li/>').addClass('using').attr('id', rows[i].id)
                         .append(
-                            $('<input/>').attr('type','checkbox').attr('onclick','todoContentsCheck(this)').addClass('todoContentsCheck')
-                            .attr('value','Y').attr('name','todoClear').attr('id','todoClear'+i)
+                            $('<label/>').append(
+                                $('<input/>').attr('type','checkbox').attr('onclick','todoContentsCheck(this)').addClass('todoContentsCheck')
+                                .attr('value','Y').attr('name','todoClear').attr('id','todoClear'+i)
+                            ).append(
+                                $('<span/>').addClass('title').text(rows[i].title)
+                            )
                         ).append(
-                            $('<span/>').addClass('title open').attr('onclick', 'openTodoContents(this)').text(rows[i].title)
+                            $('<span/>').addClass('badge').text(month+'/'+day)
                         ).append(
-                            $('<span/>').addClass('badge').text(rows[i].date)
+                            $('<i/>').addClass('fas fa-chevron-circle-down').attr('onclick', 'openTodoContents(this)').css('display', 'none')
+                        ).append(
+                            $('<i/>').addClass('fas fa-chevron-circle-right').attr('onclick', 'openTodoContents(this)')
+                        ).append(
+                            $('<div/>').addClass('todoModifyDiv').append(
+                                    $('<i/>').addClass('far fa-edit').attr('onclick', 'modifyTodoContents('+JSON.stringify(rows[i])+')')
+                                ).append(
+                                    $('<i/>').addClass('far fa-trash-alt').attr('onclick', 'removeTodoContents(this)')
+                            )
                         ).append(
                             $('<div/>').addClass('contents').attr('id',rows[i].id + 'Content').append(
                                 $('<ul>').append(
@@ -82,60 +64,117 @@ function getTodoList(){
                                 )
                             )
                         );
-                        
+
                         if(rows[i].todoComplete){
                             if(rows[i].todoComplete == 'Y'){
-                                li.appendTo(todoComplete);
+                                li.prependTo(todoComplete);
                                 $('#todoClear'+i).prop('checked', true);
                             }else{
-                                li.appendTo(todolistUl);
+                                li.prependTo(todolistUl);
                                 $('#todoClear'+i).prop('checked', false);
                             }
                         }else{
-                            li.appendTo(todolistUl);
+                            li.prependTo(todolistUl);
                             $('#todoClear'+i).prop('checked', false);
                         }
-                        
-                        
                     }
                 }
 
-                // dailyDiv.removeClass('noItem');
-
-                // if(rows.length > 0){
-                //     for(var i=0;i<rows.length;i++){
-                //         if(rows[i].todoComplete){
-                //             $("<li/>").attr('id', rows[i].id).addClass('complete').attr('onclick','showInfo("todolist","'+rows[i].id+'")').append(
-                //                 //$('<div/>').addClass('circle').text(rows[i].date).css('background',categoryMap(rows[i].category))
-                //             ).append(
-                                
-                //                 $('<span/>').text(rows[i].title +" (" + rows[i].date + ") ").addClass('textTitle')
-                //             ).prependTo(todolistUl);
-                //         }else{
-                //             $("<li/>").attr('id', rows[i].id).addClass('list').attr('onclick','showInfo("todolist","'+rows[i].id+'")').append(
-                //                 // $('<div/>').addClass('circle').text(rows[i].date)
-                //             ).append(
-                //                 $('<span/>').text(rows[i].title +" (" + rows[i].date + ") ").addClass('textTitle')
-                //             ).append(
-                //                 $('<div/>').addClass('textBox').append(
-                //                     $('<span/>').text(rows[i].contents)
-                //                 )
-                //             ).prependTo(todolistUl);
-                //         }
-                //     }
-                    
-                // }
-                // $("<li/>").addClass('todolistAddArea list').attr('onclick','openDialogForAdd("todo")').append(
-                //     $('<div/>').addClass('todolistAddDiv circle').append(
-                //         $('<span/>').addClass('glyphicon glyphicon-plus')
-                //     )
-                // ).prependTo(todolistUl);
-                
-                // todolistUl.appendTo(todolistDiv);
             }
        },error:function(){
         //    alert('getList 오류!!!');
            window.location = '/';
        }
+    });
+}
+
+function todoAddBtn(){
+    $.ajax({
+        url: '/todolist/add',
+        dataType: 'json',
+        type: 'post',
+        data:$('#todoForm').serialize(),
+        success: function(data) {
+            if(data.result == 'success'){
+                getTodoList();
+            }
+        }
+    });
+}
+
+function modifyTodoContents(obj){
+
+    var status = todoSectionToggle();
+    console.log(status)
+    if(status){
+        $('#id').val(obj.id);
+
+        $('#datepicker').val(obj.date);
+        $('#title').val(obj.title);
+        $('#contents').val(obj.contents);
+    }
+}
+
+function removeTodoContents(){
+
+}
+
+function todoSectionToggle(){
+    if($(".todoAddSection").is(":visible")){
+        $(".todoAddSection").slideUp();
+        $('.headerBtnAdd').show();
+
+        $('#id').val('');
+        $('#datepicker').val('');
+        $('#title').val('');
+        $('#contents').val('');
+        return false;
+    }else{
+        $(".todoAddSection").slideDown();
+        $('.headerBtnAdd').hide();
+        return true;
+    }
+}
+
+function openTodoContents(obj){
+    var liId = $(obj).parent().attr('id');
+    var contents = $(obj).parent().find('#'+liId+'Content');
+
+    if(contents.is(":visible")){
+        contents.slideUp();
+        $(obj).parent().find('.fa-chevron-circle-down').hide();
+        $(obj).parent().find('.fa-chevron-circle-right').show();
+    }else{
+        contents.slideDown();
+        $(obj).parent().find('.fa-chevron-circle-down').show();
+        $(obj).parent().find('.fa-chevron-circle-right').hide();
+    }
+}
+
+function todoContentsCheck(obj){
+    var status = 'Y';
+    var id = $(obj).parent().parent().attr('id');
+    if($(obj).is(":checked")){
+        $(obj).next().css('text-decoration','line-through');
+        $(obj).next().css('color','#ccc');
+    }else{
+        $(obj).next().css('text-decoration','inherit');
+        $(obj).next().css('color','#333');
+        status = 'N';
+    }
+
+    $.ajax({
+        url: '/todolist/status',
+        dataType: 'json',
+        type: 'post',
+        data:{
+            id:id,
+            status:status
+        },
+        success: function(data) {
+            if(data.result == 'success'){
+                getTodoList();
+            }
+        }
     });
 }

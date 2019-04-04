@@ -20,6 +20,20 @@
     border-bottom:0px;
     line-height: normal;
 }
+
+.todoModifyDiv{
+    display: inline-block;
+    float: right;
+    margin-right: 18px;
+    letter-spacing: 10px;
+}
+
+.todoAddSection{   
+    margin-bottom: 20px;
+    border-bottom: 2px dashed #CCC;
+    padding-bottom: 20px;
+}
+
 .todolistAddDiv{
     display: inline-block;
 }
@@ -96,6 +110,7 @@
     color : #333;
     text-decoration: none;
     cursor: pointer;
+    font-weight: initial;
 }
 
 #todolist li.using .contents{
@@ -107,7 +122,7 @@
     margin-right: 5px;
 }
 
-.badge{
+#todolist li.using .badge{
     display: inline-block;
     min-width: 10px;
     padding: 3px 7px;
@@ -133,7 +148,7 @@
 /* 완료 todolist */
 #todoComplete li.using{
     list-style: none;
-    border-left: 3px solid #707070;
+    border-left: 3px solid #ffe94f;
     background: #f5f6f8;
     padding: 15px 0 15px 35px !important;
     margin-bottom: 2px;
@@ -146,6 +161,7 @@
     color : #CCC;
     text-decoration: line-through;
     cursor: pointer;
+    font-weight: initial;
 }
 
 #todoComplete li.using .contents{
@@ -153,6 +169,25 @@
     display: none;
 }
 
+#todoComplete li.using .badge{
+    display: inline-block;
+    min-width: 10px;
+    padding: 3px 7px;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 10px;
+    background: #ffe94f;
+}
+
 #todoComplete li.using .todoContentsCheck{
     margin-right: 5px;
+}
+
+.fa-chevron-circle-down, .fa-chevron-circle-right{
+    margin-left: 5px;
 }
