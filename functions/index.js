@@ -366,16 +366,49 @@ app.post('/todolist/add', function (req, res) {
 
     if(data.todoComplete){
       addData['todoComplete'] = data.todoComplete;
+    }else{
+      addData['todoComplete'] = 'N';
     }
     
     if (!addData.id) {
-      addData['todoComplete'] = 'N';
       addData.id = firebase.database().ref().child('todolist/'+uid).push().key;
     }
 
     if (addData.id) {
       firebase.database().ref('todolist/' +uid+"/"+addData.id).set(addData);
     }
+    res.send({
+      result: 'success'
+    });
+    
+    return true;
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
+
+});
+
+app.post('/todolist/delete', function (req, res) {
+  
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+    var id = req.body.id;
+
+    firebase.database().ref('todolist/'+uid+'/'+id).remove();
 
     res.send({
       result: 'success'
@@ -387,6 +420,7 @@ app.post('/todolist/add', function (req, res) {
     res.redirect('/');
   });
 
+  
 });
 
 app.post('/todolist/status', function (req, res) {

@@ -37,6 +37,8 @@ function getTodoList(){
                             day = '0'+day;
                         }
 
+                        var contents = rows[i].contents;
+                        contents = contents.replace(/(?:\r\n|\r|\n)/g, '<br/>')
                         var li = $('<li/>').addClass('using').attr('id', rows[i].id)
                         .append(
                             $('<label/>').append(
@@ -55,12 +57,12 @@ function getTodoList(){
                             $('<div/>').addClass('todoModifyDiv').append(
                                     $('<i/>').addClass('far fa-edit').attr('onclick', 'modifyTodoContents('+JSON.stringify(rows[i])+')')
                                 ).append(
-                                    $('<i/>').addClass('far fa-trash-alt').attr('onclick', 'removeTodoContents(this)')
+                                    $('<i/>').addClass('far fa-trash-alt').attr('onclick', 'removeTodoContents("'+rows[i].id+'")')
                             )
                         ).append(
                             $('<div/>').addClass('contents').attr('id',rows[i].id + 'Content').append(
                                 $('<ul>').append(
-                                    $('<li>').text(rows[i].contents)
+                                    $('<li>').html(contents)
                                 )
                             )
                         );
@@ -95,7 +97,9 @@ function todoAddBtn(){
         type: 'post',
         data:$('#todoForm').serialize(),
         success: function(data) {
+            console.log(data)
             if(data.result == 'success'){
+                todoSectionToggle();
                 getTodoList();
             }
         }
@@ -103,19 +107,41 @@ function todoAddBtn(){
 }
 
 function modifyTodoContents(obj){
+    if(!$(".todoAddSection").is(":visible")){
+        $(".todoAddSection").slideDown();
+        $('.headerBtnAdd').hide();
+    }
 
-    var status = todoSectionToggle();
-    console.log(status)
-    if(status){
-        $('#id').val(obj.id);
+    $('#id').val(obj.id);
 
-        $('#datepicker').val(obj.date);
-        $('#title').val(obj.title);
-        $('#contents').val(obj.contents);
+    $('#datepicker').val(obj.date);
+    $('#title').val(obj.title);
+    $('#contents').val(obj.contents);
+    $('#todoCompleteY').prop('checked', false);
+
+    if(obj.todoComplete == 'Y'){
+        $('#todoCompleteY').prop('checked', true);
     }
 }
 
-function removeTodoContents(){
+function removeTodoContents(id){
+    if(!confirm('할 일을 삭제하시겠습니까?')){
+        return false;
+    }
+    $.ajax({
+        url: '/todolist/delete',
+        dataType: 'json',
+        type: 'post',
+        data:{
+            id:id
+        },
+        success: function(data) {
+            if(data.result == 'success'){
+                getTodoList();
+            }
+        }
+    });
+
 
 }
 
@@ -128,6 +154,8 @@ function todoSectionToggle(){
         $('#datepicker').val('');
         $('#title').val('');
         $('#contents').val('');
+
+        $('#todoCompleteY').prop('checked', false);
         return false;
     }else{
         $(".todoAddSection").slideDown();

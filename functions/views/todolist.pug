@@ -87,13 +87,13 @@ html
                         //-     span OPTIONS
             div(class='center' style='background:#fafafa;')
                 header(class="header backWhite")
-                    span(class="first") Content
-                    span(class="btn btnOrange" onclick='todoSectionToggle()')
+                    span(class="first") To do
+                    span(class="btn btnOrange headerBtnAdd" onclick='todoSectionToggle()')
                         i(class='fas fa-plus-circle')        ADD
-                    div(class="headerBtn")
-                        span(class="btn btnWhite") + btn1
-                        span(class="btn btnWhite") + btn2
-                        span(class="btn btnWhite") + btn3
+                    //- div(class="headerBtn")
+                    //-     span(class="btn btnWhite") + btn1
+                    //-     span(class="btn btnWhite") + btn2
+                    //-     span(class="btn btnWhite") + btn3
                 div(class='content')
                     //- ul(class='pager')
                     //-     li
@@ -124,12 +124,15 @@ html
                             div(class="searchDiv todoContents backWhite")
                                 textarea(name="contents" id='contents')
                     
-                        div(class='todoAddBtn')
-                            span(class="btn btnOrange" onclick='todoAddBtn()')
-                                i(class='fas fa-plus-circle')        ADD
-                            span(class="btn btnWhite" onclick='todoSectionToggle()')
-                                i(class='fas fa-eraser')        CANCEL
-                                
+                            div(class='todoAddBtn')
+                                label
+                                    input(type='checkbox' name='todoComplete' id='todoCompleteY' value='Y')
+                                    |           완료
+                                span(class="btn btnOrange" onclick='todoAddBtn()')
+                                    i(class='fas fa-plus-circle')        ADD
+                                span(class="btn btnWhite" onclick='todoSectionToggle()')
+                                    i(class='fas fa-eraser')        CANCEL
+                                    
                     div(class='listDiv')
                         ul(id='todolist')
                         ul(id='todoComplete')

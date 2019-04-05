@@ -87,7 +87,7 @@
 }
 
 .todoAddBtn > .btnOrange{
-    margin-right: 10px;
+    margin: 0 10px 0 10px;
 }
 
 .listDiv ul{
@@ -137,8 +137,14 @@
     background: #79e1e6;
 }
 
+#todoComplete li.using i, #todolist li.using i{
+    cursor: pointer;
+}
+
 .contents > ul li{
     list-style: none;
+    word-break: break-all;
+    margin-right: 50px;
 }
 
 .contents > ul li > label{
