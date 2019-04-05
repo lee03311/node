@@ -694,7 +694,7 @@ app.get(['/category', '/category/:id'], function (req, res) {
 
 app.post('/category/add', function (req, res) {
   var data = req.body;
-
+console.log(data)
   var host = req.get('host') || '';
   var sessionCookie = null;
 
@@ -769,7 +769,10 @@ app.post('/category/status', function (req, res) {
 app.post('/category/delete', function (req, res) {
   var data = req.body;
   firebase.database().ref('category/' + data.id).remove();
-  res.redirect('/list');
+  res.send({
+    result: 'success'
+  });
+  return true;
 });
 
 app.post('/category/addMember', function(req, res){
@@ -825,8 +828,33 @@ app.post('/category/removeMember', function(req, res){
 
 
 /*설정 */
+app.get('/setting2', function(req, res){
+
+  res.render('backup/setting');
+});
+
 app.get('/setting', function(req, res){
-  res.render('setting');
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+    
+    res.render('setting',{email:email});
+    return true;
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
 });
 
 app.get('/setting/shareMember', function(req, res){

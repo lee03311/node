@@ -83,20 +83,6 @@ html
                 $("#reportForm").submit();
             }
 
-            function logout(){
-                $.ajax({
-                    url: '/logout',
-                    dataType: 'json',
-                    type: 'GET',
-                    success: function(data) {
-                        if(data.result == 'success'){
-                            window.location ='/';
-                        }else{
-                            alert('로그아웃하는데 문제가 발생하였습니다.');
-                        }
-                    }
-                });
-            }
 
     body
         div(class='sideMenubar')

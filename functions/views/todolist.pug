@@ -29,21 +29,6 @@ html
                     }
                 });
 
-                $('.logout').click(function(){
-                    $.ajax({
-                        url: '/logout',
-                        dataType: 'json',
-                        type: 'get',
-                        success: function(data) {
-                            if(data.result == 'success'){
-                                window.location ='/';
-                            }else{
-                                alert('로그아웃하는데 문제가 발생하였습니다.');
-                            }
-                        }
-                    });
-                })
-
                 $('#todolistTitle').keydown(function(event) {
                     if (event.keyCode == '13') { 
                         if(!$(this).val()){
@@ -73,7 +58,7 @@ html
                                 span DAILY
                         li(class='active')
                             i(class="far fa-grin-squint-tears")
-                            span TODOLIST
+                            span TO DO
                         li
                             a(href='#')
                                 i(class="far fa-smile")
@@ -82,6 +67,10 @@ html
                             a(href='#')
                                 i(class="far fa-grin-beam-sweat")
                                 span EXPENSE
+                        li
+                            a(href='/setting')
+                                i(class="fas fa-cogs")
+                                span SETTING
                         //- li
                         //-     i(class="fas fa-biohazard")
                         //-     span OPTIONS
@@ -114,7 +103,7 @@ html
                                     span(class='glyphicon glyphicon-calendar' aria-hidden='true')
                                     
                             div(class="searchDiv backWhite")
-                                input(type="text" placeholder="Add..." id='title' name='title')
+                                input(type="text" placeholder="제목을 입력하세요." id='title' name='title')
                                 div(class="btnDiv line40" style="margin-right:0px;")
                                     i(class="fas fa-plus-circle")
                                     //- span(class="btn btnOrange") +

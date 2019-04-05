@@ -2,54 +2,100 @@ doctype html
 html
     head
         meta(charset = 'utf-8')
-
         script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js')
-        script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
+        //- script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
         script(src='https://code.jquery.com/ui/1.12.1/jquery-ui.js')
         link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css')
         link(rel='stylesheet' href='//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css')
-        script(type='text/javascript' src='js/setting.js') 
+        link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nanum+Gothic') 
+        link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.1/css/all.css' integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous")
+        link(rel="stylesheet", href="css/common.css")
         link(rel="stylesheet", href="css/setting.css")
-    body
-        div(class='wrapper')
-            h4 
-                span(class='glyphicon glyphicon-link')
-                |     공유 항목
+        script(type='text/javascript' src='js/common.js') 
+        script(type='text/javascript' src='js/setting.js') 
+        script.
         
-            form( action='post')
-                div(class='form-group')
-                    div(class='checkbox')
-                        label   
-                            input(type='checkbox' name='check' value='budget') 
-                            |   예산
+            var colorWell;
+            var defaultColor = "#0000ff";
 
-                div(class='form-group')
-                    div(class='checkbox')
-                        label
-                            input(type='checkbox' name='check' value='account') 
-                            |   가계부
-                
-                div(class='form-group')
-                    div(class='checkbox')
-                        label
-                            input(type='checkbox' name='check' value='todolist') 
-                            |   할 일
+            $(function(){
+                $('#color').val($("#colorText").text());
+            });
+            
+            window.addEventListener("load", startup, false);
+            function startup() {
+                colorWell = document.querySelector("#color");
+                colorWell.value = defaultColor;
+                colorWell.addEventListener("input", updateFirst, false);
+                //colorWell.addEventListener("change", updateAll, false);
+                colorWell.select();
+            }
 
-                div(class='form-group')
-                    div(class='checkbox')
-                        label
-                            input(type='checkbox' name='check' value='daily') 
-                            |   일기
-                    div(id='categoryList')
+            function updateFirst(event) {
+                $("#colorText").text(event.target.value);
+            }
 
-            h4 
-                span(class='glyphicon glyphicon-link')
-                |     공유할 사람 선택
+    body
+        div(class='container')
+            div(class="left" style="background-color:#282c2f;")
+                div(class="header")
+                    span(class="skyBlue emailInfo") #{email}
+                    span(class="sub white") 
+                        span(class="logout") 
+                            i(class='fas fa-sign-out-alt')
+                div
+                    ul(class="menuNavi")
+                        li
+                            a(href='/list')
+                                i(class="far fa-angry")
+                                span DAILY
+                        li(class='active')
+                            a(href='/todolist')
+                                i(class="far fa-grin-squint-tears")
+                                span TO DO
+                        li
+                            a(href='#')
+                                i(class="far fa-smile")
+                                span BUDGET
+                        li
+                            a(href='#')
+                                i(class="far fa-grin-beam-sweat")
+                                span EXPENSE
+                        li(class='active')
+                            i(class="fas fa-cogs")
+                            span SETTING
+                        //- li
+                        //-     i(class="fas fa-biohazard")
+                        //-     span OPTIONS
+            div(class='center' style='background:#fafafa;')
+                header(class="header backWhite")
+                    span(class="first") Setting
 
-            form(class="form-inline")
-                div(class='form-group')
-                    label(for='shareMember')
-                    input(type='email' class='form-control' id='shareMember' placeholder='이메일 입력')
-                button(type='button' onclick='javascript:addMember()' class="btn btn-primary") 추가
-                
-                div(id='categoryList' class='shareMemberList')
+                div(class='content')
+                    div
+                        h4  
+                            i(class='fas fa-check-circle')          카테고리 관리
+
+
+                        div(class="categoryAddDiv")
+                            form(id='categoryForm')
+                                div(class='categoryAddArea')
+                                    label(for='color') Color
+                                        input(type='color' id='color' value='#ffffff' name='color')
+                                        sapn(id='colorText')
+                                    script. 
+                                        $('#color').val('#fff');
+                                            
+                                    div(class="searchDiv backWhite")
+                                        input(type="text" placeholder="카테고리명" id='category' name='category')
+                                        div(class="btnDiv line40" style="margin-right:0px;")
+
+                                    div(class='categoryBtn')
+                                        span(class="btn btnWhite categoryAddBtn" onclick='addCategory()')
+                                            i(class='fas fa-plus-circle')        ADD
+
+                            div(class='categoryList')
+                    div
+                        h4  
+                            i(class='fas fa-check-circle')          공유항목 선택
+                        div(class='shareSelectList')

@@ -1,71 +1,90 @@
 $(function(){
-    getCategoryList();
-})
+    getCategory();
+});
 
-function getCategoryList(){
+
+function getCategory(){
     $.ajax({
-        url: '/list/category',
+        url:'/list/category',
         dataType: 'json',
         type: 'GET',
-        success: function(data) {
-            if(data.result == 'success'){
-                var category = data.rows;
-                console.log(category);
-                var categoryList = $("#categoryList");
-                
-                for(var i=0;i<category.length;i++){
-                    // $("<span/>").text(category[i].category).appendTo(categoryList);
+        success:function(data){
+            var category = data.rows;
+            var categoryList = $('.categoryList');
+            categoryList.empty();
 
-                    $('<div/>').append(
-                            $('<div/>').addClass('categoryArea').css('background-color', category[i].color)
-                        ).append(
-                            $('<span/>').addClass('categoryText').text(category[i].category)
-                        ).append(
-                            $('<label/>').addClass('switch').append(
-                                $('<input/>').attr('type', 'checkbox')
-                            ).append(
-                                $('<span/>').addClass('slider round')
-                            )
-                        ).appendTo(categoryList);
+            for(var i=0;i<category.length;i++){
+                var datas = category[i];
+
+                var div = $('<div/>').addClass('dailyCategory').attr('data-show-status', datas.status);
+                if(datas.status == 'show'){
+                    div.addClass('active');
                 }
+                
+                div.attr('id', 'cateogryList_'+datas.id).append(
+                    $('<div/>').addClass('categoryColor').attr('data-category-id',datas.id).css('background', datas.color)
+                ).append(
+                    $('<span/>').addClass('categoryText').text(datas.category).attr('onclick', 'editCategory('+JSON.stringify(datas)+')')
+                ).append(
+                    $('<span/>').css('cursor', 'pointer').append(
+                        $('<i/>').addClass('far fa-trash-alt').css('font-size','12px')
+                    ).attr('onclick', 'removeCategory("'+datas.id+'")')
+                ).appendTo(categoryList);
             }
         }
     });
 }
 
-var index = 0;
-function addMember(){
-    
-    if($('#shareMember').val()){
-        $.ajax({
-            url: '/setting/shareMember',
-            dataType: 'json',
-            type: 'GET',
-            data:{
-                userEmail : $('#shareMember').val()
-            },
-            success: function(data) {
-                var shareMemberList = $('.shareMemberList');
-                if(data.result){
-                    var shareUser = data.result;
-
-                    $('<div/>').addClass('shareMemberUser').attr('id', 'shareMemberIndex_'+index)
-                    .append(
-                        $('<span/>').text(shareUser.email)
-                    ).append(
-                        $('<span/>').addClass('glyphicon glyphicon-remove').attr('onclick', 'removeMember("'+index+'")')
-                    ).appendTo(shareMemberList);
-
-                    index++;
-                }
-            }
-        });
+function addCategory(){
+    if($('#category').val() == ''){
+        alert('카테고리명을 입력하세요.');
+        return false;
     }
+
+    if(!confirm('카테고리를 추가하시겠습니까?')){
+        return false;
+    }
+
+    $.ajax({
+        url:'/category/add',
+        dataType: 'json',
+        type: 'post',
+        data: $('#categoryForm').serialize(),
+        success:function(data){
+            alert('등록되었습니다.');
+            getCategory();
+        },error:function(){
+            alert('관리자에게 문의하세요');
+        }
+    });
 }
 
-function removeMember(index){
-    alert('remove' + index)
+function editCategory(obj){
+    console.log(obj)
+}
 
+function removeCategory(id){
+    if(!id){
+        alert('해당하는 카테고리가 존재하지 않습니다.');
+        return false;
+    }
 
-    $('#shareMemberIndex_'+index).remove();
+    if(!confirm('카테고리를 삭제하시겠습니까?')){
+        return false;
+    }
+
+    $.ajax({
+        url:'/category/delete',
+        dataType: 'json',
+        type: 'post',
+        data: {
+            id:id
+        },
+        success:function(data){
+            alert('삭제되었습니다.');
+            getCategory();
+        },error:function(){
+            alert('관리자에게 문의하세요');
+        }
+    });
 }
