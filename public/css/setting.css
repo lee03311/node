@@ -20,6 +20,25 @@
   line-height: normal;
 }
 
+.shareMemberSection{   
+  margin-top: 20px;
+  border-top: 2px dashed #CCC;
+  padding-top: 20px;
+}
+
+.settingBtn{
+  text-align: right;
+  margin:10px 0;
+}
+
+.settingBtn .btn{
+  margin-right: 5px;
+}
+
+.contentArea{
+  margin-top:15px;
+}
+
 .categoryAddDiv{
   margin: 20px 50px;
 }
@@ -30,7 +49,7 @@
   border-radius: 11px;
 }
 
-.categoryBtn{
+.categoryBtn, .shareMemberBtn{
   display: inline-block;
 }
 

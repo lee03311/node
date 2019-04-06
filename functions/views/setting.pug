@@ -49,7 +49,7 @@ html
                             a(href='/list')
                                 i(class="far fa-angry")
                                 span DAILY
-                        li(class='active')
+                        li
                             a(href='/todolist')
                                 i(class="far fa-grin-squint-tears")
                                 span TO DO
@@ -72,11 +72,9 @@ html
                     span(class="first") Setting
 
                 div(class='content')
-                    div
+                    div(class='contentArea')
                         h4  
                             i(class='fas fa-check-circle')          카테고리 관리
-
-
                         div(class="categoryAddDiv")
                             form(id='categoryForm')
                                 div(class='categoryAddArea')
@@ -95,7 +93,7 @@ html
                                             i(class='fas fa-plus-circle')        ADD
 
                             div(class='categoryList')
-                    div
+                    div(class='contentArea')
                         h4  
                             i(class='fas fa-check-circle')          공유항목 선택
                         div(class='shareSelectList')
@@ -121,3 +119,22 @@ html
                                     i(class='far fa-grin-beam-sweat')
                                     |EXPENSE
                             
+                            div(class='settingBtn')
+                                span(class="btn btnOrange" onclick='saveSetting()')
+                                    i(class='fas fa-plus-circle')        SAVE
+                                span(class="btn btnWhite" onclick='initialSetting()')
+                                    i(class='fas fa-eraser')        INITIAL
+                                    
+
+                            div(class='shareMemberSection')
+                                div(style='margin-bottom:5px;')
+                                    i(class='fas fa-share-alt')             공유 멤버 관리
+                                div(class="searchDiv backWhite")
+                                    input(type="text" placeholder="이메일 입력" id='shareMemberEmail' name='shareMemberEmail')
+                                    div(class="btnDiv line40" style="margin-right:0px;")
+
+                                div(class='shareMemberBtn')
+                                    span(class="btn btnWhite categoryAddBtn" onclick='addShareMember()')
+                                        i(class='fas fa-plus-circle')        SHARE
+                                
+                                //- div(class='shareMemberList')
