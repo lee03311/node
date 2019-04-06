@@ -99,3 +99,25 @@ html
                         h4  
                             i(class='fas fa-check-circle')          공유항목 선택
                         div(class='shareSelectList')
+                            div
+                                label(for="daily")
+                                    input(type='checkbox' name='dailyShareYn' value='daily' id='daily')
+                                    i(class='far fa-angry')
+                                    |DAILY
+                            div
+                                label(for="todo")
+                                    input(type='checkbox' name='todoShareYn' value='todo' id='todo')
+                                    i(class='far fa-grin-squint-tears')
+                                    |TO DO
+                                div(class='shareSelectCategory')
+                            div
+                                label(for="budget")
+                                    input(type='checkbox' name='budgetShareYn' value='budget' id='budget')
+                                    i(class='far fa-smile')
+                                    |BUDGET
+                            div
+                                label(for="expense")
+                                    input(type='checkbox' name='expenseShareYn' value='expense' id='expense')
+                                    i(class='far fa-grin-beam-sweat')
+                                    |EXPENSE
+                            

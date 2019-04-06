@@ -76,3 +76,87 @@
   margin: 0 10px 0 5px;
   cursor: pointer;
 }
+
+
+.shareSelectList{
+  margin: 20px 50px;
+}
+
+.shareSelectList label{
+  cursor: pointer;
+}
+.shareSelectList input[type='checkbox']{
+  margin-right:10px;
+}
+
+.shareSelectList i{
+  margin-right:10px;
+}
+
+.shareSelectCategory{
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 5px 0 10px 20px;
+  border-radius: 10px;
+}
+
+/* 체크박스 스위치 */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 21px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(24px);
+  -ms-transform: translateX(24px);
+  transform: translateX(24px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}

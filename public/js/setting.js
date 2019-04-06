@@ -29,10 +29,38 @@ function getCategory(){
                     $('<span/>').css('cursor', 'pointer').append(
                         $('<i/>').addClass('far fa-trash-alt').css('font-size','12px')
                     ).attr('onclick', 'removeCategory("'+datas.id+'")')
-                ).appendTo(categoryList);
+                );
+                
+                categoryList.append(div);
             }
+
+            
+            shareCategory(category);
         }
     });
+}
+function shareCategory(category){
+    var shareSelectCategory = $('.shareSelectCategory');
+    shareSelectCategory.empty();
+
+    for(var i=0;i<category.length;i++){
+        var datas = category[i];
+        
+        var div = $('<div/>');
+        
+        div.attr('id', datas.id).append(
+            $('<span/>').addClass('categoryText').text(category[i].category)
+        )
+        .append(
+            $('<label/>').addClass('switch').append(
+                $('<input/>').attr('type', 'checkbox')
+            ).append(
+                $('<span/>').addClass('slider round')
+            )
+        );
+        
+        shareSelectCategory.append(div);
+    }
 }
 
 function addCategory(){
