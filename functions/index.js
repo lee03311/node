@@ -845,11 +845,35 @@ app.get('/setting', function(req, res){
     sessionCookie = req.cookies.session;
   }
 
+
   admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
     var uid = decodedClaims.sub;
     var email = decodedClaims.email;
     
-    res.render('setting',{email:email});
+    var shareItem = [];
+    var shareCategory = [];
+
+    firebase.database().ref('setting/'+uid+'/item').once('value', function (snapshot) {
+      snapshot.forEach(function (childSnapshot) {
+        var data = childSnapshot.val();
+
+        shareItem.push(data);
+      });
+
+      if(shareItem.includes('daily')){
+        firebase.database().ref('setting/'+uid+'/categoryItem').once('value', function (categorySnapshot) {
+          categorySnapshot.forEach(function (childSnapshot) {
+            
+            var categorySnapshotData = childSnapshot.val();
+            shareCategory.push(categorySnapshotData);
+          });
+          res.render('setting',{email:email, shareItem:shareItem, shareCategory:shareCategory});
+        });
+      }else{
+        res.render('setting',{email:email, shareItem:shareItem});
+      }
+    });
+    
     return true;
   }).catch(error => {
     console.log(error);
@@ -858,24 +882,59 @@ app.get('/setting', function(req, res){
 });
 
 app.get('/setting/shareMember', function(req, res){
+});
 
-  admin.auth().getUserByEmail(req.query.userEmail).then(function(userRecord) {
-    var verifyUser = {
-      email : userRecord.email,
-      uid : userRecord.uid
+app.get('/setting/shareMember', function(req, res){
+
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+  var data = req.query;
+  console.log(data);
+
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+
+    if(uid){
+      if(data.status == 'add'){
+        admin.auth().getUserByEmail(data.shareMemberEmail).then(function(userRecord) {
+          var addData = {};
+          addData['member'] = userRecord.uid;
+          addData['item'] = data.item;
+          addData['categoryItem'] = data.categoryItem;
+          var newKeyObj = firebase.database().ref('setting/' + uid).set(addData);
+      
+          res.send({
+            result: 'success',
+            member : verifyUser
+          });
+      
+          return true;
+        })
+        .catch(function(error) {
+          console.log("Error fetching user data:", error);
+          
+          res.send({
+            result: 'error'
+          });
+        });
+      }else if(data.status == 'clear'){
+        firebase.database().ref('/setting/'+uid+'/member').remove();
+      }
     }
-
-    res.send({
-      result: verifyUser
-    });
-
-    return verifyUser;
-  })
-  .catch(function(error) {
-    console.log("Error fetching user data:", error);
+    return true;
+  }).catch(error => {
+    console.log(error);
   });
-
-
 });
 
 /*예산 */

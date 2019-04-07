@@ -53,7 +53,7 @@ function shareCategory(category){
         )
         .append(
             $('<label/>').addClass('switch').append(
-                $('<input/>').attr('type', 'checkbox')
+                $('<input/>').attr('type', 'checkbox').attr('name', 'categoryItem').attr('value', datas.id)
             ).append(
                 $('<span/>').addClass('slider round')
             )
@@ -115,4 +115,70 @@ function removeCategory(id){
             alert('관리자에게 문의하세요');
         }
     });
+}
+
+function addShareMember(){
+    var shareMemberEmail = $('#shareMemberEmail').val();
+
+    var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+
+    if(!shareMemberEmail){
+        alert('공유할 멤버의 이메일을 입력하세요');
+        return false;
+    }
+
+    if(!regExp.test(shareMemberEmail)){
+        alert('공유할 멤버의 이메일을 정확하게 입력하세요');
+        return false;
+    }
+
+    if(confirm('입력한 멤버와 공유하시겠습니까?')){
+
+        $('#status').val('add');
+        $.ajax({
+            url:'/setting/shareMember',
+            dataType: 'json',
+            type: 'get',
+            data: $('#shareItems').serialize(),
+            success:function(data){
+                console.log(data);
+
+                if(data.result == 'success'){
+                    $('#shareMemberEmail').attr('readonly', true);
+                    $('#shareMemberEmail').css('background', '#ccc');
+                    $('#shareMemberEmail').parent().css('background', '#ccc');
+                }
+            },error:function(error){
+                console.log(error);
+            }
+        });
+    }
+}
+
+function clearShareMember(){
+    if(!confirm('등록된 멤버와의 공유를 끊으시겠습니까?')){
+        return false;
+    }
+
+    $.ajax({
+        url:'/setting/shareMember',
+        dataType: 'json',
+        type: 'get',
+        data:{
+            status:'clear'
+        },
+        success:function(data){
+
+            if(data.result == 'success'){
+                $('#shareMemberEmail').attr('readonly', true);
+                $('#shareMemberEmail').css('background', '#ccc');
+                $('#shareMemberEmail').parent().css('background', '#ccc');
+            }
+        }
+    });
+
+    $('#shareMemberEmail').removeAttr('readonly');
+    $('#shareMemberEmail').css('background', '#fff');
+    $('#shareMemberEmail').parent().css('background', '#fff');
+    $('#shareMemberEmail').val('');
 }

@@ -20,6 +20,8 @@ html
 
             $(function(){
                 $('#color').val($("#colorText").text());
+                console.log('#{shareItem}')
+                console.log('#{shareCategory}')
             });
             
             window.addEventListener("load", startup, false);
@@ -97,44 +99,48 @@ html
                         h4  
                             i(class='fas fa-check-circle')          공유항목 선택
                         div(class='shareSelectList')
-                            div
-                                label(for="daily")
-                                    input(type='checkbox' name='dailyShareYn' value='daily' id='daily')
-                                    i(class='far fa-angry')
-                                    |DAILY
-                            div
-                                label(for="todo")
-                                    input(type='checkbox' name='todoShareYn' value='todo' id='todo')
-                                    i(class='far fa-grin-squint-tears')
-                                    |TO DO
-                                div(class='shareSelectCategory')
-                            div
-                                label(for="budget")
-                                    input(type='checkbox' name='budgetShareYn' value='budget' id='budget')
-                                    i(class='far fa-smile')
-                                    |BUDGET
-                            div
-                                label(for="expense")
-                                    input(type='checkbox' name='expenseShareYn' value='expense' id='expense')
-                                    i(class='far fa-grin-beam-sweat')
-                                    |EXPENSE
-                            
-                            div(class='settingBtn')
-                                span(class="btn btnOrange" onclick='saveSetting()')
-                                    i(class='fas fa-plus-circle')        SAVE
-                                span(class="btn btnWhite" onclick='initialSetting()')
-                                    i(class='fas fa-eraser')        INITIAL
-                                    
-
-                            div(class='shareMemberSection')
-                                div(style='margin-bottom:5px;')
-                                    i(class='fas fa-share-alt')             공유 멤버 관리
-                                div(class="searchDiv backWhite")
-                                    input(type="text" placeholder="이메일 입력" id='shareMemberEmail' name='shareMemberEmail')
-                                    div(class="btnDiv line40" style="margin-right:0px;")
-
-                                div(class='shareMemberBtn')
-                                    span(class="btn btnWhite categoryAddBtn" onclick='addShareMember()')
-                                        i(class='fas fa-plus-circle')        SHARE
+                            form(id='shareItems')
+                                input(type='hidden' id='status' name='status')
+                                div
+                                    label(for="daily")
+                                        input(type='checkbox' name='item' value='daily' id='daily')
+                                        i(class='far fa-angry')
+                                        |DAILY
+                                    div(class='shareSelectCategory')
+                                div
+                                    label(for="todo")
+                                        input(type='checkbox' name='item' value='todo' id='todo')
+                                        i(class='far fa-grin-squint-tears')
+                                        |TO DO
+                                div
+                                    label(for="budget")
+                                        input(type='checkbox' name='item' value='budget' id='budget')
+                                        i(class='far fa-smile')
+                                        |BUDGET
+                                div
+                                    label(for="expense")
+                                        input(type='checkbox' name='item' value='expense' id='expense')
+                                        i(class='far fa-grin-beam-sweat')
+                                        |EXPENSE
                                 
-                                //- div(class='shareMemberList')
+                                div(class='settingBtn')
+                                    span(class="btn btnOrange" onclick='saveSetting()')
+                                        i(class='fas fa-plus-circle')        SAVE
+                                    span(class="btn btnWhite" onclick='initialSetting()')
+                                        i(class='fas fa-eraser')        INITIAL
+                                        
+
+                                div(class='shareMemberSection')
+                                    div(style='margin-bottom:5px;')
+                                        i(class='fas fa-share-alt')             공유 멤버 관리
+                                    div(class="searchDiv backWhite")
+                                        input(type="text" placeholder="이메일 입력" id='shareMemberEmail' name='shareMemberEmail')
+                                        div(class="btnDiv line40" style="margin-right:0px;")
+
+                                    div(class='shareMemberBtn')
+                                        span(class="btn btnOrange categoryAddBtn" onclick='addShareMember()')
+                                            i(class='fas fa-plus-circle')        SHARE
+                                    
+                                    div(class='shareMemberBtn')
+                                        span(class="btn btnWhite categoryAddBtn" onclick='clearShareMember()')
+                                            i(class='fas fa-plus-circle')        CLEAR
