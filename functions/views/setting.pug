@@ -21,8 +21,31 @@ html
             $(function(){
                 $('#color').val($("#colorText").text());
                 var shareItem = '#{shareItem}';
-                console.log(shareItem.length);
-                console.log('#{shareCategory}')
+                var shareCategory = '#{shareCategory}';
+                var member = '#{member}';
+                
+                if(shareItem){
+                    var shareItemArr = shareItem.split(',');
+                    for(var i=0;i<shareItemArr.length;i++){
+                        $('#'+shareItemArr[i]).prop('checked', true);
+                    }
+                }
+
+                getCategory(shareCategory);
+
+                if(member){
+                    $('#shareMemberEmail').val(member);
+                    $('#shareMemberEmail').attr('readonly', true);
+                    $('#shareMemberEmail').css('background', '#ccc');
+                    $('#shareMemberEmail').parent().css('background', '#ccc');
+                }
+                
+
+                $('#daily').change(function(){
+                    if(!$(this).is(':checked')){
+                       $('input[name=categoryItem]').prop('checked', false);
+                    }
+                })
             });
             
             window.addEventListener("load", startup, false);
@@ -124,24 +147,27 @@ html
                                         i(class='far fa-grin-beam-sweat')
                                         |EXPENSE
                                 
-                                div(class='settingBtn')
-                                    span(class="btn btnOrange" onclick='saveSetting()')
-                                        i(class='fas fa-plus-circle')        SAVE
-                                    span(class="btn btnWhite" onclick='initialSetting()')
-                                        i(class='fas fa-eraser')        INITIAL
-                                        
-
+                                //- div(class='settingBtn')
+                                    
                                 div(class='shareMemberSection')
                                     div(style='margin-bottom:5px;')
                                         i(class='fas fa-share-alt')             공유 멤버 관리
                                     div(class="searchDiv backWhite")
                                         input(type="text" placeholder="이메일 입력" id='shareMemberEmail' name='shareMemberEmail')
                                         div(class="btnDiv line40" style="margin-right:0px;")
-
-                                    div(class='shareMemberBtn')
+ 
+                                    div(style='text-align: right;')
                                         span(class="btn btnOrange categoryAddBtn" onclick='addShareMember()')
-                                            i(class='fas fa-plus-circle')        SHARE
-                                    
-                                    div(class='shareMemberBtn')
+                                            i(class='fas fa-plus-circle')        SAVE
                                         span(class="btn btnWhite categoryAddBtn" onclick='clearShareMember()')
-                                            i(class='fas fa-plus-circle')        CLEAR
+                                            i(class='fas fa-eraser')        INITIAL
+                                        
+
+
+                                    //- div(class='shareMemberBtn')
+                                    //-     span(class="btn btnOrange categoryAddBtn" onclick='addShareMember()')
+                                    //-         i(class='fas fa-plus-circle')        SHARE
+                                    
+                                    //- div(class='shareMemberBtn')
+                                    //-     span(class="btn btnWhite categoryAddBtn" onclick='clearShareMember()')
+                                    //-         i(class='fas fa-plus-circle')        CLEAR

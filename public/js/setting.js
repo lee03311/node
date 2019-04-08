@@ -1,9 +1,4 @@
-$(function(){
-    getCategory();
-});
-
-
-function getCategory(){
+function getCategory(shareCategory){
     $.ajax({
         url:'/list/category',
         dataType: 'json',
@@ -33,13 +28,11 @@ function getCategory(){
                 
                 categoryList.append(div);
             }
-
-            
-            shareCategory(category);
+            shareCategoryDraw(category, shareCategory);
         }
     });
 }
-function shareCategory(category){
+function shareCategoryDraw(category, shareCategory){
     var shareSelectCategory = $('.shareSelectCategory');
     shareSelectCategory.empty();
 
@@ -53,7 +46,7 @@ function shareCategory(category){
         )
         .append(
             $('<label/>').addClass('switch').append(
-                $('<input/>').attr('type', 'checkbox').attr('name', 'categoryItem').attr('value', datas.id)
+                $('<input/>').attr('type', 'checkbox').attr('name', 'categoryItem').attr('id','ctg_'+datas.id).attr('value', datas.id)
             ).append(
                 $('<span/>').addClass('slider round')
             )
@@ -61,6 +54,19 @@ function shareCategory(category){
         
         shareSelectCategory.append(div);
     }
+
+    if(shareCategory){
+        var shareCategoryArr = shareCategory.split(',');
+        for(var i=0;i<shareCategoryArr.length;i++){
+            $('#ctg_'+shareCategoryArr[i]).prop('checked', 'checked')
+        }
+    }
+
+    $('input[name=categoryItem]').change(function(){
+        if($(this).is(':checked')){
+            $('#daily').prop('checked', true);
+        }
+    });
 }
 
 function addCategory(){
@@ -122,6 +128,13 @@ function addShareMember(){
 
     var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 
+    if($('#daily').is(':checked')){//카테고리 선택하세요 띄우기
+        if(!$('input[name=categoryItem]').is(':checked')){
+            alert('공유할 카테고리를 선택하세요.');
+            return false;
+        }
+    }
+
     if(!shareMemberEmail){
         alert('공유할 멤버의 이메일을 입력하세요');
         return false;
@@ -133,7 +146,6 @@ function addShareMember(){
     }
 
     if(confirm('입력한 멤버와 공유하시겠습니까?')){
-
         $('#status').val('add');
         $.ajax({
             url:'/setting/shareMember',
@@ -141,12 +153,11 @@ function addShareMember(){
             type: 'get',
             data: $('#shareItems').serialize(),
             success:function(data){
-                console.log(data);
-
                 if(data.result == 'success'){
                     $('#shareMemberEmail').attr('readonly', true);
                     $('#shareMemberEmail').css('background', '#ccc');
                     $('#shareMemberEmail').parent().css('background', '#ccc');
+                    alert('저장되었습니다.');
                 }
             },error:function(error){
                 console.log(error);
@@ -159,7 +170,7 @@ function clearShareMember(){
     if(!confirm('등록된 멤버와의 공유를 끊으시겠습니까?')){
         return false;
     }
-
+    $('#status').val('clear');
     $.ajax({
         url:'/setting/shareMember',
         dataType: 'json',

@@ -850,32 +850,46 @@ app.get('/setting', function(req, res){
     var uid = decodedClaims.sub;
     var email = decodedClaims.email;
     
+
+    // firebase.database().ref('setting/'+uid+'/item').once('value', function (snapshot) {
+    //   snapshot.forEach(function (childSnapshot) {
+    //     var data = childSnapshot.val();
+
+    //     shareItem.push(data);
+    //   });
+
+    //   if(shareItem.includes('daily')){
+    //     firebase.database().ref('setting/'+uid+'/categoryItem').once('value', function (categorySnapshot) {
+    //       categorySnapshot.forEach(function (childSnapshot) {
+            
+    //         var categorySnapshotData = childSnapshot.val();
+    //         shareCategory.push(categorySnapshotData);
+    //       });
+
+    //       res.render('setting',{email:email, shareItem:shareItem, shareCategory:shareCategory});
+    //     });
+    //   }else{
+    //     res.render('setting',{email:email, shareItem:shareItem});
+    //   }
+    // });
+    
     var shareItem = [];
     var shareCategory = [];
-
-    firebase.database().ref('setting/'+uid+'/item').once('value', function (snapshot) {
+    var member = '';
+    firebase.database().ref('setting/'+uid).once('value', function (snapshot) {
       snapshot.forEach(function (childSnapshot) {
+        var key = childSnapshot.key;
         var data = childSnapshot.val();
-
-        shareItem.push(data);
+        if(key == 'item'){
+          shareItem = data;
+        }else if(key == 'categoryItem'){
+          shareCategory = data;
+        }else if(key == 'member'){
+          member = data.email;
+        }
       });
-
-      if(shareItem.includes('daily')){
-        firebase.database().ref('setting/'+uid+'/categoryItem').once('value', function (categorySnapshot) {
-          categorySnapshot.forEach(function (childSnapshot) {
-            
-            var categorySnapshotData = childSnapshot.val();
-            shareCategory.push(categorySnapshotData);
-          });
-
-          console.log(JSON.stringify(shareItem))
-          res.render('setting',{email:email, shareItem:shareItem, shareCategory:shareCategory});
-        });
-      }else{
-        res.render('setting',{email:email, shareItem:shareItem});
-      }
+      res.render('setting',{email:email, shareItem:shareItem, shareCategory:shareCategory, member:member});
     });
-    
     return true;
   }).catch(error => {
     console.log(error);
@@ -897,7 +911,6 @@ app.get('/setting/shareMember', function(req, res){
   }
 
   var data = req.query;
-  console.log(data);
 
   admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
     var uid = decodedClaims.sub;
@@ -906,8 +919,12 @@ app.get('/setting/shareMember', function(req, res){
     if(uid){
       if(data.status == 'add'){
         admin.auth().getUserByEmail(data.shareMemberEmail).then(function(userRecord) {
+          var verifyMember = {
+            member : userRecord.email,
+            uid : userRecord.uid
+          }
           var addData = {};
-          addData['member'] = userRecord.uid;
+          addData['member'] = verifyMember
 
           if(data.item){
             var obj = [];

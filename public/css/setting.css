@@ -21,9 +21,8 @@
 }
 
 .shareMemberSection{   
-  margin-top: 20px;
-  border-top: 2px dashed #CCC;
-  padding-top: 20px;
+  border-bottom: 2px dashed #CCC;
+  padding: 20px 0;
 }
 
 .settingBtn{
@@ -54,8 +53,7 @@
 }
 
 .categoryAddBtn{
-  line-height: 26px;
-  margin-top: -5px;
+  margin: 0 4px 0 10px;
 }
 
 .categoryColor{
