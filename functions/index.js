@@ -867,6 +867,8 @@ app.get('/setting', function(req, res){
             var categorySnapshotData = childSnapshot.val();
             shareCategory.push(categorySnapshotData);
           });
+
+          console.log(JSON.stringify(shareItem))
           res.render('setting',{email:email, shareItem:shareItem, shareCategory:shareCategory});
         });
       }else{
