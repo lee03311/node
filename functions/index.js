@@ -882,9 +882,6 @@ app.get('/setting', function(req, res){
 });
 
 app.get('/setting/shareMember', function(req, res){
-});
-
-app.get('/setting/shareMember', function(req, res){
 
   var host = req.get('host') || '';
   var sessionCookie = null;
@@ -909,13 +906,31 @@ app.get('/setting/shareMember', function(req, res){
         admin.auth().getUserByEmail(data.shareMemberEmail).then(function(userRecord) {
           var addData = {};
           addData['member'] = userRecord.uid;
-          addData['item'] = data.item;
-          addData['categoryItem'] = data.categoryItem;
-          var newKeyObj = firebase.database().ref('setting/' + uid).set(addData);
+
+          if(data.item){
+            var obj = [];
+            if(typeof data.item == 'string'){
+              obj.push(data.item);
+            }else{
+              obj = data.item;
+            }
+            addData['item'] = obj;
+          }
+
+          if(data.categoryItem){
+            var obj = [];
+            if(typeof data.categoryItem == 'string'){
+              obj.push(data.categoryItem);
+            }else{
+              obj = data.categoryItem;
+            }
+            addData['categoryItem'] = obj;
+          }
+          
+          firebase.database().ref('setting/' + uid).set(addData);
       
           res.send({
-            result: 'success',
-            member : verifyUser
+            result: 'success'
           });
       
           return true;
