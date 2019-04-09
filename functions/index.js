@@ -321,6 +321,27 @@ app.get('/getTodoList', function (req, res) {
     var email = decodedClaims.email;
 
     var datas = [];
+
+    firebase.database().ref('setting').orderByChild('member/uid').equalTo(uid).on("child_added", function(snapshot, prevChildKey) {
+      var newPost = snapshot.val();
+      console.log(newPost);
+      console.log(snapshot.key)
+      var shareWriter = snapshot.key;
+
+      if(newPost['item'].includes('todo')){
+        firebase.database().ref('todolist/'+shareWriter).orderByChild('date').once('value', function (snapshot) {
+          snapshot.forEach(function (childSnapshot) {
+            var data = childSnapshot.val();
+            if (data.date) {
+              var date = data.date;
+              // data.date = dateFormat(date, 'mm/dd');
+            }
+            datas.push(data);      
+          });
+        });
+      }
+    });
+
     firebase.database().ref('todolist/'+uid).orderByChild('date').once('value', function (snapshot) {
       snapshot.forEach(function (childSnapshot) {
         var data = childSnapshot.val();
@@ -472,9 +493,21 @@ app.get('/list/category', function (req, res) {
   }
 
   var rows = [];
+  var shareCategory = [];
   admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
     var uid = decodedClaims.sub;
     var email = decodedClaims.email;
+
+    firebase.database().ref('setting').orderByChild('member/uid').equalTo(uid).on("child_added", function(snapshot, prevChildKey) {
+      var newPost = snapshot.val();
+
+      if(newPost['item'].includes('daily')){
+        if(newPost['categoryItem']){
+          shareCategory = newPost['categoryItem'];
+        }
+      }
+    });
+
 
     firebase.database().ref('category').once('value', function (snapshot) {
       
@@ -484,14 +517,8 @@ app.get('/list/category', function (req, res) {
         if(data.writer === uid){
           rows.push(data);
         }
-
-        if(data.member){
-          for(key in data.member) {
-
-            if(data.member[key] === email){
-              rows.push(data);
-            }
-          }
+        if(shareCategory.includes(data.id)){
+          rows.push(data);
         }
       });
       res.send({
