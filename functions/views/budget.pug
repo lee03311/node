@@ -3,9 +3,142 @@ html
     head
         meta(charset = 'utf-8')
         script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js')
-        script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
+        //- script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
         script(src='https://code.jquery.com/ui/1.12.1/jquery-ui.js')
         link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css')
         link(rel='stylesheet' href='//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css')
+        link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nanum+Gothic') 
+        link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.1/css/all.css' integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous")
+        link(rel="stylesheet", href="css/common.css")
+        link(rel="stylesheet", href="css/budget.css")
+        script(type='text/javascript' src='js/common.js') 
+        script(type='text/javascript' src='js/budget.js') 
+        script.
+            $(function(){
+                var handle = $( "#myBudgetValue" );
+                $( "#myBudgetSlider" ).slider({
+                    create: function() {
+                        handle.text( $( this ).slider( "value" ) );
+                    },
+                    slide: function( event, ui ) {
+                        handle.text( ui.value );
+                    }
+                });
+            })
+
     body
-        h1 hello
+        div(class='container')
+            div(class="left" style="background-color:#282c2f;")
+                div(class="header")
+                    span(class="skyBlue emailInfo") #{email}
+                    span(class="sub white") 
+                        span(class="logout") 
+                            i(class='fas fa-sign-out-alt')
+                div
+                    ul(class="menuNavi")
+                        li
+                            a(href='/list')
+                                i(class="far fa-angry")
+                                span DAILY
+                        li
+                            a(href='/todolist')
+                                i(class="far fa-grin-squint-tears")
+                                span TO DO
+                        li(class='active')
+                            a(href='/budget')
+                                i(class="far fa-smile")
+                                span BUDGET
+                        li
+                            a(href='#')
+                                i(class="far fa-grin-beam-sweat")
+                                span EXPENSE
+                        li
+                            a(href='/setting')
+                                i(class="fas fa-cogs")
+                                span SETTING
+                        //- li
+                        //-     i(class="fas fa-biohazard")
+                        //-     span OPTIONS
+            div(class='center' style='background:#fafafa;')
+                header(class="header backWhite")
+                    span(class="first") Budget
+                    //- span(class="btn btnOrange headerBtnAdd" onclick='todoSectionToggle()')
+                    //-     i(class='fas fa-plus-circle')        ADD
+                    //- div(class="headerBtn")
+                    //-     span(class="btn btnWhite") + btn1
+                    //-     span(class="btn btnWhite") + btn2
+                    //-     span(class="btn btnWhite") + btn3
+                div(class='content')
+                    //- ul(class='pager')
+                    //-     li
+                    //-         a(href="#" onclick="javascript:moveDays('pre');")
+                    //-             span(class='glyphicon glyphicon-menu-left' aria-hidden='true')
+                    //-     li 
+                    //-         span(id='thisMonth')
+                    //-     li
+                    //-         a(href="#" onclick="javascript:moveDays('next');")
+                    //-             span(class='glyphicon glyphicon-menu-right' aria-hidden='true')
+                    div(class='myBudgetArea')
+                        h4
+                            i(class='fas fa-hand-holding-usd')          나의 예산
+
+                        div(id='myBudgetSlider')
+                            div(id='custom-handle' class='ui-slider-handle')
+                        span(id='myBudgetValue')
+
+                        br
+                        hr
+                        br
+
+                        div(class='myBudgetList')
+                            h4
+                                i(class='fas fa-clipboard-list')            예산 상세내역
+                            select(id='budgetCategory' name='budgetCategory')
+                                option(value='budgetCode1') 식사
+                                option(value='budgetCode2') 카페/간식
+                                option(value='budgetCode3') 의료/건강
+                                option(value='budgetCode4') 반려동물
+                                option(value='budgetCode5') 술/유흥
+                                option(value='budgetCode6') 의복/미용
+                                option(value='budgetCode7') 자동차
+                                option(value='budgetCode8') 교통
+                                option(value='budgetCode9') 주거/통신
+                                option(value='budgetCode10') 생활
+                                option(value='budgetCode11') 문화/여가
+                                option(value='budgetCode12') 교육
+                                option(value='budgetCode13') 여행/숙박
+                                option(value='budgetCode14') 육아
+                                option(value='budgetCode15') 경조사
+                            
+                            div(class="searchDiv backWhite costDiv")
+                                input(type="number" placeholder="비용을 입력하세요" id='cost' name='cost')
+                            
+                            div(class="searchDiv backWhite commentDiv")
+                                input(type="text" placeholder="추가 설명글을 입력하세요" id='comment' name='comment')
+
+                            div(class='budgetAdd')
+                                span(class="btn btnOrange" onclick='budgetAdd()')
+                                            i(class='fas fa-plus-circle')        ADD
+                            
+                            table(class="table")
+                                colgroup
+                                    col(width='30%')
+                                    col(width='30%')
+                                    col(width='*')
+                                    col(width='10%')
+                                thead
+                                    tr
+                                        th 카테고리
+                                        th 비용
+                                        th 코멘트
+                                        th 
+                                tbody(id='budgetAddArea')
+                            
+
+
+
+
+
+
+
+

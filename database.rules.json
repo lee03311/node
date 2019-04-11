@@ -7,6 +7,16 @@
         "id",
         "date"
       ]
+    },
+    "category" :{
+      ".indexOn": [
+        "writer"
+      ]
+    },
+    "setting" :{
+      ".indexOn" : [
+        "member/uid"
+      ]
     }
   }
 }

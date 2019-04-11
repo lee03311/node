@@ -111,7 +111,6 @@ app.post('/confirm', function (req, res) {
   var password = req.body.password;
 
   var host = req.get('host') || '';
-  console.log('/confirm : ' + host)
   if(!host.includes('localhost')){
     console.log('cache : public')
     res.set('Cache-Control', 'public, max-age=0');
@@ -324,8 +323,6 @@ app.get('/getTodoList', function (req, res) {
 
     firebase.database().ref('setting').orderByChild('member/uid').equalTo(uid).on("child_added", function(snapshot, prevChildKey) {
       var newPost = snapshot.val();
-      console.log(newPost);
-      console.log(snapshot.key)
       var shareWriter = snapshot.key;
 
       if(newPost['item'].includes('todo')){
@@ -721,7 +718,6 @@ app.get(['/category', '/category/:id'], function (req, res) {
 
 app.post('/category/add', function (req, res) {
   var data = req.body;
-console.log(data)
   var host = req.get('host') || '';
   var sessionCookie = null;
 
@@ -907,12 +903,12 @@ app.get('/setting', function(req, res){
       snapshot.forEach(function (childSnapshot) {
         var key = childSnapshot.key;
         var data = childSnapshot.val();
-        if(key == 'item'){
+        if(key === 'item'){
           shareItem = data;
-        }else if(key == 'categoryItem'){
+        }else if(key === 'categoryItem'){
           shareCategory = data;
-        }else if(key == 'member'){
-          member = data.email;
+        }else if(key === 'member'){
+          member = data.member;
         }
       });
       res.render('setting',{email:email, shareItem:shareItem, shareCategory:shareCategory, member:member});
@@ -944,7 +940,7 @@ app.get('/setting/shareMember', function(req, res){
     var email = decodedClaims.email;
 
     if(uid){
-      if(data.status == 'add'){
+      if(data.status === 'add'){
         admin.auth().getUserByEmail(data.shareMemberEmail).then(function(userRecord) {
           var verifyMember = {
             member : userRecord.email,
@@ -954,23 +950,23 @@ app.get('/setting/shareMember', function(req, res){
           addData['member'] = verifyMember
 
           if(data.item){
-            var obj = [];
-            if(typeof data.item == 'string'){
-              obj.push(data.item);
+            var itemObj = [];
+            if(typeof data.item === 'string'){
+              itemObj.push(data.item);
             }else{
-              obj = data.item;
+              itemObj = data.item;
             }
-            addData['item'] = obj;
+            addData['item'] = itemObj;
           }
 
           if(data.categoryItem){
-            var obj = [];
-            if(typeof data.categoryItem == 'string'){
-              obj.push(data.categoryItem);
+            var ctgObj = [];
+            if(typeof data.categoryItem === 'string'){
+              ctgObj.push(data.categoryItem);
             }else{
-              obj = data.categoryItem;
+              ctgObj = data.categoryItem;
             }
-            addData['categoryItem'] = obj;
+            addData['categoryItem'] = ctgObj;
           }
           
           firebase.database().ref('setting/' + uid).set(addData);
@@ -988,7 +984,7 @@ app.get('/setting/shareMember', function(req, res){
             result: 'error'
           });
         });
-      }else if(data.status == 'clear'){
+      }else if(data.status === 'clear'){
         firebase.database().ref('/setting/'+uid+'/member').remove();
       }
     }
@@ -1000,7 +996,29 @@ app.get('/setting/shareMember', function(req, res){
 
 /*예산 */
 app.get('/budget', function(req, res){
-  res.render('budget');
+
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+
+   
+    res.render('budget',{email:email});
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
+
 });
 
 
