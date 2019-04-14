@@ -22,7 +22,8 @@ html
                     },
                     slide: function( event, ui ) {
                         handle.text( ui.value );
-                    }
+                    },
+                    stop : budgetMoneySlider
                 });
             })
 
@@ -133,6 +134,9 @@ html
                                         th 코멘트
                                         th 
                                 tbody(id='budgetAddArea')
+                                    tr(id='noBudgetArea')
+                                        td(colspan='4') 데이터가 없습니다.
+                                    
                             
 
 

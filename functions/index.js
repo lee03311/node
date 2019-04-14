@@ -1012,13 +1012,73 @@ app.get('/budget', function(req, res){
     var uid = decodedClaims.sub;
     var email = decodedClaims.email;
 
-   
+
     res.render('budget',{email:email});
   }).catch(error => {
     console.log(error);
     res.redirect('/');
   });
 
+});
+
+app.post('/budget/add', function(req, res){
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+  var data = req.body;
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+
+    if(uid){
+
+      if(data.money){
+        var budgetMoney = {};
+        budgetMoney['budget/' + uid +'/'+'money'] = data.money;
+        firebase.database().ref().update(budgetMoney);
+      }
+
+      if(data.status){
+        if(data.status === 'add'){
+          var btgCategory = {
+            cost : data.cost,
+            comment : data.comment,
+            category : data.budgetCategory,
+            categoryTxt : data.budgetCategoryTxt
+          }
+
+          var id = firebase.database().ref().child('budget/' + uid +'/btgCategory/').push().key;
+          firebase.database().ref('budget/' + uid +'/btgCategory/'+id).set(btgCategory);
+
+          res.send({
+            result: 'success',
+            id:id
+          });
+        }else if(data.status === 'remove'){
+          console.log(data);
+          firebase.database().ref('budget/' + uid +'/btgCategory/'+data.id).remove();
+
+
+          res.send({
+            result: 'success'
+          });
+        }
+      }
+    }
+    
+    
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
 });
 
 
