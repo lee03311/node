@@ -1012,7 +1012,6 @@ app.get('/budget', function(req, res){
     var uid = decodedClaims.sub;
     var email = decodedClaims.email;
 
-
     res.render('budget',{email:email});
   }).catch(error => {
     console.log(error);
@@ -1081,6 +1080,104 @@ app.post('/budget/add', function(req, res){
   });
 });
 
+
+app.get('/budget/list', function(req, res){
+
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+  var data = req.body;
+
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+
+    var datas = [];
+    var money = 0;
+    firebase.database().ref('budget/' + uid).once("value", function(snapshot, prevChildKey) {
+      var myBudget = snapshot.val();
+
+      snapshot.forEach(function (childSnapshot) {
+        var key = childSnapshot.key;
+        var data = childSnapshot.val();
+
+        if(key === 'btgCategory'){
+          childSnapshot.forEach(function (dataChildSnapShot){
+            var categoryObj = dataChildSnapShot.val();
+            var categoryId = dataChildSnapShot.key;
+            categoryObj['id'] = categoryId;
+
+            datas.push(categoryObj);
+          })
+        }else if(key === 'money'){
+          money = data;
+        }
+      });
+
+      firebase.database().ref('setting/' + uid+'/member').once("value", function(settingSnapshot, prevChildKey) {
+        var member = settingSnapshot.val();
+        var partnerData = [];
+        var partnerMoney = 0;
+        firebase.database().ref('budget/' + member.uid).once("value", function(memberSnapshot, prevChildKey) {
+          // var setting = memberSnapshot.val();
+  
+          memberSnapshot.forEach(function (memberChildSnapshot) {
+            var memberKey = memberChildSnapshot.key;
+            var memberData = memberChildSnapshot.val();
+    
+            if(memberKey === 'btgCategory'){
+              memberChildSnapshot.forEach(function (memberDataChildSnapShot){
+                var partnerDataObj = memberDataChildSnapShot.val();
+                var partnerDataId = memberDataChildSnapShot.key;
+                partnerDataObj['id'] = partnerDataId;
+    
+                partnerData.push(partnerDataObj);
+              })
+            }else if(memberKey === 'money'){
+              partnerMoney = memberData;
+            }
+          });
+    
+          
+          res.send({
+                result: 'success',
+                money : money,
+                myBudget : datas,
+                partnerInfo : {
+                  email : member.member,
+                  partnerBudget : partnerData,
+                  partnerMoney : partnerMoney
+                }
+          });
+        });
+      });
+
+
+
+
+
+
+
+
+
+
+
+
+    });
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
+
+});
 
 const api = functions.https.onRequest(app);
 

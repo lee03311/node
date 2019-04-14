@@ -1,4 +1,4 @@
-#myBudgetSlider{
+.budgetslider{
     background-color: #79e1e6;
     border: 0;
     position: relative;
@@ -10,7 +10,10 @@
     margin-right: 10px;
 }
 
-#custom-handle{
+#partnerBudgetSlider{
+    width: 88%
+}
+.custom-handle{
     border-radius: 50%;
     box-shadow: 0 1px 1px #fff inset, 0 1px 2px rgba(0,0,0,.4);
     height: 16px;
@@ -21,7 +24,7 @@
     background: linear-gradient(to bottom,#fff 0,#f1f1f2 100%);
 }
 
-#myBudgetValue{
+.budgetValue{
     border: 1px solid #ccc;
     padding: 1px 10px;
     border-radius: 10px;
@@ -85,4 +88,18 @@
     font-size: 17px;
     color: #ff9393;
     cursor: pointer;
+}
+
+.budgetArea{
+    width: calc(100% - 35%);
+    display: inline-block;
+    margin: 5px 21px;
+}
+
+.partnerBudget{
+    border: 3px dashed #79E1E7;
+    padding: 25px;
+    border-radius: 14px;
+    width: 30%;
+    float: right;
 }
