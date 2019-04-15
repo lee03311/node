@@ -10,6 +10,16 @@ function budgetAdd(){
     var budgetCategory = $('#budgetCategory').val();
     var budgetCategoryTxt = $("#budgetCategory option:selected").text();
 
+    if(!cost){
+        alert('비용을 입력하세요');
+        return false;
+    }
+
+    if(!comment){
+        alert('코멘트를 입력하세요');
+        return false;
+    }
+
     var btgTotalCost = $('#totalCost').val();
     var totalBudget = $('#myBudgetSlider').slider('value');
 
@@ -63,7 +73,7 @@ function budgetAdd(){
                 $('#budgetCategory').find("option:eq(0)").prop("selected", true);
                 var remainBudget = totalBudget - (parseInt(btgTotalCost) + parseInt(cost));
                 $('#totalCost').val(parseInt(btgTotalCost) + parseInt(cost));
-                $('#remainBudget').text(numberWithCommas(remainBudget));
+                $('#remainBudget').text('여유비용 : ' + numberWithCommas(remainBudget));
             }
         },error:function(){
             alert('예산 관리에 문제가 발생했습니다.')
@@ -156,7 +166,7 @@ function budgetCategoryList(){
 
                 $('#totalCost').val(btgTotalCost);
                 var remainBudget = data.money - btgTotalCost;
-                $('#remainBudget').text(numberWithCommas(remainBudget));
+                $('#remainBudget').text('여유비용 : '+numberWithCommas(remainBudget));
 
                 if(data.partnerInfo.email){
                     $('#partnerName').text(data.partnerInfo.email + '님의 예산')
@@ -164,9 +174,11 @@ function budgetCategoryList(){
                     $("#partnerBudgetValue").text(numberWithCommas(data.partnerInfo.partnerMoney));
 
                     var memberBtgCategory = data.partnerInfo.partnerBudget;
+                    var partnerTotalBudget = 0;
                     for(var i=0;i<memberBtgCategory.length;i++){
                         var budgetAddArea = $('#partnerBudgetAddArea');
 
+                        partnerTotalBudget += parseInt(memberBtgCategory[i].cost);
                         $('<tr/>').addClass('partnerBudgetData').append(
                             $('<td/>').text(memberBtgCategory[i].categoryTxt)
                         ).append(
@@ -181,6 +193,13 @@ function budgetCategoryList(){
                             $('#noPartnerBudgetArea').hide();
                         }
                     }
+
+                    var partnerRemainCost = parseInt(data.partnerInfo.partnerMoney) - partnerTotalBudget;
+                    $('<tr/>').append(
+                        $('<td/>').addClass('partnerTotalBudget').text('총액 (남은예산)')
+                    ).append(
+                        $('<td/>').attr('colspan', '2').text(numberWithCommas(partnerTotalBudget) + ' ('+numberWithCommas(partnerRemainCost)+')')
+                    ).appendTo(budgetAddArea);
                 }
             }
         },error:function(){

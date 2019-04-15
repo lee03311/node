@@ -5,13 +5,13 @@
     direction: ltr;
     border-radius: 3px;
     height: 8px;
-    width: 85%;
+    width: calc(100% - 120px);
     display: inline-block;
     margin-right: 10px;
 }
 
 #partnerBudgetSlider{
-    width: 70%
+    width: calc(100% - 110px);
 }
 .custom-handle{
     border-radius: 50%;
@@ -102,4 +102,15 @@
     border-radius: 14px;
     width: 30%;
     float: right;
+}
+
+.remainBudgetArea{
+    margin-left: 15px;
+    font-size:13px;
+    color:#949494;
+}
+
+td.partnerTotalBudget{
+    background: gray;
+    color: white; 
 }
