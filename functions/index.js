@@ -1042,7 +1042,11 @@ app.post('/budget/add', function(req, res){
       if(data.money){
         var budgetMoney = {};
         budgetMoney['budget/' + uid +'/'+'money'] = data.money;
+        console.log(data.money);
         firebase.database().ref().update(budgetMoney);
+        res.send({
+          result: 'success'
+        });
       }
 
       if(data.status){

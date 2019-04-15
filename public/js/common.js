@@ -45,3 +45,9 @@ function verifyEmail(email){
 
     return true;
 }
+
+function numberWithCommas(x) {
+    x = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    x+='원';
+    return x;
+}

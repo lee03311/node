@@ -10,6 +10,15 @@ function budgetAdd(){
     var budgetCategory = $('#budgetCategory').val();
     var budgetCategoryTxt = $("#budgetCategory option:selected").text();
 
+    var btgTotalCost = $('#totalCost').val();
+    var totalBudget = $('#myBudgetSlider').slider('value');
+
+    if(totalBudget < btgTotalCost + cost){
+        alert('정해진 예산금액을  초과합니다.');
+        return false;
+    }
+
+
 
     var data = {
         status : 'add',
@@ -32,7 +41,7 @@ function budgetAdd(){
                 $('<tr/>').addClass('budgetData').append(
                     $('<td/>').text(budgetCategoryTxt)
                 ).append(
-                    $('<td/>').text(cost)
+                    $('<td/>').text(numberWithCommas(cost))
                 ).append(
                     $('<td/>').text(comment)
                 ).append(
@@ -52,6 +61,9 @@ function budgetAdd(){
                 $('#cost').val('');
                 $('#comment').val('');
                 $('#budgetCategory').find("option:eq(0)").prop("selected", true);
+                var remainBudget = totalBudget - (parseInt(btgTotalCost) + parseInt(cost));
+                $('#totalCost').val(parseInt(btgTotalCost) + parseInt(cost));
+                $('#remainBudget').text(numberWithCommas(remainBudget));
             }
         },error:function(){
             alert('예산 관리에 문제가 발생했습니다.')
@@ -94,8 +106,8 @@ function budgetMoneySlider(){
         data:{
             money:money
         },
-        success:function(){
-
+        success:function(data){
+            console.log(data);
         },error:function(){
             alert('금액설정에 문제가 발생했습니다.')
         }
@@ -111,16 +123,20 @@ function budgetCategoryList(){
         success:function(data){
             if(data.result == 'success'){
                 $("#myBudgetSlider").slider('value', data.money);
-                $("#myBudgetValue").text(data.money);
+
+                var money = numberWithCommas(data.money);
+                $("#myBudgetValue").text(money);
 
                 var btgCategory = data.myBudget;
+                var btgTotalCost = 0;
                 for(var i=0;i<btgCategory.length;i++){
+                    btgTotalCost += parseInt(btgCategory[i].cost);
                     var budgetAddArea = $('#budgetAddArea');
 
                     $('<tr/>').addClass('budgetData').append(
                         $('<td/>').text(btgCategory[i].categoryTxt)
                     ).append(
-                        $('<td/>').text(btgCategory[i].cost)
+                        $('<td/>').text(numberWithCommas(btgCategory[i].cost))
                     ).append(
                         $('<td/>').text(btgCategory[i].comment)
                     ).append(
@@ -138,10 +154,14 @@ function budgetCategoryList(){
                     }
                 }
 
+                $('#totalCost').val(btgTotalCost);
+                var remainBudget = data.money - btgTotalCost;
+                $('#remainBudget').text(numberWithCommas(remainBudget));
+
                 if(data.partnerInfo.email){
                     $('#partnerName').text(data.partnerInfo.email + '님의 예산')
                     $("#partnerBudgetSlider").slider('value', data.partnerInfo.partnerMoney);
-                    $("#partnerBudgetValue").text(data.partnerInfo.partnerMoney);
+                    $("#partnerBudgetValue").text(numberWithCommas(data.partnerInfo.partnerMoney));
 
                     var memberBtgCategory = data.partnerInfo.partnerBudget;
                     for(var i=0;i<memberBtgCategory.length;i++){
@@ -150,7 +170,7 @@ function budgetCategoryList(){
                         $('<tr/>').addClass('partnerBudgetData').append(
                             $('<td/>').text(memberBtgCategory[i].categoryTxt)
                         ).append(
-                            $('<td/>').text(memberBtgCategory[i].cost)
+                            $('<td/>').text(numberWithCommas(memberBtgCategory[i].cost))
                         ).append(
                             $('<td/>').text(memberBtgCategory[i].comment)
                         ).appendTo(budgetAddArea);
@@ -168,4 +188,3 @@ function budgetCategoryList(){
         }
     });
 }
-

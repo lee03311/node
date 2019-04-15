@@ -19,19 +19,27 @@ html
                 var handle = $( "#myBudgetValue" );
                 $( "#myBudgetSlider" ).slider({
                     create: function() {
-                        handle.text( $( this ).slider( "value" ) );
+                        var value = numberWithCommas($( this ).slider( "value" ))
+                        handle.text(value);
                     },
                     slide: function( event, ui ) {
-                        handle.text( ui.value );
-                    },
+                        var value = numberWithCommas(ui.value);
+                        handle.text(value);
+                    },                    
+                    min: 0,
+                    max: 1000000,
+                    step: 50000,
                     stop : budgetMoneySlider
                 });
 
                 var handles = $( "#partnerBudgetValue" );
                 $( "#partnerBudgetSlider" ).slider({
                     create: function() {
-                        handles.text('10');
-                    },
+                        handles.text('0');
+                    },                    
+                    min: 0,
+                    max: 1000000,
+                    step: 50000,
                     disabled: true
                 });
             })
@@ -122,6 +130,7 @@ html
                             
                             div(class="searchDiv backWhite costDiv")
                                 input(type="number" placeholder="비용을 입력하세요" id='cost' name='cost')
+                            span(id='remainBudget')
                             
                             div(class="searchDiv backWhite commentDiv")
                                 input(type="text" placeholder="추가 설명글을 입력하세요" id='comment' name='comment')
@@ -130,10 +139,11 @@ html
                                 span(class="btn btnOrange" onclick='budgetAdd()')
                                             i(class='fas fa-plus-circle')        ADD
                             
+                            input(type='hidden' id='totalCost')
                             table(class="table")
                                 colgroup
-                                    col(width='30%')
-                                    col(width='30%')
+                                    col(width='20%')
+                                    col(width='20%')
                                     col(width='*')
                                     col(width='10%')
                                 thead
