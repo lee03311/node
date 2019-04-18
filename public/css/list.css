@@ -198,7 +198,7 @@
 
 
 /***************************custom css*/
-.dailyAddDiv input{    
+.dailyAddDiv .inputs{    
     margin: 10px 0px;
     padding: 0px 15px;
     height: 40px;

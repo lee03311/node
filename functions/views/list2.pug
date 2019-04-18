@@ -196,16 +196,21 @@ html
                                 label(for='cateogry')
                                 select(id='cateogry' name='category')
 
-                                input(type='text' id='datepicker' name='date' placeholder='날짜선택' class='dates' aria-describedby='basic-addon2' autocomplete="off")
+                                input(type='text' id='datepicker' name='date' placeholder='날짜선택' class='dates inputs' aria-describedby='basic-addon2' autocomplete="off")
                                 span(class='input-group-addon calendar' id='basic-addon2')
                                     span(class='glyphicon glyphicon-calendar' aria-hidden='true')
+
+                                label
+                                    input(type='checkbox' name='care' id='care' value='care') 
+                                    |           케어
                             //- div
                                 input(type='text' id='datepicker' name='date' placeholder='날짜선택' class='dates' aria-describedby='basic-addon2' autocomplete="off")
                                 span(class='input-group-addon calendar' id='basic-addon2')
                                     span(class='glyphicon glyphicon-calendar' aria-hidden='true')
-
+                            div(class='careKitty')
+                                |test
                             div
-                                input(type='text' id='title' name='title'  placeholder='제목' autocomplete="off")
+                                input(type='text' id='title' name='title' class='inputs' placeholder='제목' autocomplete="off")
 
                             div
                                 textarea( name="contents", cols="30", rows="20" id='contents'  placeholder='내용')
@@ -215,3 +220,6 @@ html
                                 button(type="button" class="btn btn-primary reportAddBtn" onclick='javascript:reportAdd()' ) 저장
                                 button(type="button" class="btn btn-primary reportUpdateBtn" onclick='javascript:reportAdd()' ) 수정
                                 button(type="button" class="btn btn-danger deletebtn reportUpdateBtn" onclick='javascript:reportDelete()' ) 삭제
+
+
+//- 양치, 응가여부, 쉬여부, 놀이여부, 우다다?여부? 간식여부 
