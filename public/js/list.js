@@ -193,12 +193,15 @@ function drawCateogry(){ //첫 진입시 호출하여 메인의 사이드바에 
 
     var select = $('#cateogry');
     select.empty();
+
+    select.append(
+        $('<option/>').text('선택하세요')
+    )
      
    /*var catqegory = getCategoryList(); 동기로 카테고리 받아옴.*/
     var length = category.length;
     for(var i=0; i<length ;i++){
         var datas = category[i];
-
 
         var div = $('<div/>').addClass('dailyCategory').attr('data-show-status', datas.status);
         if(datas.status == 'show'){
@@ -212,9 +215,8 @@ function drawCateogry(){ //첫 진입시 호출하여 메인의 사이드바에 
             $('<span/>').addClass('categoryText').text(datas.category)
         ).appendTo(dailyCategoryArea);
 
-
         select.append(
-            $('<option/>').attr('value',datas.id).text(datas.category)
+            $('<option/>').attr('value',datas.id).text(datas.category).attr('data-care-yn', datas.care)
         )
     }
 

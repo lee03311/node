@@ -241,5 +241,15 @@
 }
 
 .careKitty input{
-    margin-right: 10px;
+    vertical-align: middle;
+    margin: 0 5px 0 0;
+}
+
+.careKitty label{
+    margin-right: 15px;
+    padding: 10px 16px;
+    background: #79e1e6;
+    border-radius: 25px;
+    color: white;
+    font-weight: normal;
 }

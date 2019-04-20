@@ -733,20 +733,33 @@ app.post('/category/add', function (req, res) {
     var uid = decodedClaims.sub;
     var email = decodedClaims.email;
 
+    console.log(data);
     if(uid){
-      if (!data.id) {
-        data.id = firebase.database().ref().child('category').push().key;
-        data.writer = uid;
-        data.status = 'show';
-      }
-      
       if(data.id){
-        firebase.database().ref('category/' + data.id).set(data);
+        var categoryData = {};
+        categoryData['/category/'+data.id+'/color'] = data.color;
+        categoryData['/category/'+data.id+'/category'] = data.category;
+        categoryData['/category/'+data.id+'/care'] = data.care;
+        firebase.database().ref().update(categoryData);
+        res.send({
+          result: 'success'
+        });
+      }else{
+        if (!data.id) {
+          data.categoryId = firebase.database().ref().child('category').push().key;
+          data.writer = uid;
+          data.status = 'show';
+        }
+        
+        if(data.id){
+          firebase.database().ref('category/' + data.id).set(data);
+        }
+        res.send({
+          result: 'success'
+        });
       }
     }
-    res.send({
-      result: 'success'
-    });
+    
     return true;
   }).catch(error => {
     console.log(error);

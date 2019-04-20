@@ -17,7 +17,8 @@ html
         script.
             $(function(){
 
-                
+                $('.careKitty').hide();
+
                 $( "#datepicker" ).datepicker({
                     showOtherMonths: true,
                     selectOtherMonths: true, 
@@ -43,7 +44,21 @@ html
 
                 $('.dailyAddDiv').hide();
                 $('#showList').hide();
-            })
+
+                $('input[name=careObj]').click(function(){
+                    $('#title').val($(this).parent().text().trim());
+                })
+            });
+
+
+            $(document).on("change", "#cateogry", function(){
+                if($(this).find('option:selected').attr('data-care-yn') == 'Y'){
+                    $('.careKitty').show();
+                }else{
+                    $('.careKitty').hide();
+                    $('#title').val('');
+                }
+            });
 
             function goListAndWrite(status){
                 if(status == 'add' || status == 'update'){
@@ -79,10 +94,16 @@ html
                     $('.dailyCategoryArea').show();
                     $('.searchDiv').show();
                     $('.pager').show();
+                    $('.careKitty').hide();
                 }
             }
 
             function reportAdd(){
+                if(!$("#cateogry").val()){
+                    alert('카테고리를 선택하세요');
+                    return false;
+                }
+
                 if(!$("#datepicker").val()){
                     alert('날짜를 선택하세요');
                     return false;
@@ -104,7 +125,6 @@ html
                     type: 'post',
                     data :  $("#reportForm").serialize(),
                     success: function(data) {
-                        console.log(data);
                         if(data.result == 'success'){
                             getDays();
                             goListAndWrite('list');
@@ -200,28 +220,25 @@ html
                                 span(class='input-group-addon calendar' id='basic-addon2')
                                     span(class='glyphicon glyphicon-calendar' aria-hidden='true')
 
-                                label
-                                    input(type='checkbox' name='care' id='care' value='care') 
-                                    |           케어
                             //- div
                                 input(type='text' id='datepicker' name='date' placeholder='날짜선택' class='dates' aria-describedby='basic-addon2' autocomplete="off")
                                 span(class='input-group-addon calendar' id='basic-addon2')
                                     span(class='glyphicon glyphicon-calendar' aria-hidden='true')
                             div(class='careKitty')
                                 label(for='tooth')
-                                    input(type='checkbox' name='careObj' id='tooth' value='tooth') 
+                                    input(type='radio' name='careObj' id='tooth' value='tooth') 
                                     | 양치
                                 label(for='poo')
-                                    input(type='checkbox' name='careObj' id='poo' value='poo') 
+                                    input(type='radio' name='careObj' id='poo' value='poo') 
                                     |응가                                
                                 label(for='pee')
-                                    input(type='checkbox' name='careObj' id='pee' value='pee') 
+                                    input(type='radio' name='careObj' id='pee' value='pee') 
                                     |쉬
                                 label(for='play')
-                                    input(type='checkbox' name='careObj' id='play' value='play') 
+                                    input(type='radio' name='careObj' id='play' value='play') 
                                     |놀이
-                                label(for='play')
-                                    input(type='checkbox' name='careObj' id='snack' value='snack') 
+                                label(for='snack')
+                                    input(type='radio' name='careObj' id='snack' value='snack') 
                                     |간식
 
                             div

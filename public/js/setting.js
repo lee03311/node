@@ -32,6 +32,7 @@ function getCategory(shareCategory){
         }
     });
 }
+
 function shareCategoryDraw(category, shareCategory){
     var shareSelectCategory = $('.shareSelectCategory');
     shareSelectCategory.empty();
@@ -74,10 +75,16 @@ function addCategory(){
         alert('카테고리명을 입력하세요.');
         return false;
     }
+    var message = '카테고리를 추가하시겠습니까?'
 
-    if(!confirm('카테고리를 추가하시겠습니까?')){
+    if($('#id').val()){
+        message = '카테고리를 수정하시겠습니까?';
+    }
+
+    if(!confirm(message)){
         return false;
     }
+    console.log( $('#categoryForm').serialize())
 
     $.ajax({
         url:'/category/add',
@@ -95,6 +102,13 @@ function addCategory(){
 
 function editCategory(obj){
     console.log(obj)
+    $('#color').val(obj.color);
+    $('#id').val(obj.id);
+    $('#category').val(obj.category);
+
+    if(obj.care){
+        $('#care').prop('checked', true);
+    }
 }
 
 function removeCategory(id){

@@ -111,12 +111,18 @@ html
                                         $('#color').val('#fff');
                                             
                                     div(class="searchDiv backWhite")
+                                        input(type="hidden" id='id' name='id')
                                         input(type="text" placeholder="카테고리명" id='category' name='category')
                                         div(class="btnDiv line40" style="margin-right:0px;")
 
                                     div(class='categoryBtn')
                                         span(class="btn btnWhite categoryAddBtn" onclick='addCategory()')
                                             i(class='fas fa-plus-circle')        ADD
+
+                                    div(style='display:inline-block')
+                                        label
+                                            input(type='checkbox' name='care' id='care' value='Y') 
+                                            |           케어
 
                             div(class='categoryList')
                     div(class='contentArea')
