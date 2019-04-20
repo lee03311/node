@@ -208,7 +208,22 @@ html
                                 span(class='input-group-addon calendar' id='basic-addon2')
                                     span(class='glyphicon glyphicon-calendar' aria-hidden='true')
                             div(class='careKitty')
-                                |test
+                                label(for='tooth')
+                                    input(type='checkbox' name='careObj' id='tooth' value='tooth') 
+                                    | 양치
+                                label(for='poo')
+                                    input(type='checkbox' name='careObj' id='poo' value='poo') 
+                                    |응가                                
+                                label(for='pee')
+                                    input(type='checkbox' name='careObj' id='pee' value='pee') 
+                                    |쉬
+                                label(for='play')
+                                    input(type='checkbox' name='careObj' id='play' value='play') 
+                                    |놀이
+                                label(for='play')
+                                    input(type='checkbox' name='careObj' id='snack' value='snack') 
+                                    |간식
+
                             div
                                 input(type='text' id='title' name='title' class='inputs' placeholder='제목' autocomplete="off")
 
