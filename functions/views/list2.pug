@@ -18,6 +18,7 @@ html
             $(function(){
 
                 $('.careKitty').hide();
+                $('.starDiv').hide();
 
                 $( "#datepicker" ).datepicker({
                     showOtherMonths: true,
@@ -47,7 +48,55 @@ html
 
                 $('input[name=careObj]').click(function(){
                     $('#title').val($(this).parent().text().trim());
-                })
+
+                    if($(this).val() == 'food'){
+                        $('.starDiv').show();
+                    }else{
+                        $('.starDiv').hide();
+                    }
+                });
+
+                $('.starDiv > i').hover(function(){
+                    var index = $(this).attr('data-index');
+                    $(this).addClass('gray');
+
+                    $('.starDiv > i').each(function(a,b){
+                        if(index >= a){
+                            $(this).removeClass('gray');
+                            $(this).addClass('orange');
+                        }else{
+                            $(this).addClass('gray');
+                            $(this).removeClass('orange');
+                        }
+                    });
+                },
+                function(){
+                    var hasClass = 0;
+                    $('.starDiv > i').each(function(a,b){
+                        if($(this).hasClass('clickStar')){
+                            hasClass++;
+                        }else{
+                            $(this).addClass('gray');
+                            $(this).removeClass('orange');
+                        }
+                    });
+                }).click(function(){
+                    var index = $(this).attr('data-index');
+                    $(this).addClass('gray');
+                    $(this).removeClass('clickStar');
+
+                    $('.starDiv > i').each(function(a,b){
+                        if(index >= a){
+                            $(this).removeClass('gray');
+                            $(this).addClass('orange');
+                            $(this).addClass('clickStar');
+                        }else{
+                            //- $(this).removeClass('gray');
+                            //- $(this).addClass('orange');
+                            $(this).removeClass('clickStar');
+                        }
+                    });
+                });
             });
 
 
@@ -240,6 +289,16 @@ html
                                 label(for='snack')
                                     input(type='radio' name='careObj' id='snack' value='snack') 
                                     |간식
+                                label(for='food')
+                                    input(type='radio' name='careObj' id='food' value='food') 
+                                    |사료
+
+                                div(class="starDiv")
+                                    i(class="fas fa-star gray" data-index='0')
+                                    i(class="fas fa-star gray" data-index='1')
+                                    i(class="fas fa-star gray" data-index='2')
+                                    i(class="fas fa-star gray" data-index='3')
+                                    i(class="fas fa-star gray" data-index='4')
 
                             div
                                 input(type='text' id='title' name='title' class='inputs' placeholder='제목' autocomplete="off")

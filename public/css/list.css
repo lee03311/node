@@ -253,3 +253,11 @@
     color: white;
     font-weight: normal;
 }
+
+.fa-star{
+    cursor: pointer;
+}
+
+/* .fa-star:hover{
+    color: orange;
+} */
