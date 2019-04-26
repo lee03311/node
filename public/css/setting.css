@@ -177,3 +177,11 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
+.typeArea{
+  margin: 10px 0 0 10px;
+}
+
+.typeArea label{
+  margin-right: 15px;
+}

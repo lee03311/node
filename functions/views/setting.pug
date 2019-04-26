@@ -119,13 +119,16 @@ html
                                         span(class="btn btnWhite categoryAddBtn" onclick='addCategory()')
                                             i(class='fas fa-plus-circle')        ADD
 
-                                    div(style='display:inline-block')
+                                    div(class='typeArea' )
                                         label(for='daily')
-                                            input(type='checkbox' name='care' id='daily' value='Y') 
-                                            |           일반
-                                        label(for='care')
-                                            input(type='checkbox' name='care' id='care' value='Y') 
-                                            |           케어
+                                            input(type='radio' name='type' id='daily' value='daily') 
+                                            |           기타
+                                        label(for='diet')
+                                            input(type='radio' name='type' id='diet' value='diet') 
+                                            |           다이어트
+                                        label(for='animal')
+                                            input(type='radio' name='type' id='animal' value='animal') 
+                                            |           반려동물 일일케어
 
                             div(class='categoryList')
                     div(class='contentArea')

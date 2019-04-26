@@ -739,7 +739,7 @@ app.post('/category/add', function (req, res) {
         var categoryData = {};
         categoryData['/category/'+data.id+'/color'] = data.color;
         categoryData['/category/'+data.id+'/category'] = data.category;
-        categoryData['/category/'+data.id+'/care'] = data.care;
+        categoryData['/category/'+data.id+'/type'] = data.type;
         firebase.database().ref().update(categoryData);
         res.send({
           result: 'success'
