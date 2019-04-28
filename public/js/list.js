@@ -75,38 +75,33 @@ function getList(year, month){
                 var rows = data.rows;
                 if(rows.length > 0){
                     for(var i=0;i<rows.length;i++){
-                        
-                        var li = $('<li/>');
-                        // alert($('#cateogryList_'+rows[i].category).attr('data-show-status'))
-                        
-                        li.attr('data-category', rows[i].category).append(
-                            $('<div/>').addClass('front card').append(
-                                $('<div/>').addClass('date').css('background',categoryMap(rows[i].category)).text(rows[i].date)
-                            ).append(
-                                $('<div/>').addClass('title').text(rows[i].title)
-                            )
-                            
-                            .append(
-                                $('<div/>').addClass('writer')
-                            )
-                            // .append(
-                            //     $('<div/>').addClass('starDiv').append(
-                            //         $('<i/>').addClass('fas fa-star orange')
-                            //     ).append(
-                            //         $('<i/>').addClass('fas fa-star orange')
-                            //     ).append(
-                            //         $('<i/>').addClass('fas fa-star orange')
-                            //     ).append(
-                            //         $('<i/>').addClass('fas fa-star orange')
-                            //     ).append(
-                            //         $('<i/>').addClass('fas fa-star orange')
-                            //     )
-                            // )
-                            
-                            .append(
-                                $('<div/>').addClass('cardContent').text(rows[i].contents)
-                            )
+                        var li = $('<li/>').attr('data-category', rows[i].category);
+
+                       var frontCard = $('<div/>').addClass('front card').append(
+                            $('<div/>').addClass('date').css('background',categoryMap(rows[i].category)).text(rows[i].date)
                         ).append(
+                            $('<div/>').addClass('title').text(rows[i].title)
+                        )
+                        .append(
+                            $('<div/>').addClass('writer')
+                        );
+
+                        if(rows[i].foodCheckPoint){
+                            var starDiv = $('<div/>').addClass('starDiv');
+                            for(var point=0;point<rows[i].foodCheckPoint;point++){
+                                starDiv.append($('<i/>').addClass('fas fa-star orange'));
+                            }
+
+                            starDiv.appendTo(frontCard);
+                        }
+
+                        frontCard.append(
+                                $('<div/>').addClass('cardContent').text(rows[i].contents)
+                        );
+
+                        li.append(frontCard);
+                            
+                        li.append(
                             $('<div/>').addClass('back card').append(
                                 $('<div/>').addClass('subBtn').append(
                                     $('<ul/>').append(
@@ -143,12 +138,35 @@ function getList(year, month){
 }
 
 function editContent(year, month, data){ /*수정일때*/
+    console.log(data);
     // $('#category').val(obj.category);
     $('#id').val(data.id);
-    $('select[name="category"]').val(data.category);
+    $('select[name="category"]').val(data.category).prop("selected", true);;
     $('#datepicker').val(year + '/' +month +'/' +data.date);
     $('#title').val(data.title);
     $('#contents').val(data.contents);
+
+    if($('select[name="category"]').find('option:selected').attr('data-type') == 'animal'){
+        $('.careKitty').show();
+    }
+
+    if(data.care){
+        $('#'+data.care).prop('checked', true);
+
+        if(data.care == 'foodCheck'){
+            $('.starDiv').show();
+            console.log()
+            $('.starDiv > i').each(function(a,b){
+                if(data.foodCheckPoint >= a){
+                    $(this).removeClass('gray');
+                    $(this).addClass('orange');
+                    $(this).addClass('clickStar');
+                }else{
+                    $(this).removeClass('clickStar');
+                }
+            });
+        }
+    }
 
     goListAndWrite('update');
 }
@@ -216,7 +234,7 @@ function drawCateogry(){ //첫 진입시 호출하여 메인의 사이드바에 
         ).appendTo(dailyCategoryArea);
 
         select.append(
-            $('<option/>').attr('value',datas.id).text(datas.category).attr('data-care-yn', datas.care)
+            $('<option/>').attr('value',datas.id).text(datas.category).attr('data-type', datas.type)
         )
     }
 

@@ -602,6 +602,11 @@ app.post('/add', function (req, res) {
       
       addData['category'] = data.category;
 
+      if(data.care && data.care === 'foodCheck'){
+        addData['care'] = data.care;
+        addData['foodCheckPoint'] = data.foodCheckPoint;
+      }
+      
       if (!addData.id) {
         addData.id = firebase.database().ref().child('daily').push().key;
       }

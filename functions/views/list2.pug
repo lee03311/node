@@ -46,10 +46,10 @@ html
                 $('.dailyAddDiv').hide();
                 $('#showList').hide();
 
-                $('input[name=careObj]').click(function(){
+                $('input[name=care]').click(function(){
                     $('#title').val($(this).parent().text().trim());
 
-                    if($(this).val() == 'food'){
+                    if($(this).val() == 'foodCheck'){
                         $('.starDiv').show();
                     }else{
                         $('.starDiv').hide();
@@ -70,7 +70,7 @@ html
                         }
                     });
                 },
-                function(){
+                function(){ //hover out
                     var hasClass = 0;
                     $('.starDiv > i').each(function(a,b){
                         if($(this).hasClass('clickStar')){
@@ -82,6 +82,7 @@ html
                     });
                 }).click(function(){
                     var index = $(this).attr('data-index');
+                    $('#foodCheckPoint').val(parseInt(index)+1);
                     $(this).addClass('gray');
                     $(this).removeClass('clickStar');
 
@@ -101,7 +102,7 @@ html
 
 
             $(document).on("change", "#cateogry", function(){
-                if($(this).find('option:selected').attr('data-care-yn') == 'Y'){
+                if($(this).find('option:selected').attr('data-type') == 'animal'){
                     $('.careKitty').show();
                 }else{
                     $('.careKitty').hide();
@@ -123,6 +124,8 @@ html
                     if(status == 'update'){
                         $('.reportAddBtn').hide();
                         $('.reportUpdateBtn').show();
+
+                        
                     }else{
                         $('.reportAddBtn').show();
                         $('.reportUpdateBtn').hide();
@@ -275,25 +278,29 @@ html
                                     span(class='glyphicon glyphicon-calendar' aria-hidden='true')
                             div(class='careKitty')
                                 label(for='tooth')
-                                    input(type='radio' name='careObj' id='tooth' value='tooth') 
+                                    input(type='radio' name='care' id='tooth' value='tooth') 
                                     | 양치
                                 label(for='poo')
-                                    input(type='radio' name='careObj' id='poo' value='poo') 
+                                    input(type='radio' name='care' id='poo' value='poo') 
                                     |응가                                
                                 label(for='pee')
-                                    input(type='radio' name='careObj' id='pee' value='pee') 
+                                    input(type='radio' name='care' id='pee' value='pee') 
                                     |쉬
                                 label(for='play')
-                                    input(type='radio' name='careObj' id='play' value='play') 
+                                    input(type='radio' name='care' id='play' value='play') 
                                     |놀이
                                 label(for='snack')
-                                    input(type='radio' name='careObj' id='snack' value='snack') 
+                                    input(type='radio' name='care' id='snack' value='snack') 
                                     |간식
                                 label(for='food')
-                                    input(type='radio' name='careObj' id='food' value='food') 
+                                    input(type='radio' name='care' id='food' value='food') 
                                     |사료
+                                label(for='foodCheck')
+                                    input(type='radio' name='care' id='foodCheck' value='foodCheck') 
+                                    |사료기호성조사
 
                                 div(class="starDiv")
+                                    input(type='hidden' name='foodCheckPoint' id='foodCheckPoint' value='0')
                                     i(class="fas fa-star gray" data-index='0')
                                     i(class="fas fa-star gray" data-index='1')
                                     i(class="fas fa-star gray" data-index='2')
