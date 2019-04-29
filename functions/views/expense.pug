@@ -1,0 +1,49 @@
+doctype html
+html
+    head
+        meta(charset = 'utf-8')
+        script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+        //- script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
+        script(src='https://code.jquery.com/ui/1.12.1/jquery-ui.js')
+        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css')
+        link(rel='stylesheet' href='//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css')
+        link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nanum+Gothic') 
+        link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.1/css/all.css' integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous")
+        link(rel="stylesheet", href="css/common.css")
+        script(type='text/javascript' src='js/common.js') 
+        script.
+
+    body
+        div(class='container')
+            div(class="left" style="background-color:#282c2f;")
+                div(class="header")
+                    span(class="skyBlue emailInfo") #{email}
+                    span(class="sub white") 
+                        span(class="logout") 
+                            i(class='fas fa-sign-out-alt')
+                div
+                    ul(class="menuNavi")
+                        li
+                            a(href='/list')
+                                i(class="far fa-angry")
+                                span DAILY
+                        li
+                            a(href='/todolist')
+                                i(class="far fa-grin-squint-tears")
+                                span TO DO
+                        li
+                            a(href='/budget')
+                                i(class="far fa-smile")
+                                span BUDGET
+                        li(class='active')
+                            a(href='/expense')
+                                i(class="far fa-grin-beam-sweat")
+                                span EXPENSE
+                        li
+                            a(href='/setting')
+                                i(class="fas fa-cogs")
+                                span SETTING
+            div(class='center' style='background:#fafafa;')
+                header(class="header backWhite")
+                    span(class="first") Expense
+                div(class='content')
