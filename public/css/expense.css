@@ -1,0 +1,85 @@
+.expenseArea, .partnerBudget{
+    /* width: calc(50% - 60px); */
+    /* display: inline-block; */
+    margin: 5px 21px;
+}
+
+#expenseCategory{
+    margin: 10px 0px;
+    padding: 0px 15px;
+    height: 40px;
+    line-height: 40px;
+    border: 1px solid #e0e0e0;
+}
+
+.expenseAdd{  
+    text-align: right;
+}
+
+.searchDiv {
+    margin: 10px 0;
+    padding: 0px 15px;
+    height: 40px;
+    line-height: 40px;
+    border: 1px solid #e0e0e0;
+    display: inline-block;
+    width: 100%
+    /* margin: 20px 0 20px 10px; */
+}
+.searchDiv input {
+    width:calc(100% - 20px);
+    font-size:15px;
+    margin-left:5px;
+    outline:none;
+    border:none;
+    border-right:0px;
+    border-top:0px;
+    border-left:0px; 
+    border-bottom:0px;
+    line-height: normal;
+}
+.costDiv{
+    width: 250px;
+}
+
+.nav-pills{
+    display: inline-block;
+    vertical-align: middle;
+}
+.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover{
+    background-color:#79e1e6;
+}
+.nav-pills>li>a {
+    color:#79e1e6;
+    border: 1px solid #79e1e6;
+}
+
+.totalCostArea{
+    margin-left: 15px;
+    font-size:13px;
+    color:#949494;
+}
+
+.dates{
+    display: inline-block;
+    width: initial;
+    /* width: 80%; */
+}
+
+.calendar{
+    display: inline-block;
+    width: 50px;
+    padding: 10px;
+    margin-top: -3px;
+    height: 40px;
+}
+
+.table th,td{
+    text-align: center;
+}
+
+.expenseRemoveBtn{
+    font-size: 17px;
+    color: #ff9393;
+    cursor: pointer;
+}

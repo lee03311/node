@@ -1209,7 +1209,221 @@ app.get('/expense', function(req, res){
     console.log(error);
     res.redirect('/');
   });
+});
 
+app.get('/expense/myBudget', function(req, res){
+
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+
+    var datas = [];
+    var money = 0;
+    firebase.database().ref('budget/' + uid).once("value", function(snapshot, prevChildKey) {
+      var myBudget = snapshot.val();
+
+      snapshot.forEach(function (childSnapshot) {
+        var key = childSnapshot.key;
+        var data = childSnapshot.val();
+
+        if(key === 'btgCategory'){
+          childSnapshot.forEach(function (dataChildSnapShot){
+            var categoryObj = dataChildSnapShot.val();
+            var categoryId = dataChildSnapShot.key;
+            categoryObj['id'] = categoryId;
+
+            datas.push(categoryObj);
+          })
+        }else if(key === 'money'){
+          money = data;
+        }
+      });
+
+      
+      res.send({
+        result: 'success',
+        money : money,
+        myBudget : datas,
+      });
+    });
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
+});
+
+// app.get('/expense/partnerBudget', function(req, res){
+
+//   var host = req.get('host') || '';
+//   var sessionCookie = null;
+
+//   if(!host.includes('localhost')){
+//     res.set('Cache-Control', 'public, max-age=0');
+//     sessionCookie = req.cookies.__session;
+//   }else{
+//     res.setHeader('Cache-Control', 'private');
+//     sessionCookie = req.cookies.session;
+//   }
+
+//   var data = req.body;
+
+//   admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+//     var uid = decodedClaims.sub;
+//     var email = decodedClaims.email;
+
+//     var datas = [];
+//     var money = 0;
+//     firebase.database().ref('setting/' + uid+'/member').once("value", function(settingSnapshot, prevChildKey) {
+//       var member = settingSnapshot.val();
+//       var partnerData = [];
+//       var partnerMoney = 0;
+
+//       firebase.database().ref('budget/' + member.uid).once("value", function(memberSnapshot, prevChildKey) {
+//         // var setting = memberSnapshot.val();
+
+//         memberSnapshot.forEach(function (memberChildSnapshot) {
+//           var memberKey = memberChildSnapshot.key;
+//           var memberData = memberChildSnapshot.val();
+  
+//           if(memberKey === 'btgCategory'){
+//             memberChildSnapshot.forEach(function (memberDataChildSnapShot){
+//               var partnerDataObj = memberDataChildSnapShot.val();
+//               var partnerDataId = memberDataChildSnapShot.key;
+//               partnerDataObj['id'] = partnerDataId;
+  
+//               partnerData.push(partnerDataObj);
+//             })
+//           }else if(memberKey === 'money'){
+//             partnerMoney = memberData;
+//           }
+//         });
+//         res.send({
+//               result: 'success',
+//               partnerInfo : {
+//                 email : member.member,
+//                 partnerBudget : partnerData,
+//                 partnerMoney : partnerMoney
+//               }
+//         });
+//       });
+//     });
+//   }).catch(error => {
+//     console.log(error);
+//     res.redirect('/');
+//   });
+// });
+
+app.post('/expense/add', function(req, res){
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+  var data = req.body;
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+
+    if(uid){
+      console.log(data);
+      var dates = data.date;
+      if(dates){
+        dates = dateFormat(dates, 'yyyymm');
+      }
+
+      if(data.status){
+        if(data.status === 'add'){
+
+          var btgCategory = {
+            cost : data.cost,
+            comment : data.comment,
+            date : dates,
+            category : data.expenseCategory,
+            categoryTxt : data.expenseCategoryTxt
+          }
+
+          var id = firebase.database().ref().child('expense/' + uid + '/'+dates).push().key;
+          firebase.database().ref('expense/' + uid +'/'+dates +'/' +id).set(btgCategory);
+
+          res.send({
+            result: 'success',
+            id:id
+          });
+        }else if(data.status === 'remove'){
+          console.log('expense/' + uid +'/'+dates +'/' +data.id);
+          firebase.database().ref('expense/' + uid +'/'+dates +'/' +data.id).remove();
+          res.send({
+            result: 'success'
+          });
+        }
+      }
+    }
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
+});
+
+app.get('/expense/list', function(req, res){
+
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+var data = req.body;
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+
+    console.log(req.query);
+    var data = req.query;
+    var dates = data.date;
+    var datas = [];
+
+    if(dates){
+      dates = dateFormat(dates, 'yyyymm');
+    }
+
+    firebase.database().ref('expense/' + uid +'/'+dates).once('value', function (snapshot) {
+      snapshot.forEach(function (childSnapshot) {
+        var data = childSnapshot.val();
+        data['id'] = childSnapshot.key;
+        datas.push(data);
+      });
+      res.status(200).send({ 
+        result : 'success',
+        rows:datas
+      });
+    });
+    return true;
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
 });
 
 const api = functions.https.onRequest(app);

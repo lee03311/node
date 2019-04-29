@@ -10,8 +10,17 @@ html
         link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nanum+Gothic') 
         link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.1/css/all.css' integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous")
         link(rel="stylesheet", href="css/common.css")
+        link(rel="stylesheet", href="css/expense.css")
         script(type='text/javascript' src='js/common.js') 
+        script(type='text/javascript' src='js/expense.js') 
         script.
+            $(function(){
+                $( "#datepicker" ).datepicker({
+                    showOtherMonths: true,
+                    selectOtherMonths: true, 
+                    dateFormat:'yy/mm/dd'
+                });
+            })
 
     body
         div(class='container')
@@ -32,7 +41,7 @@ html
                                 i(class="far fa-grin-squint-tears")
                                 span TO DO
                         li
-                            a(href='/budget')
+                            a(href='/expense')
                                 i(class="far fa-smile")
                                 span BUDGET
                         li(class='active')
@@ -43,7 +52,78 @@ html
                             a(href='/setting')
                                 i(class="fas fa-cogs")
                                 span SETTING
+
             div(class='center' style='background:#fafafa;')
                 header(class="header backWhite")
                     span(class="first") Expense
+                    ul(class="nav nav-pills")
+                        li(role="presentation")
+                            a(href="#") 요약
+                        li(role="presentation"  class="active")
+                            a(href="#") 내 사용내역
+                        li(role="presentation")
+                            a(href="#") 파트너 내역
+
                 div(class='content')
+                    div(class='expenseArea')
+                        h4
+                            i(class='fas fa-hand-holding-usd')          나의 사용내역
+
+                        input(type='text' id='datepicker' name='date' placeholder='날짜선택' class='dates searchDiv backWhite ' aria-describedby='basic-addon2' autocomplete="off")
+                        span(class='input-group-addon calendar' id='basic-addon2')
+                            span(class='glyphicon glyphicon-calendar' aria-hidden='true')
+
+
+                        select(id='expenseCategory' name='expenseCategory')
+                            option(value='expenseCode1') 식사
+                            option(value='expenseCode2') 카페/간식
+                            option(value='expenseCode3') 의료/건강
+                            option(value='expenseCode4') 반려동물
+                            option(value='expenseCode5') 술/유흥
+                            option(value='expenseCode6') 의복/미용
+                            option(value='expenseCode7') 자동차
+                            option(value='expenseCode8') 교통
+                            option(value='expenseCode9') 주거/통신
+                            option(value='expenseCode10') 생활
+                            option(value='expenseCode11') 문화/여가
+                            option(value='expenseCode12') 교육
+                            option(value='expenseCode13') 여행/숙박
+                            option(value='expenseCode14') 육아
+                            option(value='expenseCode15') 경조사
+                        
+                        div(class="searchDiv backWhite costDiv")
+                            input(type="number" placeholder="비용을 입력하세요" id='cost' name='cost')
+                        span(id='remainCost' class='totalCostArea')
+                        input(type='hidden' id='totalCost')
+                        
+                        div(class="searchDiv backWhite commentDiv")
+                            input(type="text" placeholder="코멘트를 입력하세요" id='comment' name='comment')
+
+                        div(class='expenseAdd')
+                            span(class="btn btnOrange" onclick='expenseAdd()')
+                                        i(class='fas fa-plus-circle')        ADD
+                        
+                        ul(class='pager')
+                            li
+                                a(href="#" onclick="javascript:moveDays('pre');")
+                                    span(class='glyphicon glyphicon-menu-left' aria-hidden='true')
+                            li 
+                                span(id='thisMonth')
+                            li
+                                a(href="#" onclick="javascript:moveDays('next');")
+                                    span(class='glyphicon glyphicon-menu-right' aria-hidden='true')
+
+
+                        table(class="table")
+                            colgroup
+                                col(width='20%')
+                                col(width='20%')
+                                col(width='*')
+                                col(width='10%')
+                            thead
+                                tr
+                                    th 카테고리
+                                    th 비용
+                                    th 코멘트
+                                    th 
+                            tbody(id='expenseAddArea')
