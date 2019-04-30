@@ -1,6 +1,4 @@
 $(function(){
-
-
     budgetCategoryList();
 });
 
@@ -28,8 +26,6 @@ function budgetAdd(){
         return false;
     }
 
-
-
     var data = {
         status : 'add',
         cost : cost,
@@ -44,42 +40,58 @@ function budgetAdd(){
         type: 'post',
         data:data,
         success:function(data){
+            budgetCategoryList();
+            // if(data.result == 'success'){
+            //     var budgetAddArea = $('#budgetAddArea');
 
-            if(data.result == 'success'){
-                var budgetAddArea = $('#budgetAddArea');
-
-                $('<tr/>').addClass('budgetData').append(
-                    $('<td/>').text(budgetCategoryTxt)
-                ).append(
-                    $('<td/>').text(numberWithCommas(cost))
-                ).append(
-                    $('<td/>').text(comment)
-                ).append(
-                    $('<td/>').append(
-                        $('<span/>').attr('onclick', 'budgetRemove(this, "'+data.id+'")').addClass('budgetRemoveBtn').append(
-                            $('<i/>').addClass('far fa-times-circle')
-                        )
-                    )
-                ).appendTo(budgetAddArea);
+            //     $('<tr/>').addClass('budgetData').append(
+            //         $('<td/>').text(budgetCategoryTxt)
+            //     ).append(
+            //         $('<td/>').text(numberWithCommas(cost))
+            //     ).append(
+            //         $('<td/>').text(comment)
+            //     ).append(
+            //         $('<td/>').append(
+            //             $('<span/>').attr('onclick', 'budgetRemove(this, "'+data.id+'")').addClass('budgetRemoveBtn').append(
+            //                 $('<i/>').addClass('far fa-times-circle')
+            //             )
+            //         )
+            //     ).appendTo(budgetAddArea);
             
-                var dataCount = $('.budgetData').length;
+            //     var dataCount = $('.budgetData').length;
                 
-                if(dataCount > 0){
-                    $('#noBudgetArea').hide();
-                }
+            //     if(dataCount > 0){
+            //         $('#noBudgetArea').hide();
+            //     }
             
-                $('#cost').val('');
-                $('#comment').val('');
-                $('#budgetCategory').find("option:eq(0)").prop("selected", true);
-                var remainBudget = totalBudget - (parseInt(btgTotalCost) + parseInt(cost));
-                $('#totalCost').val(parseInt(btgTotalCost) + parseInt(cost));
-                $('#remainBudget').text('여유비용 : ' + numberWithCommas(remainBudget));
-            }
+            //     $('#cost').val('');
+            //     $('#comment').val('');
+            //     $('#budgetCategory').find("option:eq(0)").prop("selected", true);
+            //     var remainBudget = totalBudget - (parseInt(btgTotalCost) + parseInt(cost));
+            //     $('#totalCost').val(parseInt(btgTotalCost) + parseInt(cost));
+            //     $('#remainBudget').text('여유비용 : ' + numberWithCommas(remainBudget));
+            // }
         },error:function(){
             alert('예산 관리에 문제가 발생했습니다.')
         }
     }); 
 
+}
+
+function budgetPastMonthDataThisMonth(){
+    $.ajax({
+        url:'/budget/copyThisMonth',
+        dataType: 'json',
+        type: 'post',
+        success:function(data){
+            console.log(data);
+            if(data.result == 'success'){
+                budgetCategoryList();
+            }
+        },error:function(){
+            // alert('예산 관리에 문제가 발생했습니다.')
+        }
+    });
 }
 
 function budgetRemove(obj, id){
@@ -132,13 +144,20 @@ function budgetCategoryList(){
         type: 'get',
         success:function(data){
             if(data.result == 'success'){
-                $("#myBudgetSlider").slider('value', data.money);
 
+                $("#myBudgetSlider").slider('value', data.money);
+                
                 var money = numberWithCommas(data.money);
                 $("#myBudgetValue").text(money);
-
+                
                 var btgCategory = data.myBudget;
                 var btgTotalCost = 0;
+                if(btgCategory.length == 0){
+                    if(confirm('이번달 예산이 등록되지 않았습니다.\r\n지난달 예산과 동일하게 등록하시겠습니까?')){
+                        budgetPastMonthDataThisMonth();
+                    }
+                }
+
                 for(var i=0;i<btgCategory.length;i++){
                     btgTotalCost += parseInt(btgCategory[i].cost);
                     var budgetAddArea = $('#budgetAddArea');

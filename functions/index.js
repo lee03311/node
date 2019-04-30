@@ -371,7 +371,6 @@ app.post('/todolist/add', function (req, res) {
   }
 
   var data = req.body;
-  console.log(data)
   admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
     var uid = decodedClaims.sub;
     var email = decodedClaims.email;
@@ -1054,12 +1053,17 @@ app.post('/budget/add', function(req, res){
     var uid = decodedClaims.sub;
     var email = decodedClaims.email;
 
-    if(uid){
+    var now = new Date();
+          
+    var yesterday = now.setDate(now.getDate() - 1);
+    now = dateFormat(now, 'yyyymm');
+    yesterday = dateFormat(yesterday, 'yyyymm');
+    console.log(yesterday);
 
+    if(uid){
       if(data.money){
         var budgetMoney = {};
-        budgetMoney['budget/' + uid +'/'+'money'] = data.money;
-        console.log(data.money);
+        budgetMoney['budget/' + uid + '/' + now +'/'+'money'] = data.money;
         firebase.database().ref().update(budgetMoney);
         res.send({
           result: 'success'
@@ -1074,17 +1078,15 @@ app.post('/budget/add', function(req, res){
             category : data.budgetCategory,
             categoryTxt : data.budgetCategoryTxt
           }
-
-          var id = firebase.database().ref().child('budget/' + uid +'/btgCategory/').push().key;
-          firebase.database().ref('budget/' + uid +'/btgCategory/'+id).set(btgCategory);
+          var id = firebase.database().ref().child('budget/' + uid + '/' + now +'/btgCategory/').push().key;
+          firebase.database().ref('budget/' + uid + '/' + now +'/btgCategory/'+id).set(btgCategory);
 
           res.send({
             result: 'success',
             id:id
           });
         }else if(data.status === 'remove'){
-          console.log(data);
-          firebase.database().ref('budget/' + uid +'/btgCategory/'+data.id).remove();
+          firebase.database().ref('budget/' + uid + '/' + now +'/btgCategory/'+data.id).remove();
 
 
           res.send({
@@ -1092,6 +1094,80 @@ app.post('/budget/add', function(req, res){
           });
         }
       }
+    }
+    
+    
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
+});
+
+app.post('/budget/copyThisMonth', function(req, res){
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+  console.log('==================>')
+  var data = req.body;
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+
+    var now = new Date();
+    var yesterday = now.setDate(now.getDate() - 1);
+
+
+    var today = dateFormat(new Date(), 'yyyymm');
+    yesterday = dateFormat(yesterday, 'yyyymm');
+
+    if(uid){
+      firebase.database().ref('budget/' + uid + '/' + yesterday).once("value", function(snapshot, prevChildKey) {
+        var myBudget = snapshot.val();
+  
+        snapshot.forEach(function (childSnapshot) {
+          var key = childSnapshot.key;
+          var data = childSnapshot.val();
+  
+          if(key === 'btgCategory'){
+            childSnapshot.forEach(function (dataChildSnapShot){
+              var categoryObj = dataChildSnapShot.val();
+
+              var id = firebase.database().ref().child('budget/' + uid + '/' + today +'/btgCategory/').push().key;
+              firebase.database().ref('budget/' + uid + '/' + today +'/btgCategory/'+id).set(categoryObj);
+            });
+          }else if(key === 'money'){
+            money = data;
+
+            var budgetMoney = {};
+            budgetMoney['budget/' + uid + '/' + today +'/'+'money'] = data;
+            firebase.database().ref().update(budgetMoney);
+          }
+
+        });
+        
+        res.send({
+          result: 'success'
+        });
+  
+        // res.send({
+        //       result: 'success',
+        //       money : money,
+        //       myBudget : datas,
+        //       partnerInfo : {
+        //         email : member.member,
+        //         partnerBudget : partnerData,
+        //         partnerMoney : partnerMoney
+        //       }
+        // });
+      });
     }
     
     
@@ -1123,7 +1199,12 @@ app.get('/budget/list', function(req, res){
 
     var datas = [];
     var money = 0;
-    firebase.database().ref('budget/' + uid).once("value", function(snapshot, prevChildKey) {
+
+    
+    var now = new Date();
+    now = dateFormat(now, 'yyyymm');
+
+    firebase.database().ref('budget/' + uid + '/' + now).once("value", function(snapshot, prevChildKey) {
       var myBudget = snapshot.val();
 
       snapshot.forEach(function (childSnapshot) {
@@ -1147,7 +1228,7 @@ app.get('/budget/list', function(req, res){
         var member = settingSnapshot.val();
         var partnerData = [];
         var partnerMoney = 0;
-        firebase.database().ref('budget/' + member.uid).once("value", function(memberSnapshot, prevChildKey) {
+        firebase.database().ref('budget/' + member.uid +'/' + now).once("value", function(memberSnapshot, prevChildKey) {
           // var setting = memberSnapshot.val();
   
           memberSnapshot.forEach(function (memberChildSnapshot) {
@@ -1230,7 +1311,11 @@ app.get('/expense/myBudget', function(req, res){
 
     var datas = [];
     var money = 0;
-    firebase.database().ref('budget/' + uid).once("value", function(snapshot, prevChildKey) {
+
+    var now = new Date();
+    now = dateFormat(now, 'yyyymm');
+    
+    firebase.database().ref('budget/' + uid + '/' + now).once("value", function(snapshot, prevChildKey) {
       var myBudget = snapshot.val();
 
       snapshot.forEach(function (childSnapshot) {
@@ -1342,7 +1427,6 @@ app.post('/expense/add', function(req, res){
     var email = decodedClaims.email;
 
     if(uid){
-      console.log(data);
       var dates = data.date;
       if(dates){
         dates = dateFormat(dates, 'yyyymm');
@@ -1367,7 +1451,6 @@ app.post('/expense/add', function(req, res){
             id:id
           });
         }else if(data.status === 'remove'){
-          console.log('expense/' + uid +'/'+dates +'/' +data.id);
           firebase.database().ref('expense/' + uid +'/'+dates +'/' +data.id).remove();
           res.send({
             result: 'success'
@@ -1399,7 +1482,6 @@ var data = req.body;
     var uid = decodedClaims.sub;
     var email = decodedClaims.email;
 
-    console.log(req.query);
     var data = req.query;
     var dates = data.date;
     var datas = [];

@@ -1,3 +1,20 @@
+table.ui-datepicker-calendar { display:none; }
+.ui-datepicker-trigger {display: none;}
+.ui-datepicker-year, .ui-datepicker-month{vertical-align: middle;}
+.dates{
+    display: inline-block;
+    width: initial;
+    /* width: 80%; */
+}
+
+.calendar{
+    display: inline-block;
+    width: 50px;
+    padding: 10px;
+    margin-top: -3px;
+    height: 40px;
+}
+
 .budgetslider{
     background-color: #79e1e6;
     border: 0;
@@ -51,7 +68,7 @@
     line-height: 40px;
     border: 1px solid #e0e0e0;
     display: inline-block;
-    width: calc(100% - 235px); 
+    /* width: calc(100% - 235px);  */
     /* margin: 20px 0 20px 10px; */
 }
 .searchDiv input {
