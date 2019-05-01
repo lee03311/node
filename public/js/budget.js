@@ -84,8 +84,11 @@ function budgetPastMonthDataThisMonth(){
         dataType: 'json',
         type: 'post',
         success:function(data){
-            console.log(data);
             if(data.result == 'success'){
+                if(!data.isPastMonthDataExist){
+                    alert('지난달에도 등록된 예산정보가 없습니다.\r\n새로 등록하세요.');
+                    return false;
+                }
                 budgetCategoryList();
             }
         },error:function(){
@@ -152,7 +155,7 @@ function budgetCategoryList(){
                 
                 var btgCategory = data.myBudget;
                 var btgTotalCost = 0;
-                if(btgCategory.length == 0){
+                if(!data.money && btgCategory.length == 0){
                     if(confirm('이번달 예산이 등록되지 않았습니다.\r\n지난달 예산과 동일하게 등록하시겠습니까?')){
                         budgetPastMonthDataThisMonth();
                     }
@@ -217,7 +220,7 @@ function budgetCategoryList(){
                     $('<tr/>').append(
                         $('<td/>').addClass('partnerTotalBudget').text('총액 (남은예산)')
                     ).append(
-                        $('<td/>').attr('colspan', '2').text(numberWithCommas(partnerTotalBudget) + ' ('+numberWithCommas(partnerRemainCost)+')')
+                        $('<td/>').attr('colspan', '3').text(numberWithCommas(partnerTotalBudget) + ' ('+numberWithCommas(partnerRemainCost)+')')
                     ).appendTo(budgetAddArea);
                 }
             }

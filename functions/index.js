@@ -1055,10 +1055,10 @@ app.post('/budget/add', function(req, res){
 
     var now = new Date();
           
-    var yesterday = now.setDate(now.getDate() - 1);
+    var pastMonth = now.setDate(now.getDate() - 1);
     now = dateFormat(now, 'yyyymm');
-    yesterday = dateFormat(yesterday, 'yyyymm');
-    console.log(yesterday);
+    pastMonth = dateFormat(pastMonth, 'yyyymm');
+    console.log(pastMonth);
 
     if(uid){
       if(data.money){
@@ -1115,26 +1115,25 @@ app.post('/budget/copyThisMonth', function(req, res){
     sessionCookie = req.cookies.session;
   }
 
-  console.log('==================>')
   var data = req.body;
   admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
     var uid = decodedClaims.sub;
     var email = decodedClaims.email;
 
     var now = new Date();
-    var yesterday = now.setDate(now.getDate() - 1);
-
-
+    var pastMonth = now.setMonth(now.getMonth()-1);
+    
+    
     var today = dateFormat(new Date(), 'yyyymm');
-    yesterday = dateFormat(yesterday, 'yyyymm');
+    pastMonth = dateFormat(pastMonth, 'yyyymm');
 
     if(uid){
-      firebase.database().ref('budget/' + uid + '/' + yesterday).once("value", function(snapshot, prevChildKey) {
-        var myBudget = snapshot.val();
-  
+      var isPastMonthDataExist = false;
+      firebase.database().ref('budget/' + uid + '/' + pastMonth).once("value", function(snapshot, prevChildKey) {
         snapshot.forEach(function (childSnapshot) {
           var key = childSnapshot.key;
           var data = childSnapshot.val();
+          isPastMonthDataExist = true;
   
           if(key === 'btgCategory'){
             childSnapshot.forEach(function (dataChildSnapShot){
@@ -1154,7 +1153,8 @@ app.post('/budget/copyThisMonth', function(req, res){
         });
         
         res.send({
-          result: 'success'
+          result: 'success',
+          isPastMonthDataExist : isPastMonthDataExist
         });
   
         // res.send({
@@ -1348,67 +1348,6 @@ app.get('/expense/myBudget', function(req, res){
   });
 });
 
-// app.get('/expense/partnerBudget', function(req, res){
-
-//   var host = req.get('host') || '';
-//   var sessionCookie = null;
-
-//   if(!host.includes('localhost')){
-//     res.set('Cache-Control', 'public, max-age=0');
-//     sessionCookie = req.cookies.__session;
-//   }else{
-//     res.setHeader('Cache-Control', 'private');
-//     sessionCookie = req.cookies.session;
-//   }
-
-//   var data = req.body;
-
-//   admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
-//     var uid = decodedClaims.sub;
-//     var email = decodedClaims.email;
-
-//     var datas = [];
-//     var money = 0;
-//     firebase.database().ref('setting/' + uid+'/member').once("value", function(settingSnapshot, prevChildKey) {
-//       var member = settingSnapshot.val();
-//       var partnerData = [];
-//       var partnerMoney = 0;
-
-//       firebase.database().ref('budget/' + member.uid).once("value", function(memberSnapshot, prevChildKey) {
-//         // var setting = memberSnapshot.val();
-
-//         memberSnapshot.forEach(function (memberChildSnapshot) {
-//           var memberKey = memberChildSnapshot.key;
-//           var memberData = memberChildSnapshot.val();
-  
-//           if(memberKey === 'btgCategory'){
-//             memberChildSnapshot.forEach(function (memberDataChildSnapShot){
-//               var partnerDataObj = memberDataChildSnapShot.val();
-//               var partnerDataId = memberDataChildSnapShot.key;
-//               partnerDataObj['id'] = partnerDataId;
-  
-//               partnerData.push(partnerDataObj);
-//             })
-//           }else if(memberKey === 'money'){
-//             partnerMoney = memberData;
-//           }
-//         });
-//         res.send({
-//               result: 'success',
-//               partnerInfo : {
-//                 email : member.member,
-//                 partnerBudget : partnerData,
-//                 partnerMoney : partnerMoney
-//               }
-//         });
-//       });
-//     });
-//   }).catch(error => {
-//     console.log(error);
-//     res.redirect('/');
-//   });
-// });
-
 app.post('/expense/add', function(req, res){
   var host = req.get('host') || '';
   var sessionCookie = null;
@@ -1507,6 +1446,121 @@ var data = req.body;
     res.redirect('/');
   });
 });
+
+
+app.get('/partnerExpense', function(req, res){
+
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+
+    firebase.database().ref('setting/' + uid+'/member').once("value", function(settingSnapshot, prevChildKey) {
+      var member = settingSnapshot.val();
+      var partnerData = [];
+
+      admin.auth().getUserByEmail(member.member).then(function(userRecord) {
+        firebase.database().ref('setting/'+member.uid+'/item').once('value', function (snapshot) {
+          snapshot.forEach(function (childSnapshot) {
+            var data = childSnapshot.val();
+            partnerData.push(data);
+          });
+
+          res.render('partnerExpense',{email:email, partnerShareOpenYn : partnerData.includes('expense')});
+      });
+
+      return true;
+      })
+      .catch(function(error) {
+          res.status(500).send({
+          result: 'fail'
+        });
+      });
+
+
+      // firebase.database().ref('expense/' + member.uid +'/'+dates).once('value', function (snapshot) {
+      //   snapshot.forEach(function (childSnapshot) {
+      //     var data = childSnapshot.val();
+      //     data['id'] = childSnapshot.key;
+      //     datas.push(data);
+      //   });
+      //   res.status(200).send({ 
+      //     result : 'success',
+      //     rows:datas
+      //   });
+      // });
+    });
+
+
+
+
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
+});
+
+app.get('/expense/partner/list', function(req, res){
+
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+var data = req.body;
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+
+    var data = req.query;
+    var dates = data.date;
+    var datas = [];
+
+    if(dates){
+      dates = dateFormat(dates, 'yyyymm');
+    }
+
+    firebase.database().ref('setting/' + uid+'/member').once("value", function(settingSnapshot, prevChildKey) {
+      var member = settingSnapshot.val();
+      var partnerData = [];
+      var partnerMoney = 0;
+
+      firebase.database().ref('expense/' + member.uid +'/'+dates).once('value', function (snapshot) {
+        snapshot.forEach(function (childSnapshot) {
+          var data = childSnapshot.val();
+          data['id'] = childSnapshot.key;
+          datas.push(data);
+        });
+        res.status(200).send({ 
+          result : 'success',
+          rows:datas
+        });
+      });
+    });
+
+    return true;
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
+});
+
 
 const api = functions.https.onRequest(app);
 

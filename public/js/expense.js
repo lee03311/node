@@ -1,9 +1,3 @@
-$(function(){
-    getDays();
-    myExpense();
-    expenseCategoryList();
-});
-
 function getDays(){
     var today = new Date();
     var mm = today.getMonth()+1; //January is 0!
@@ -56,7 +50,7 @@ function myExpense(){ //내 예산 찾기
             // console.log(data)
 
             if(data.result == 'success'){
-                // $('#remainCost').text(numberWithCommas(data.money));
+                $('#remainCost').text(numberWithCommas(data.money));
                 $('#totalCost').val(data.money);
             }
         }
@@ -70,8 +64,18 @@ function expenseAdd(){
     var expenseCategoryTxt = $("#expenseCategory option:selected").text();
     var dates = $('#datepicker').val();
 
+    if(!dates){
+        alert('날짜를 선택하세요.');
+        return false;
+    }
+
     if(!cost){
-        alert('비용을 입력하세요');
+        alert('비용을 입력하세요.');
+        return false;
+    }
+    
+    if(cost && parseInt(cost) < 10){
+        alert('10원 이상의 금액만 입력하세요.');
         return false;
     }
 
@@ -97,12 +101,12 @@ function expenseAdd(){
         success:function(data){
 
             if(data.result == 'success'){
-                alert('등록에 성공하였습니다.')
                 expenseCategoryList()
                 $('#datepicker').val('');
                 $('#cost').val('');
                 $('#comment').val('');
                 $('#expenseCategory').find("option:eq(0)").prop("selected", true);
+                alert('등록에 성공하였습니다.')
             }
         },error:function(){
             alert('내 지출 관리에 문제가 발생했습니다.')
@@ -121,7 +125,6 @@ function expenseCategoryList(){
         },
         success:function(data){
             if(data.result == 'success'){
-                console.log(data);
                 var expenseList = data.rows;
                 var expenseAddArea = $('#expenseAddArea');
 
@@ -153,8 +156,6 @@ function expenseCategoryList(){
                 var money = $('#totalCost').val();
                 var remainExpense = money - expenseTotalCost;
 
-                console.log(money);
-                console.log(expenseTotalCost);
                 $('#remainCost').text(numberWithCommas(remainExpense));
             }
         },error:function(){
@@ -179,6 +180,57 @@ function expenseRemove(obj, id){
             }
         },error:function(){
             alert('예산 관리에 문제가 발생했습니다.')
+        }
+    });
+}
+
+
+function partnerExpense(){
+    $.ajax({
+        url:'/expense/partner/list',
+        dataType: 'json',
+        type: 'get',
+        data:{
+            date : $('#thisMonth').text()
+        },
+        success:function(data){
+            console.log(data);
+            if(data.result == 'success'){
+                var expenseList = data.rows;
+                var expenseAddArea = $('#expenseAddArea');
+
+                expenseAddArea.empty();
+                if(expenseList.length == 0){
+                    $('<tr/>').append(
+                        $('<td/>').attr('colspan', '4').text('데이터가 없습니다.')
+                    ).appendTo(expenseAddArea);
+                }
+
+                var expenseTotalCost = 0;
+                for(var i=0;i<expenseList.length;i++){
+                    expenseTotalCost += parseInt(expenseList[i].cost);
+                    $('<tr/>').addClass('expenseData').append(
+                        $('<td/>').text(expenseList[i].categoryTxt)
+                    ).append(
+                        $('<td/>').text(numberWithCommas(expenseList[i].cost))
+                    ).append(
+                        $('<td/>').text(expenseList[i].comment)
+                    ).append(
+                        $('<td/>').append(
+                            $('<span/>').attr('onclick', 'expenseRemove(this, "'+expenseList[i].id+'")').addClass('expenseRemoveBtn').append(
+                                $('<i/>').addClass('far fa-times-circle')
+                            )
+                        )
+                    ).appendTo(expenseAddArea);
+                }
+
+                var money = $('#totalCost').val();
+                var remainExpense = money - expenseTotalCost;
+
+                $('#remainCost').text(numberWithCommas(remainExpense));
+            }
+        },error:function(){
+            alert('내 지출관리 목록에 오류가 발생했습니다.')
         }
     });
 }
