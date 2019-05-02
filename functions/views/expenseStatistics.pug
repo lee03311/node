@@ -1,0 +1,190 @@
+doctype html
+html
+    head
+        meta(charset = 'utf-8')
+        script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+        //- script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
+        script(src='https://code.jquery.com/ui/1.12.1/jquery-ui.js')
+        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css')
+        link(rel='stylesheet' href='//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css')
+        link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nanum+Gothic') 
+        link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.1/css/all.css' integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous")
+        link(rel="stylesheet", href="css/common.css")
+        //- link(rel="stylesheet", href="css/expense.css")
+
+        script(src="https://www.amcharts.com/lib/4/core.js")
+        script(src="https://www.amcharts.com/lib/4/charts.js")
+        script(src="https://www.amcharts.com/lib/4/themes/spiritedaway.js")
+        script(src="https://www.amcharts.com/lib/4/themes/material.js")
+        script(src="https://www.amcharts.com/lib/4/themes/animated.js")
+        script(type='text/javascript' src='js/common.js') 
+        script(type='text/javascript' src='js/expenseStatistics.js') 
+
+        style.
+            #chartdiv, #partnerChartdiv{
+                height: 300px;
+                position: relative;
+                width: 40%;
+                top: 100px;
+                display: inline-block;
+                margin: 20px 30px;
+                left: 100px;
+                /* border: 1px solid #eba05c; */
+                border-radius: 10px;
+            }
+        script.
+            am4core.ready(function() {
+
+                // Themes begin 
+                am4core.useTheme(am4themes_spiritedaway);
+                // Themes end
+
+                // Create chart instance
+                var chart = am4core.create("chartdiv", am4charts.PieChart);
+
+                // Add data
+                chart.data = [ {
+                "country": "Lithuania",
+                "litres": 501.9
+                }, {
+                "country": "Czech Republic",
+                "litres": 301.9
+                }, {
+                "country": "Ireland",
+                "litres": 201.1
+                }, {
+                "country": "Germany",
+                "litres": 165.8
+                }, {
+                "country": "Australia",
+                "litres": 139.9
+                }, {
+                "country": "Austria",
+                "litres": 128.3
+                }, {
+                "country": "UK",
+                "litres": 99
+                }, {
+                "country": "Belgium",
+                "litres": 60
+                }, {
+                "country": "The Netherlands",
+                "litres": 50
+                } ];
+
+                // Add and configure Series
+                var pieSeries = chart.series.push(new am4charts.PieSeries());
+                pieSeries.dataFields.value = "litres";
+                pieSeries.dataFields.category = "country";
+                pieSeries.slices.template.stroke = am4core.color("#fff");
+                pieSeries.slices.template.strokeWidth = 2;
+                pieSeries.slices.template.strokeOpacity = 1;
+
+                // This creates initial animation
+                pieSeries.hiddenState.properties.opacity = 1;
+                pieSeries.hiddenState.properties.endAngle = -90;
+                pieSeries.hiddenState.properties.startAngle = -90;
+
+                // Themes begin 
+                //- am4core.useTheme(am4themes_spiritedaway);
+                // Themes end
+
+
+                // Themes begin
+                am4core.useTheme(am4themes_material);
+                am4core.useTheme(am4themes_animated);
+                // Themes end
+
+                // Create chart instance
+                var chart1 = am4core.create("partnerChartdiv", am4charts.PieChart);
+
+                // Add data
+                chart1.data = [ {
+                "country": "Lithuania",
+                "litres": 501.9
+                }, {
+                "country": "Czech Republic",
+                "litres": 301.9
+                }, {
+                "country": "Ireland",
+                "litres": 201.1
+                }, {
+                "country": "Germany",
+                "litres": 165.8
+                }, {
+                "country": "Australia",
+                "litres": 139.9
+                }, {
+                "country": "Austria",
+                "litres": 128.3
+                }, {
+                "country": "UK",
+                "litres": 99
+                }, {
+                "country": "Belgium",
+                "litres": 60
+                }, {
+                "country": "The Netherlands",
+                "litres": 50
+                } ];
+
+                // Add and configure Series
+                var pieSeries1 = chart1.series.push(new am4charts.PieSeries());
+                pieSeries1.dataFields.value = "litres";
+                pieSeries1.dataFields.category = "country";
+                pieSeries1.slices.template.stroke = am4core.color("#fff");
+                pieSeries1.slices.template.strokeWidth = 2;
+                pieSeries1.slices.template.strokeOpacity = 1;
+
+                // This creates initial animation
+                pieSeries1.hiddenState.properties.opacity = 1;
+                pieSeries1.hiddenState.properties.endAngle = -90;
+                pieSeries1.hiddenState.properties.startAngle = -90;
+
+            }); // end am4core.ready()
+
+    body
+        div(class='container')
+            div(class="left" style="background-color:#282c2f;")
+                div(class="header")
+                    span(class="skyBlue emailInfo") #{email}
+                    span(class="sub white") 
+                        span(class="logout") 
+                            i(class='fas fa-sign-out-alt')
+                div
+                    ul(class="menuNavi")
+                        li
+                            a(href='/list')
+                                i(class="far fa-angry")
+                                span DAILY
+                        li
+                            a(href='/todolist')
+                                i(class="far fa-grin-squint-tears")
+                                span TO DO
+                        li
+                            a(href='/budget')
+                                i(class="far fa-smile")
+                                span BUDGET
+
+                        li(class='active')
+                            a(href='/statistics')
+                                i(class="far fa-grin-beam-sweat")
+                                span EXPENSE
+                        li
+                            a(href='/setting')
+                                i(class="fas fa-cogs")
+                                span SETTING
+
+            div(class='center' style='background:#fafafa;')
+                header(class="header backWhite")
+                    span(class="first") Expense Statistics
+                    ul(class="nav nav-pills")
+                        li(role="presentation" class="active")
+                            a(href="#") 요약
+                        li(role="presentation")
+                            a(href="/expense") 내 사용내역
+                        li(role="presentation")
+                            a(href="/partnerExpense") 파트너 내역
+
+                div(id="chartdiv")
+                div(id="partnerChartdiv")

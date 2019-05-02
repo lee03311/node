@@ -259,3 +259,16 @@ a{
     cursor:not-allowed;
     background-color:#fff
 }
+
+/*지출 쪽 알약 버튼*/
+.nav-pills{
+    display: inline-block;
+    vertical-align: middle;
+}
+.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover{
+    background-color:#79e1e6;
+}
+.nav-pills>li>a {
+    color:#79e1e6;
+    border: 1px solid #79e1e6;
+}

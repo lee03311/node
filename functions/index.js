@@ -1268,6 +1268,32 @@ app.get('/budget/list', function(req, res){
   });
 });
 
+
+app.get('/statistics', function(req, res){
+
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+
+    res.render('expenseStatistics',{email:email});
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
+});
+
+
 app.get('/expense', function(req, res){
 
   var host = req.get('host') || '';
