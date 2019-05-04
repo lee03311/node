@@ -1293,6 +1293,65 @@ app.get('/statistics', function(req, res){
   });
 });
 
+app.get('/statistics/mylist', function(req, res){
+
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+var data = req.body;
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+
+    var data = req.query;
+    var dates = data.date;
+    var datas = [];
+    var tmp = [];
+
+    if(dates){
+      dates = dateFormat(dates, 'yyyymm');
+    }
+
+    firebase.database().ref('expense/' + uid +'/'+dates).once('value', function (snapshot) {
+      var index = 0;
+      snapshot.forEach(function (childSnapshot) {
+        var data = childSnapshot.val();
+
+        var setData = {
+          category : data.categoryTxt,
+          litres : parseInt(data.cost)
+        }
+
+        if(typeof tmp[setData['category']] === 'undefined'){
+          tmp[setData['category']] = index++;
+          datas.push(setData);
+        }else{
+          var obj = datas[tmp[setData['category']]];
+          obj.litres += parseInt(setData.litres);
+        }
+      });
+      console.log(tmp)
+      console.log(datas);
+      res.status(200).send({ 
+        result : 'success',
+        rows:datas
+      });
+    });
+    return true;
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
+});
+
 
 app.get('/expense', function(req, res){
 

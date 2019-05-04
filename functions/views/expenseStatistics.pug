@@ -24,14 +24,16 @@ html
 
         style.
             #chartdiv, #partnerChartdiv{
-                height: 300px;
+                height: 350px;
                 position: relative;
-                width: 100%;
+                width: calc(50% - 10px);
                 top: 100px;
                 display: inline-block;
-                left: 100px;
+                left: 0px;
             }
         script.
+            
+
             am4core.ready(function() {
 
                 // Themes begin
@@ -40,7 +42,7 @@ html
                 // Themes end
 
                 // Create chart instance
-                var chart = am4core.create("chartdiv", am4charts.PieChart);
+                var chart = am4core.create("partnerChartdiv", am4charts.PieChart);
 
                 // Add and configure Series
                 var pieSeries = chart.series.push(new am4charts.PieSeries());
@@ -76,10 +78,7 @@ html
                 pieSeries.labels.template.fill = am4core.color("white");
 
                 pieSeries.labels.template.adapter.add("radius", function(radius, target) {
-                    console.log(target.dataItem)
-                    console.log(target.dataItem.values)
                     if (target.dataItem && (target.dataItem.values.value.percent < 10)) {
-                        target.dataItem.properties.category = '';
                         return 0;
                     }
                     return radius;
@@ -139,13 +138,11 @@ html
                 }];
 
                 let label = pieSeries.createChild(am4core.Label);
-               label.text = "Hi there!";
+                label.text = "Hi there!";
                 label.horizontalCenter = "middle";
                 label.verticalCenter = "middle";
                 label.fontSize = 20;
-
             }); // end am4core.ready()
-
     body
         div(class='container')
             div(class="left" style="background-color:#282c2f;")
