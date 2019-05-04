@@ -11,17 +11,6 @@ $(function(){
 });
 
 function expenseCategoryList(today){
-    var array = [
-        'expenseCode1', 'expenseCode2',
-        'expenseCode3', 'expenseCode4',
-        'expenseCode5', 'expenseCode6',
-        'expenseCode7', 'expenseCode8',
-        'expenseCode9', 'expenseCode10',
-        'expenseCode11', 'expenseCode12',
-        'expenseCode13', 'expenseCode14',
-        'expenseCode15'
-    ];
-
     $.ajax({
         url:'/statistics/mylist',
         dataType: 'json',
