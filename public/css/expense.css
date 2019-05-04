@@ -72,3 +72,7 @@
     color: #ff9393;
     cursor: pointer;
 }
+
+#chartDiv tspan{
+    font-size: 10px;
+}

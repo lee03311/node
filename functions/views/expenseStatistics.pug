@@ -10,13 +10,15 @@ html
         link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nanum+Gothic') 
         link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.1/css/all.css' integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous")
         link(rel="stylesheet", href="css/common.css")
-        //- link(rel="stylesheet", href="css/expense.css")
+        link(rel="stylesheet", href="css/expense.css")
 
         script(src="https://www.amcharts.com/lib/4/core.js")
         script(src="https://www.amcharts.com/lib/4/charts.js")
-        script(src="https://www.amcharts.com/lib/4/themes/spiritedaway.js")
+        //- script(src="https://www.amcharts.com/lib/4/themes/spiritedaway.js")
         script(src="https://www.amcharts.com/lib/4/themes/material.js")
         script(src="https://www.amcharts.com/lib/4/themes/animated.js")
+
+
         script(type='text/javascript' src='js/common.js') 
         script(type='text/javascript' src='js/expenseStatistics.js') 
 
@@ -24,71 +26,13 @@ html
             #chartdiv, #partnerChartdiv{
                 height: 300px;
                 position: relative;
-                width: 40%;
+                width: 100%;
                 top: 100px;
                 display: inline-block;
-                margin: 20px 30px;
                 left: 100px;
-                /* border: 1px solid #eba05c; */
-                border-radius: 10px;
             }
         script.
             am4core.ready(function() {
-
-                // Themes begin 
-                am4core.useTheme(am4themes_spiritedaway);
-                // Themes end
-
-                // Create chart instance
-                var chart = am4core.create("chartdiv", am4charts.PieChart);
-
-                // Add data
-                chart.data = [ {
-                "country": "Lithuania",
-                "litres": 501.9
-                }, {
-                "country": "Czech Republic",
-                "litres": 301.9
-                }, {
-                "country": "Ireland",
-                "litres": 201.1
-                }, {
-                "country": "Germany",
-                "litres": 165.8
-                }, {
-                "country": "Australia",
-                "litres": 139.9
-                }, {
-                "country": "Austria",
-                "litres": 128.3
-                }, {
-                "country": "UK",
-                "litres": 99
-                }, {
-                "country": "Belgium",
-                "litres": 60
-                }, {
-                "country": "The Netherlands",
-                "litres": 50
-                } ];
-
-                // Add and configure Series
-                var pieSeries = chart.series.push(new am4charts.PieSeries());
-                pieSeries.dataFields.value = "litres";
-                pieSeries.dataFields.category = "country";
-                pieSeries.slices.template.stroke = am4core.color("#fff");
-                pieSeries.slices.template.strokeWidth = 2;
-                pieSeries.slices.template.strokeOpacity = 1;
-
-                // This creates initial animation
-                pieSeries.hiddenState.properties.opacity = 1;
-                pieSeries.hiddenState.properties.endAngle = -90;
-                pieSeries.hiddenState.properties.startAngle = -90;
-
-                // Themes begin 
-                //- am4core.useTheme(am4themes_spiritedaway);
-                // Themes end
-
 
                 // Themes begin
                 am4core.useTheme(am4themes_material);
@@ -96,50 +40,109 @@ html
                 // Themes end
 
                 // Create chart instance
-                var chart1 = am4core.create("partnerChartdiv", am4charts.PieChart);
-
-                // Add data
-                chart1.data = [ {
-                "country": "Lithuania",
-                "litres": 501.9
-                }, {
-                "country": "Czech Republic",
-                "litres": 301.9
-                }, {
-                "country": "Ireland",
-                "litres": 201.1
-                }, {
-                "country": "Germany",
-                "litres": 165.8
-                }, {
-                "country": "Australia",
-                "litres": 139.9
-                }, {
-                "country": "Austria",
-                "litres": 128.3
-                }, {
-                "country": "UK",
-                "litres": 99
-                }, {
-                "country": "Belgium",
-                "litres": 60
-                }, {
-                "country": "The Netherlands",
-                "litres": 50
-                } ];
+                var chart = am4core.create("chartdiv", am4charts.PieChart);
 
                 // Add and configure Series
-                var pieSeries1 = chart1.series.push(new am4charts.PieSeries());
-                pieSeries1.dataFields.value = "litres";
-                pieSeries1.dataFields.category = "country";
-                pieSeries1.slices.template.stroke = am4core.color("#fff");
-                pieSeries1.slices.template.strokeWidth = 2;
-                pieSeries1.slices.template.strokeOpacity = 1;
+                var pieSeries = chart.series.push(new am4charts.PieSeries());
+                
+                pieSeries.dataFields.value = "litres";
+                pieSeries.dataFields.category = "country";
 
-                // This creates initial animation
-                pieSeries1.hiddenState.properties.opacity = 1;
-                pieSeries1.hiddenState.properties.endAngle = -90;
-                pieSeries1.hiddenState.properties.startAngle = -90;
+                // Let's cut a hole in our Pie chart the size of 30% the radius
+                chart.innerRadius = am4core.percent(40);
+
+                // Put a thick white border around each Slice
+                pieSeries.slices.template.stroke = am4core.color("#fff");
+                pieSeries.slices.template.strokeWidth = 2;
+                pieSeries.slices.template.strokeOpacity = 1;
+                pieSeries.slices.template
+                // change the cursor on hover to make it apparent the object can be interacted with
+                .cursorOverStyle = [
+                    {
+                    "property": "cursor",
+                    "value": "pointer"
+                    }
+                ];
+
+                pieSeries.alignLabels = false;
+                //- pieSeries.labels.template.bent = true;
+                //- pieSeries.labels.template.radius = 3;
+                //- pieSeries.labels.template.padding(0,0,0,0);
+
+                pieSeries.ticks.template.disabled = true;
+
+                pieSeries.labels.template.text = "{category}";
+                pieSeries.labels.template.radius = am4core.percent(-25);
+                pieSeries.labels.template.fill = am4core.color("white");
+
+                pieSeries.labels.template.adapter.add("radius", function(radius, target) {
+                    console.log(target.dataItem)
+                    console.log(target.dataItem.values)
+                    if (target.dataItem && (target.dataItem.values.value.percent < 10)) {
+                        target.dataItem.properties.category = '';
+                        return 0;
+                    }
+                    return radius;
+                    });
+
+                pieSeries.labels.template.adapter.add("fill", function(color, target) {
+                    if (target.dataItem && (target.dataItem.values.value.percent < 10)) {
+                        return am4core.color("#000");
+                    }
+                    return color;
+                });
+
+                pieSeries.labels.template.adapter.add("hidden", function(color, target) {
+                    return target.dataItem.values.value.percent < 5 ? true : false;
+                });
+
+                
+                pieSeries.slices.template.tooltipText = "{value.value} ({value.percent.formatNumber('#.0')}%)";
+
+                // Create a base filter effect (as if it's not there) for the hover to return to
+                var shadow = pieSeries.slices.template.filters.push(new am4core.DropShadowFilter);
+                shadow.opacity = 0;
+
+                // Create hover state
+                var hoverState = pieSeries.slices.template.states.getKey("hover"); // normally we have to create the hover state, in this case it already exists
+
+                // Slightly shift the shadow and make it more prominent on hover
+                var hoverShadow = hoverState.filters.push(new am4core.DropShadowFilter);
+                hoverShadow.opacity = 0.7;
+                hoverShadow.blur = 5;
+
+                // Add a legend
+                //- chart.legend = new am4charts.Legend();
+                chart.fontSize = 10;
+
+                chart.data = [{
+                "country": "Lithuania",
+                "litres": 500000
+                },{
+                "country": "Germany",
+                "litres": 165000
+                }, {
+                "country": "Australia",
+                "litres": 139000
+                }, {
+                "country": "Austria",
+                "litres": 128000
+                }, {
+                "country": "UK",
+                "litres": 99000
+                }, {
+                "country": "Belgium",
+                "litres": 60000
+                }, {
+                "country": "test",
+                "litres": 1000
+                }];
+
+                let label = pieSeries.createChild(am4core.Label);
+               label.text = "Hi there!";
+                label.horizontalCenter = "middle";
+                label.verticalCenter = "middle";
+                label.fontSize = 20;
 
             }); // end am4core.ready()
 
