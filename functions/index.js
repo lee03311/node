@@ -1338,13 +1338,171 @@ var data = req.body;
           obj.litres += parseInt(setData.litres);
         }
       });
-      console.log(tmp)
-      console.log(datas);
       res.status(200).send({ 
         result : 'success',
         rows:datas
       });
     });
+    return true;
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
+});
+
+
+app.get('/statistics/list/orderbydate', function(req, res){
+
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+  var data = req.body;
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+
+    var data = req.query;
+    var dates = data.date;
+    var datas = [];
+    var tmp = [];
+
+    if(dates){
+      dates = dateFormat(dates, 'yyyymm');
+    }
+
+    firebase.database().ref('expense/' + uid +'/'+dates).once('value', function (snapshot) {
+      var index = 0;
+      snapshot.forEach(function (childSnapshot) {
+        var data = childSnapshot.val();
+
+        var setData = {
+          country : dateFormat(data.date, 'mm/dd'),
+          visits : parseInt(data.cost)
+        }
+
+        if(typeof tmp[setData['country']] === 'undefined'){
+          tmp[setData['country']] = index++;
+          datas.push(setData);
+        }else{
+          var obj = datas[tmp[setData['country']]];
+          obj.visits += parseInt(setData.visits);
+        }
+      });
+
+
+      firebase.database().ref('setting/' + uid+'/member').once("value", function(settingSnapshot, prevChildKey) {
+        var member = settingSnapshot.val();
+        firebase.database().ref('expense/' + member.uid +'/'+dates).once('value', function (snapshot) {
+          var index = 0;
+          snapshot.forEach(function (childSnapshot) {
+            var data = childSnapshot.val();
+    
+            var setData = {
+              country : dateFormat(data.date, 'mm/dd'),
+              visits : parseInt(data.cost)
+            }
+    
+            if(typeof tmp[setData['country']] === 'undefined'){
+              tmp[setData['country']] = index++;
+              datas.push(setData);
+            }else{
+              var obj = datas[tmp[setData['country']]];
+              obj.visits += parseInt(setData.visits);
+            }
+          });
+  
+          datas.sort(function(a, b){
+            var aDate = dateFormat(a.country, 'dd');
+            var bDate = dateFormat(b.country, 'dd');
+            
+            return aDate < bDate ? -1 : aDate > bDate ? 1 : 0;
+          });
+
+          res.status(200).send({ 
+            result : 'success',
+            rows:datas
+          });
+        });
+        return true;
+      });
+    });
+    return true;
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
+});
+
+app.get('/statistics/partner/list', function(req, res){
+
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+var data = req.body;
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+
+    var data = req.query;
+    var dates = data.date;
+    var datas = [];
+    var tmp = [];
+
+    if(dates){
+      dates = dateFormat(dates, 'yyyymm');
+    }
+
+
+    firebase.database().ref('setting/' + uid+'/member').once("value", function(settingSnapshot, prevChildKey) {
+      var member = settingSnapshot.val();
+      firebase.database().ref('expense/' + member.uid +'/'+dates).once('value', function (snapshot) {
+        var index = 0;
+        snapshot.forEach(function (childSnapshot) {
+          var data = childSnapshot.val();
+  
+          var setData = {
+            category : data.categoryTxt,
+            litres : parseInt(data.cost)
+          }
+  
+          if(typeof tmp[setData['category']] === 'undefined'){
+            tmp[setData['category']] = index++;
+            datas.push(setData);
+          }else{
+            var obj = datas[tmp[setData['category']]];
+            obj.litres += parseInt(setData.litres);
+          }
+        });
+
+        res.status(200).send({ 
+          result : 'success',
+          rows:datas
+        });
+      });
+
+      return true;
+      })
+      .catch(function(error) {
+          res.status(500).send({
+          result: 'fail'
+        });
+      });
     return true;
   }).catch(error => {
     console.log(error);
@@ -1452,8 +1610,9 @@ app.post('/expense/add', function(req, res){
 
     if(uid){
       var dates = data.date;
+      var yearMonth = '';
       if(dates){
-        dates = dateFormat(dates, 'yyyymm');
+        yearMonth = dateFormat(dates, 'yyyymm');
       }
 
       if(data.status){
@@ -1467,15 +1626,15 @@ app.post('/expense/add', function(req, res){
             categoryTxt : data.expenseCategoryTxt
           }
 
-          var id = firebase.database().ref().child('expense/' + uid + '/'+dates).push().key;
-          firebase.database().ref('expense/' + uid +'/'+dates +'/' +id).set(btgCategory);
+          var id = firebase.database().ref().child('expense/' + uid + '/'+yearMonth).push().key;
+          firebase.database().ref('expense/' + uid +'/'+yearMonth +'/' +id).set(btgCategory);
 
           res.send({
             result: 'success',
             id:id
           });
         }else if(data.status === 'remove'){
-          firebase.database().ref('expense/' + uid +'/'+dates +'/' +data.id).remove();
+          firebase.database().ref('expense/' + uid +'/'+yearMonth +'/' +data.id).remove();
           res.send({
             result: 'success'
           });
