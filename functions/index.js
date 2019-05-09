@@ -333,6 +333,8 @@ app.get('/getTodoList', function (req, res) {
               var date = data.date;
               // data.date = dateFormat(date, 'mm/dd');
             }
+            data['shareMemberTodo'] = 'Y';
+            data['shareMemberUid'] = shareWriter;
             datas.push(data);      
           });
         });
@@ -460,8 +462,13 @@ app.post('/todolist/status', function (req, res) {
 
     if(uid){
       if (data.id) {
+        var memberId = uid;
+        if(data.shareMemberTodo == 'Y'){
+          memberId = data.shareMemberUid;
+        }
+
         var todolistData = {};
-        todolistData['/todolist/'+uid+'/'+data.id+'/todoComplete'] = data.status; /*해당 카테고리의 show, hidden 값만 변경 */
+        todolistData['/todolist/'+memberId+'/'+data.id+'/todoComplete'] = data.status; /*해당 카테고리의 show, hidden 값만 변경 */
         firebase.database().ref().update(todolistData);
       }
     }
@@ -1029,6 +1036,7 @@ app.get('/budget', function(req, res){
     var email = decodedClaims.email;
 
     res.render('budget',{email:email});
+    return true;
   }).catch(error => {
     console.log(error);
     res.redirect('/');
@@ -1095,7 +1103,7 @@ app.post('/budget/add', function(req, res){
         }
       }
     }
-    
+    return true;
     
   }).catch(error => {
     console.log(error);
@@ -1156,21 +1164,10 @@ app.post('/budget/copyThisMonth', function(req, res){
           result: 'success',
           isPastMonthDataExist : isPastMonthDataExist
         });
-  
-        // res.send({
-        //       result: 'success',
-        //       money : money,
-        //       myBudget : datas,
-        //       partnerInfo : {
-        //         email : member.member,
-        //         partnerBudget : partnerData,
-        //         partnerMoney : partnerMoney
-        //       }
-        // });
       });
     }
     
-    
+    return true;
   }).catch(error => {
     console.log(error);
     res.redirect('/');
@@ -1261,7 +1258,9 @@ app.get('/budget/list', function(req, res){
           });
         });
       });
+      return true;
     });
+    return true;
   }).catch(error => {
     console.log(error);
     res.redirect('/');
@@ -1287,6 +1286,7 @@ app.get('/statistics', function(req, res){
     var email = decodedClaims.email;
 
     res.render('expenseStatistics',{email:email});
+    return true;
   }).catch(error => {
     console.log(error);
     res.redirect('/');
@@ -1529,6 +1529,7 @@ app.get('/expense', function(req, res){
     var email = decodedClaims.email;
 
     res.render('expense',{email:email});
+    return true;
   }).catch(error => {
     console.log(error);
     res.redirect('/');
@@ -1585,6 +1586,7 @@ app.get('/expense/myBudget', function(req, res){
         myBudget : datas,
       });
     });
+    return true;
   }).catch(error => {
     console.log(error);
     res.redirect('/');
@@ -1641,6 +1643,7 @@ app.post('/expense/add', function(req, res){
         }
       }
     }
+    return true;
   }).catch(error => {
     console.log(error);
     res.redirect('/');
@@ -1744,10 +1747,7 @@ app.get('/partnerExpense', function(req, res){
       //   });
       // });
     });
-
-
-
-
+    return true;
   }).catch(error => {
     console.log(error);
     res.redirect('/');

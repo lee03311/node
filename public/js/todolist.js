@@ -38,11 +38,11 @@ function getTodoList(){
                         }
 
                         var contents = rows[i].contents;
-                        contents = contents.replace(/(?:\r\n|\r|\n)/g, '<br/>')
-                        var li = $('<li/>').addClass('using').attr('id', rows[i].id)
-                        .append(
+                        contents = contents.replace(/(?:\r\n|\r|\n)/g, '<br/>');
+                        
+                        var li = $('<li/>').addClass('using').attr('id', rows[i].id).append(
                             $('<label/>').append(
-                                $('<input/>').attr('type','checkbox').attr('onclick','todoContentsCheck(this)').addClass('todoContentsCheck')
+                                $('<input/>').attr('type','checkbox').attr('onclick','todoContentsCheck(this, "'+rows[i].shareMemberTodo+'", "'+rows[i].shareMemberUid+'")').addClass('todoContentsCheck')
                                 .attr('value','Y').attr('name','todoClear').attr('id','todoClear'+i)
                             ).append(
                                 $('<span/>').addClass('title').text(rows[i].title)
@@ -53,13 +53,20 @@ function getTodoList(){
                             $('<i/>').addClass('fas fa-chevron-circle-down').attr('onclick', 'openTodoContents(this)').css('display', 'none')
                         ).append(
                             $('<i/>').addClass('fas fa-chevron-circle-right').attr('onclick', 'openTodoContents(this)')
-                        ).append(
+                        );
+                        
+                        if(rows[i].shareMemberTodo != 'Y'){
+                            li.append(
                             $('<div/>').addClass('todoModifyDiv').append(
-                                    $('<i/>').addClass('far fa-edit').attr('onclick', 'modifyTodoContents('+JSON.stringify(rows[i])+')')
-                                ).append(
-                                    $('<i/>').addClass('far fa-trash-alt').attr('onclick', 'removeTodoContents("'+rows[i].id+'")')
-                            )
-                        ).append(
+                                $('<i/>').addClass('far fa-edit').attr('onclick', 'modifyTodoContents('+JSON.stringify(rows[i])+')')
+                                    ).append(
+                                        $('<i/>').addClass('far fa-trash-alt').attr('onclick', 'removeTodoContents("'+rows[i].id+'")')
+                                )
+                            );
+                        }
+
+
+                        li.append(
                             $('<div/>').addClass('contents').attr('id',rows[i].id + 'Content').append(
                                 $('<ul>').append(
                                     $('<li>').html(contents)
@@ -179,7 +186,7 @@ function openTodoContents(obj){
     }
 }
 
-function todoContentsCheck(obj){
+function todoContentsCheck(obj, shareMemberTodo, shareMemberUid){
     var status = 'Y';
     var id = $(obj).parent().parent().attr('id');
     if($(obj).is(":checked")){
@@ -191,14 +198,22 @@ function todoContentsCheck(obj){
         status = 'N';
     }
 
+    var data = {
+        id:id,
+        status:status,
+        shareMemberTodo : 'N'
+    }
+
+    if(shareMemberTodo == 'Y'){
+        data['shareMemberTodo'] = shareMemberTodo;
+        data['shareMemberUid'] = shareMemberUid;
+    }
+
     $.ajax({
         url: '/todolist/status',
         dataType: 'json',
         type: 'post',
-        data:{
-            id:id,
-            status:status
-        },
+        data:data,
         success: function(data) {
             if(data.result == 'success'){
                 getTodoList();
