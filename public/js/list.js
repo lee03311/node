@@ -5,6 +5,29 @@ $(function(){
 
     getDays();
     drawCateogry();
+
+    $('#searchText').keyup(function(e){
+        if(e.keyCode == 13){
+            var search = $('#searchText').val();
+
+            $("#cardList p.content").each(function () {
+                $(this).html( $(this).text().replace("<span class='highlight'>"+search+"</span>", search) );
+            });
+
+            if(search != ''){
+                $("#cardList > li").hide();
+                $("#cardList p.content:contains('"+search+"')").each(function () {
+                    var regex = new RegExp(search,'gi');
+                    $(this).html( $(this).text().replace(regex, "<span class='highlight'>"+search+"</span>") );
+
+                    $(this).parent().parent().show();
+                });
+            }else{
+                $("#cardList > li").show();
+            }
+        }
+    });
+
 });
 
 

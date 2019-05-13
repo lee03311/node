@@ -261,3 +261,9 @@
 /* .fa-star:hover{
     color: orange;
 } */
+
+.highlight{
+    color: black;
+    font-weight: bold;
+    background-color: rgb(255, 235, 0);
+}

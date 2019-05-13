@@ -275,7 +275,7 @@ app.get('/getList', function (req, res) {
         categories.push(title[i].id);
       }
     }
-  
+
     var datas = [];
     firebase.database().ref('daily').orderByChild('date').startAt(req.query.startDate).endAt(req.query.endDate).once('value', function (snapshot) {
       snapshot.forEach(function (childSnapshot) {
@@ -463,7 +463,7 @@ app.post('/todolist/status', function (req, res) {
     if(uid){
       if (data.id) {
         var memberId = uid;
-        if(data.shareMemberTodo == 'Y'){
+        if(data.shareMemberTodo === 'Y'){
           memberId = data.shareMemberUid;
         }
 
@@ -511,7 +511,6 @@ app.get('/list/category', function (req, res) {
       }
     });
 
-
     firebase.database().ref('category').once('value', function (snapshot) {
       
       snapshot.forEach(function (childSnapshot) {
@@ -521,6 +520,45 @@ app.get('/list/category', function (req, res) {
           rows.push(data);
         }
         if(shareCategory.includes(data.id)){
+          rows.push(data);
+        }
+      });
+      res.send({
+        result: 'success',
+        rows: rows
+      });
+    })
+    return true;
+  }).catch(error => {
+    console.log(error);
+    res.redirect('/');
+  });
+});
+
+app.get('/list/myCategory', function (req, res) {
+  var host = req.get('host') || '';
+  var sessionCookie = null;
+
+  if(!host.includes('localhost')){
+    res.set('Cache-Control', 'public, max-age=0');
+    sessionCookie = req.cookies.__session;
+  }else{
+    res.setHeader('Cache-Control', 'private');
+    sessionCookie = req.cookies.session;
+  }
+
+  var rows = [];
+  var shareCategory = [];
+  admin.auth().verifySessionCookie(sessionCookie, true).then((decodedClaims) => {
+    var uid = decodedClaims.sub;
+    var email = decodedClaims.email;
+
+    firebase.database().ref('category').once('value', function (snapshot) {
+      
+      snapshot.forEach(function (childSnapshot) {
+        var data = childSnapshot.val();
+
+        if(data.writer === uid){
           rows.push(data);
         }
       });
@@ -755,12 +793,9 @@ app.post('/category/add', function (req, res) {
           result: 'success'
         });
       }else{
-        if (!data.id) {
-          data.categoryId = firebase.database().ref().child('category').push().key;
-          data.writer = uid;
-          data.status = 'show';
-        }
-        
+        data.id = firebase.database().ref().child('category').push().key;
+        data.writer = uid;
+        data.status = 'show';
         if(data.id){
           firebase.database().ref('category/' + data.id).set(data);
         }
@@ -930,6 +965,7 @@ app.get('/setting', function(req, res){
           shareItem = data;
         }else if(key === 'categoryItem'){
           shareCategory = data;
+          console.log(shareCategory);
         }else if(key === 'member'){
           member = data.member;
         }
@@ -1733,19 +1769,6 @@ app.get('/partnerExpense', function(req, res){
           result: 'fail'
         });
       });
-
-
-      // firebase.database().ref('expense/' + member.uid +'/'+dates).once('value', function (snapshot) {
-      //   snapshot.forEach(function (childSnapshot) {
-      //     var data = childSnapshot.val();
-      //     data['id'] = childSnapshot.key;
-      //     datas.push(data);
-      //   });
-      //   res.status(200).send({ 
-      //     result : 'success',
-      //     rows:datas
-      //   });
-      // });
     });
     return true;
   }).catch(error => {

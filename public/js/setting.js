@@ -1,6 +1,6 @@
 function getCategory(shareCategory){
     $.ajax({
-        url:'/list/category',
+        url:'/list/myCategory',
         dataType: 'json',
         type: 'GET',
         success:function(data){
@@ -28,7 +28,7 @@ function getCategory(shareCategory){
                 
                 categoryList.append(div);
             }
-            shareCategoryDraw(category, shareCategory);
+            shareCategoryDraw(category, shareCategory)
         }
     });
 }
@@ -84,7 +84,6 @@ function addCategory(){
     if(!confirm(message)){
         return false;
     }
-    console.log( $('#categoryForm').serialize())
 
     $.ajax({
         url:'/category/add',
@@ -92,8 +91,10 @@ function addCategory(){
         type: 'post',
         data: $('#categoryForm').serialize(),
         success:function(data){
-            alert('등록되었습니다.');
-            getCategory();
+            if(data.result == 'success'){
+                alert('등록되었습니다.');
+                getCategory();
+            }
         },error:function(){
             alert('관리자에게 문의하세요');
         }
